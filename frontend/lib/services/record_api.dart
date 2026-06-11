@@ -74,6 +74,14 @@ class RecordApi {
     return SleepLog.fromJson(json);
   }
 
+  Future<List<SleepLog>> sleepLogs() async {
+    final json = await _client.get('/api/sleep') as List<dynamic>;
+    return json
+        .whereType<Map<String, dynamic>>()
+        .map(SleepLog.fromJson)
+        .toList();
+  }
+
   Future<PainLog> createPain({
     required String painType,
     required int painScore,
