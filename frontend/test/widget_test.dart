@@ -343,7 +343,7 @@ void main() {
     expect(find.text('병원'), findsNothing);
   });
 
-  testWidgets('community tab shows safe placeholder screen', (tester) async {
+  testWidgets('community tab shows demo post list', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final controllers = _buildShellControllers();
 
@@ -363,7 +363,10 @@ void main() {
     await tester.tap(find.text('커뮤니티'));
     await tester.pumpAndSettle();
 
-    expect(find.text('준비 중인 기능입니다.'), findsOneWidget);
+    expect(find.text('추천'), findsOneWidget);
+    expect(find.text('최신'), findsOneWidget);
+    expect(find.text('인기'), findsOneWidget);
+    expect(find.text('PMS 심할 때\n나만의 극복 방법 공유해요!'), findsOneWidget);
   });
 }
 

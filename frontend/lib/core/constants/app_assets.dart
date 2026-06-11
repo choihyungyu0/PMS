@@ -49,4 +49,10 @@ class AppAssets {
   static const calendarPmsBell = 'assets/images/calendar/calendar_pms_bell.png';
   static const calendarFertileCycle =
       'assets/images/calendar/calendar_fertile_cycle.png';
+
+  static const communityAvatarPms =
+      'assets/images/community/community_avatar_pms.png';
+  static const communityStretch =
+      'assets/images/community/community_stretch.png';
+  static const communityPcos = 'assets/images/community/community_pcos.png';
 }
