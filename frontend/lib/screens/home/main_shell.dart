@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_assets.dart';
+import '../../core/constants/app_colors.dart';
 import '../../state/auth_controller.dart';
 import '../../state/analysis_controller.dart';
 import '../../state/institution_controller.dart';
@@ -66,10 +68,16 @@ class _MainShellState extends State<MainShell> {
         analysisController: widget.analysisController,
       ),
       const CommunityScreen(),
-      MyPageScreen(authController: widget.authController),
+      MyPageScreen(
+        authController: widget.authController,
+        onClose: () => setState(() => _index = 0),
+        onOpenReport: () => setState(() => _index = 2),
+        onOpenRecord: () => setState(() => _index = 1),
+      ),
     ];
 
     return Scaffold(
+      backgroundColor: AppColors.lavenderBackground,
       body: screens[_index],
       bottomNavigationBar: _DashboardBottomNav(
         selectedIndex: _index,
@@ -86,36 +94,77 @@ class _DashboardBottomNav extends StatelessWidget {
   final ValueChanged<int> onTap;
 
   static const _items = [
-    _BottomNavItemData(icon: Icons.home_rounded, label: '홈'),
-    _BottomNavItemData(icon: Icons.note_alt_outlined, label: '기록'),
-    _BottomNavItemData(icon: Icons.stacked_line_chart_rounded, label: '분석'),
-    _BottomNavItemData(icon: Icons.diversity_3_outlined, label: '커뮤니티'),
-    _BottomNavItemData(icon: Icons.person_outline_rounded, label: '마이'),
+    _BottomNavItemData(
+      icon: Icons.home_rounded,
+      assetPath: AppAssets.bottomNavHome,
+      label: '홈',
+    ),
+    _BottomNavItemData(
+      icon: Icons.note_alt_outlined,
+      assetPath: AppAssets.bottomNavRecord,
+      label: '기록',
+    ),
+    _BottomNavItemData(
+      icon: Icons.stacked_line_chart_rounded,
+      assetPath: AppAssets.bottomNavAnalysis,
+      label: '분석',
+    ),
+    _BottomNavItemData(
+      icon: Icons.diversity_3_outlined,
+      assetPath: AppAssets.bottomNavCommunity,
+      label: '커뮤니티',
+    ),
+    _BottomNavItemData(
+      icon: Icons.person_outline_rounded,
+      assetPath: AppAssets.bottomNavMy,
+      label: '마이',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE6E3EC))),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0x00FFFFFF), Color(0xFFF4EFFF)],
+        ),
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 78,
-          child: Row(
-            children: List.generate(_items.length, (index) {
-              final item = _items[index];
-              return Expanded(
-                child: _BottomNavItem(
-                  icon: item.icon,
-                  label: item.label,
-                  selected: selectedIndex == index,
-                  onTap: () => onTap(index),
-                ),
-              );
-            }),
+          height: 120,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.94),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(color: const Color(0xFFE4D7FA), width: 1.1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryPurple.withValues(alpha: 0.12),
+                    blurRadius: 26,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: List.generate(_items.length, (index) {
+                  final item = _items[index];
+                  return Expanded(
+                    child: _BottomNavItem(
+                      icon: item.icon,
+                      assetPath: item.assetPath,
+                      label: item.label,
+                      selected: selectedIndex == index,
+                      onTap: () => onTap(index),
+                    ),
+                  );
+                }),
+              ),
+            ),
           ),
         ),
       ),
@@ -124,52 +173,94 @@ class _DashboardBottomNav extends StatelessWidget {
 }
 
 class _BottomNavItemData {
-  const _BottomNavItemData({required this.icon, required this.label});
+  const _BottomNavItemData({
+    required this.icon,
+    required this.assetPath,
+    required this.label,
+  });
 
   final IconData icon;
+  final String assetPath;
   final String label;
 }
 
 class _BottomNavItem extends StatelessWidget {
   const _BottomNavItem({
     required this.icon,
+    required this.assetPath,
     required this.label,
     required this.selected,
     required this.onTap,
   });
 
   final IconData icon;
+  final String assetPath;
   final String label;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? const Color(0xFF6A35F2) : const Color(0xFF7C7A8D);
+    final color = selected ? const Color(0xFF6A35F2) : const Color(0xFF504A83);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 7),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: selected ? 33 : 31),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 14,
-                  fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
-                  letterSpacing: 0,
-                  height: 1,
+        borderRadius: BorderRadius.circular(24),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          decoration: BoxDecoration(
+            color: selected
+                ? Colors.white.withValues(alpha: 0.98)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(22),
+            border: selected
+                ? Border.all(color: const Color(0xFFD8C2FF), width: 1.2)
+                : null,
+            boxShadow: selected
+                ? [
+                    BoxShadow(
+                      color: AppColors.primaryPurple.withValues(alpha: 0.15),
+                      blurRadius: 18,
+                      offset: const Offset(0, 8),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Opacity(
+                  opacity: selected ? 1 : 0.82,
+                  child: Image.asset(
+                    assetPath,
+                    width: selected ? 40 : 35,
+                    height: selected ? 40 : 35,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(icon, color: color, size: selected ? 34 : 31);
+                    },
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 3),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 13,
+                    fontWeight: selected ? FontWeight.w900 : FontWeight.w800,
+                    letterSpacing: 0,
+                    height: 1,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

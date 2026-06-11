@@ -61,12 +61,18 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/more_cycle_logo.png
+    - assets/images/home_cycle_card_bg.png
+    - assets/images/home_sleep_card_bg.png
+    - assets/images/home_pms_card_bg.png
+    - assets/images/home_mission_tea.png
+    - assets/images/
     - assets/images/record/
     - assets/images/analysis/
     - assets/images/ai_report/
     - assets/images/ai_care/
     - assets/images/calendar/
     - assets/images/community/
+    - assets/images/mypage/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

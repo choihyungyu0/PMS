@@ -1,8 +1,11 @@
+// ignore_for_file: unused_element
+
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_assets.dart';
 import '../../models/cycle.dart';
 import '../../models/health_report.dart';
 import '../../models/sleep_log.dart';
@@ -51,97 +54,144 @@ class HomeScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.white, Color(0xFFFEFCFF), Color(0xFFF9F5FF)],
-              stops: [0, 0.55, 1],
+              colors: [Color(0xFFFFFFFF), Color(0xFFFCF8FF), Color(0xFFF7F0FF)],
+              stops: [0, 0.52, 1],
             ),
           ),
-          child: SafeArea(
-            bottom: false,
-            child: RefreshIndicator(
-              color: AppColors.primaryPurple,
-              onRefresh: () async {
-                await Future.wait([
-                  recordController.loadLatestCycle(),
-                  recordController.loadLatestSleep(),
-                  reportController.load(),
-                ]);
-              },
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final horizontalPadding = (constraints.maxWidth * 0.045)
-                      .clamp(16.0, 22.0);
-                  return SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics(),
-                    ),
-                    padding: EdgeInsets.fromLTRB(
-                      horizontalPadding,
-                      18,
-                      horizontalPadding,
-                      24,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _TopBar(
-                          onBack: () {
-                            if (Navigator.of(context).canPop()) {
-                              Navigator.of(context).maybePop();
-                            }
-                          },
-                          onSetting: onOpenMyPage,
-                          onNotification: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('알림 기능은 준비 중이에요.')),
-                            );
-                          },
-                          onCalendar: onOpenRecord,
-                        ),
-                        const SizedBox(height: 42),
-                        Text(
-                          '안녕하세요, $displayName님 👋',
-                          style: const TextStyle(
-                            color: Color(0xFF323337),
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0,
-                            height: 1.1,
-                          ),
-                        ),
-                        if (hasPartialError) ...[
-                          const SizedBox(height: 12),
-                          const Text(
-                            '일부 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 13,
-                              height: 1.35,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 42),
-                        _HealthSummaryCard(
-                          cycle: recordController.latestCycle,
-                          report: report,
-                          sleep: recordController.latestSleep,
-                          onOpenReport: onOpenReport,
-                          onOpenRecord: onOpenRecord,
-                        ),
-                        const SizedBox(height: 18),
-                        _TodayMissionCard(
-                          mission: _missionFromReport(report),
-                          onTap: onOpenRecord,
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  );
-                },
+          child: Stack(
+            children: [
+              const Positioned(
+                right: -78,
+                top: 94,
+                child: _SoftBackgroundOrb(size: 148),
               ),
-            ),
+              const Positioned(
+                left: -96,
+                bottom: 126,
+                child: _SoftBackgroundOrb(size: 190),
+              ),
+              SafeArea(
+                bottom: false,
+                child: RefreshIndicator(
+                  color: AppColors.primaryPurple,
+                  onRefresh: () async {
+                    await Future.wait([
+                      recordController.loadLatestCycle(),
+                      recordController.loadLatestSleep(),
+                      reportController.load(),
+                    ]);
+                  },
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final horizontalPadding = (constraints.maxWidth * 0.045)
+                          .clamp(18.0, 22.0);
+                      return SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        padding: EdgeInsets.fromLTRB(
+                          horizontalPadding,
+                          16,
+                          horizontalPadding,
+                          28,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _TopBar(
+                              onBack: () {
+                                if (Navigator.of(context).canPop()) {
+                                  Navigator.of(context).maybePop();
+                                }
+                              },
+                              onSetting: onOpenMyPage,
+                              onNotification: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('알림 기능은 준비 중이에요.'),
+                                  ),
+                                );
+                              },
+                              onCalendar: onOpenRecord,
+                            ),
+                            const SizedBox(height: 38),
+                            Text(
+                              '안녕하세요, $displayName님 👋',
+                              style: const TextStyle(
+                                color: Color(0xFF190B2C),
+                                fontSize: 28,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0,
+                                height: 1.08,
+                                shadows: [
+                                  Shadow(
+                                    color: Color(0x337B35E8),
+                                    blurRadius: 12,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (hasPartialError) ...[
+                              const SizedBox(height: 12),
+                              const Text(
+                                '일부 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 34),
+                            _HealthSummaryCard(
+                              cycle: recordController.latestCycle,
+                              report: report,
+                              sleep: recordController.latestSleep,
+                              onOpenReport: onOpenReport,
+                              onOpenRecord: onOpenRecord,
+                            ),
+                            const SizedBox(height: 18),
+                            _TodayMissionCard(
+                              mission: _missionFromReport(report),
+                              onTap: onOpenRecord,
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
+    );
+  }
+}
+
+class _SoftBackgroundOrb extends StatelessWidget {
+  const _SoftBackgroundOrb({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [
+            Colors.white.withValues(alpha: 0.92),
+            const Color(0xFFF3E7FF).withValues(alpha: 0.62),
+            const Color(0x00F3E7FF),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -172,7 +222,7 @@ class _TopBar extends StatelessWidget {
           message: '마이페이지',
           child: _HexagonIconButton(onTap: onSetting),
         ),
-        const SizedBox(width: 18),
+        const SizedBox(width: 12),
         Tooltip(
           message: '알림',
           child: _TopIconButton(
@@ -180,7 +230,7 @@ class _TopBar extends StatelessWidget {
             onTap: onNotification,
           ),
         ),
-        const SizedBox(width: 18),
+        const SizedBox(width: 12),
         Tooltip(
           message: '기록',
           child: _TopIconButton(
@@ -201,18 +251,30 @@ class _CircleBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xFFF2F0FA),
+      color: const Color(0xFFF8F5FF),
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
+      elevation: 0,
       child: InkWell(
         onTap: onTap,
-        child: const SizedBox(
-          width: 52,
-          height: 52,
+        child: Container(
+          width: 58,
+          height: 58,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFE2D8F3), width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFB992E9).withValues(alpha: 0.14),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
           child: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Color(0xFF25252A),
-            size: 30,
+            color: Color(0xFF1F1730),
+            size: 28,
           ),
         ),
       ),
@@ -229,15 +291,17 @@ class _TopIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: const Color(0xFFFBFAFF),
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
+      shadowColor: const Color(0xFF8455D6).withValues(alpha: 0.35),
+      elevation: 8,
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
-          width: 38,
-          height: 38,
-          child: Icon(icon, color: const Color(0xFF555555), size: 32),
+          width: 52,
+          height: 52,
+          child: Icon(icon, color: const Color(0xFF151226), size: 29),
         ),
       ),
     );
@@ -252,18 +316,20 @@ class _HexagonIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: const Color(0xFFFBFAFF),
       shape: const CircleBorder(),
       clipBehavior: Clip.antiAlias,
+      shadowColor: const Color(0xFF8455D6).withValues(alpha: 0.35),
+      elevation: 8,
       child: InkWell(
         onTap: onTap,
         child: const SizedBox(
-          width: 38,
-          height: 38,
+          width: 52,
+          height: 52,
           child: Center(
             child: SizedBox(
-              width: 30,
-              height: 30,
+              width: 29,
+              height: 29,
               child: CustomPaint(painter: _HexagonPainter()),
             ),
           ),
@@ -279,13 +345,13 @@ class _HexagonPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final strokePaint = Paint()
-      ..color = const Color(0xFF555555)
+      ..color = const Color(0xFF151226)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.2
+      ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     final dotPaint = Paint()
-      ..color = const Color(0xFF555555)
+      ..color = const Color(0xFF151226)
       ..style = PaintingStyle.fill;
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.42;
@@ -331,54 +397,80 @@ class _HealthSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
+      padding: const EdgeInsets.fromLTRB(16, 22, 16, 18),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.78),
+        color: Colors.white.withValues(alpha: 0.88),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFE0DDEB), width: 1.5),
+        border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF835AD9).withValues(alpha: 0.10),
+            blurRadius: 30,
+            offset: const Offset(0, 14),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '오늘의 건강 요약',
-            style: TextStyle(
-              color: Color(0xFF2D2D32),
-              fontSize: 23,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-              height: 1,
+          const Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Row(
+              children: [
+                Text(
+                  '오늘의 건강 요약',
+                  style: TextStyle(
+                    color: Color(0xFF121324),
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0,
+                    height: 1,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  '✦',
+                  style: TextStyle(
+                    color: Color(0xFFC698F5),
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
           _CycleStatusPanel(summary: _cycleSummary(cycle)),
-          const SizedBox(height: 24),
-          const Divider(color: Color(0xFFE3E0EB), height: 1, thickness: 1),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: _MiniHealthCard(
-                  height: 108,
+                  height: 148,
                   label: 'PMS 예측',
                   value: _riskLabel(report?.riskLevel),
-                  labelColor: const Color(0xFF6C6B6F),
+                  labelColor: const Color(0xFF17151C),
                   valueColor: const Color(0xFFFF8A1F),
                   arrowColor: const Color(0xFFFF9A27),
-                  gradientColors: const [Color(0xFFFFF5E8), Color(0xFFFFF8EF)],
+                  borderColor: const Color(0xFFF5D8C8),
+                  decoration: _MiniDecoration.pms,
+                  gradientColors: const [Color(0xFFFFFCF8), Color(0xFFFFF0E4)],
                   onTap: onOpenReport,
                 ),
               ),
-              const SizedBox(width: 20),
+              const SizedBox(width: 12),
               Expanded(
                 child: _MiniHealthCard(
-                  height: 108,
+                  height: 148,
                   label: '수면 시간',
                   value: _sleepLabel(sleep),
                   labelColor: const Color(0xFF2D6EBE),
                   valueColor: const Color(0xFF2E79DF),
                   arrowColor: const Color(0xFF74A7EE),
-                  gradientColors: const [Color(0xFFEFF6FF), Color(0xFFEAF4FF)],
+                  borderColor: const Color(0xFFD2DDF4),
+                  decoration: _MiniDecoration.sleep,
+                  gradientColors: const [Color(0xFFFBFDFF), Color(0xFFEAF4FF)],
                   onTap: onOpenRecord,
                 ),
               ),
@@ -399,56 +491,93 @@ class _CycleStatusPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 148),
-      padding: const EdgeInsets.fromLTRB(26, 24, 22, 22),
+      height: 194,
+      padding: const EdgeInsets.fromLTRB(24, 24, 20, 22),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [Color(0xFFF3EAFE), Color(0xFFF4ECFF), Color(0xFFF7F1FF)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFCF8FF), Color(0xFFF2E6FF), Color(0xFFEEDFFF)],
         ),
+        border: Border.all(color: const Color(0xFFE5CFFF), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF9864E9).withValues(alpha: 0.14),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 44),
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                AppAssets.homeCycleCardBg,
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                filterQuality: FilterQuality.high,
+              ),
+            ),
+          ),
+          const Positioned(
+            right: 24,
+            top: 43,
+            child: SizedBox(
+              width: 106,
+              height: 106,
+              child: CustomPaint(painter: _CycleRingPainter()),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 6,
+            right: 118,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   '생리 주기',
                   style: TextStyle(
-                    color: Color(0xFF8C63E8),
-                    fontSize: 21,
-                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF843CF0),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: 0,
                     height: 1,
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
                 Text(
                   summary.title,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Color(0xFF4F2DB8),
+                    color: Color(0xFF5524B7),
                     fontSize: 31,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0,
-                    height: 1.08,
+                    height: 1,
+                    shadows: [
+                      Shadow(
+                        color: Color(0x339C63F2),
+                        blurRadius: 12,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 22),
                 Text(
                   summary.subtitle,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Color(0xFF5E5E62),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF15151D),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                     height: 1.2,
                   ),
@@ -471,6 +600,67 @@ class _CycleStatusPanel extends StatelessWidget {
   }
 }
 
+class _CycleRingPainter extends CustomPainter {
+  const _CycleRingPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * 0.36;
+    final shadowPaint = Paint()
+      ..color = const Color(0xFF7B35E8).withValues(alpha: 0.22)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
+    canvas.drawCircle(center.translate(0, 7), radius, shadowPaint);
+
+    final basePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.22
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFFFBF7FF);
+    canvas.drawCircle(center, radius, basePaint);
+
+    final arcPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.22
+      ..strokeCap = StrokeCap.round
+      ..shader = const SweepGradient(
+        startAngle: -math.pi / 2,
+        endAngle: math.pi * 1.5,
+        colors: [
+          Color(0xFFEBCBFF),
+          Color(0xFFBC6FFF),
+          Color(0xFF7C35F1),
+          Color(0xFFEBCBFF),
+        ],
+      ).createShader(Rect.fromCircle(center: center, radius: radius));
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      math.pi * 1.42,
+      false,
+      arcPaint,
+    );
+
+    final shinePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.035
+      ..strokeCap = StrokeCap.round
+      ..color = Colors.white.withValues(alpha: 0.72);
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius + size.width * 0.09),
+      -math.pi * 0.65,
+      math.pi * 0.48,
+      false,
+      shinePaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _CycleRingPainter oldDelegate) {
+    return false;
+  }
+}
+
 class _MiniHealthCard extends StatelessWidget {
   const _MiniHealthCard({
     required this.height,
@@ -479,6 +669,8 @@ class _MiniHealthCard extends StatelessWidget {
     required this.labelColor,
     required this.valueColor,
     required this.arrowColor,
+    required this.borderColor,
+    required this.decoration,
     required this.gradientColors,
     required this.onTap,
   });
@@ -489,6 +681,8 @@ class _MiniHealthCard extends StatelessWidget {
   final Color labelColor;
   final Color valueColor;
   final Color arrowColor;
+  final Color borderColor;
+  final _MiniDecoration decoration;
   final List<Color> gradientColors;
   final VoidCallback onTap;
 
@@ -502,56 +696,118 @@ class _MiniHealthCard extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           height: height,
-          padding: const EdgeInsets.fromLTRB(20, 20, 12, 18),
+          padding: const EdgeInsets.fromLTRB(18, 20, 14, 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor, width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: borderColor.withValues(alpha: 0.24),
+                blurRadius: 14,
+                offset: const Offset(0, 8),
+              ),
+            ],
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: gradientColors,
             ),
           ),
-          child: Row(
+          child: Stack(
             children: [
-              Expanded(
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          color: labelColor,
-                          fontSize: 19,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                          height: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 22),
-                      Text(
-                        value,
-                        style: TextStyle(
-                          color: valueColor,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0,
-                          height: 1,
-                        ),
-                      ),
-                    ],
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    decoration.assetPath,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                    filterQuality: FilterQuality.high,
                   ),
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, color: arrowColor, size: 38),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: labelColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                      height: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FittedBox(
+                    alignment: Alignment.centerLeft,
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      value,
+                      maxLines: 1,
+                      style: TextStyle(
+                        color: valueColor,
+                        fontSize: 31,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0,
+                        height: 1,
+                        shadows: [
+                          Shadow(
+                            color: valueColor.withValues(alpha: 0.18),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                right: 4,
+                top: 52,
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.72),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.85),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: arrowColor.withValues(alpha: 0.14),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.chevron_right_rounded,
+                    color: arrowColor,
+                    size: 32,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+enum _MiniDecoration {
+  pms(AppAssets.homePmsCardBg),
+  sleep(AppAssets.homeSleepCardBg);
+
+  const _MiniDecoration(this.assetPath);
+
+  final String assetPath;
 }
 
 class _TodayMissionCard extends StatelessWidget {
@@ -564,26 +820,50 @@ class _TodayMissionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+      padding: const EdgeInsets.fromLTRB(16, 22, 16, 24),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.78),
+        color: Colors.white.withValues(alpha: 0.90),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFE0DDEB), width: 1.5),
+        border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF835AD9).withValues(alpha: 0.09),
+            blurRadius: 28,
+            offset: const Offset(0, 12),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '오늘의 미션',
-            style: TextStyle(
-              color: Color(0xFF2D2D32),
-              fontSize: 23,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-              height: 1,
+          const Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Row(
+              children: [
+                Text(
+                  '오늘의 미션',
+                  style: TextStyle(
+                    color: Color(0xFF121324),
+                    fontSize: 23,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0,
+                    height: 1,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  '✦',
+                  style: TextStyle(
+                    color: Color(0xFFF178A0),
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 22),
           _MissionTile(mission: mission, onTap: onTap),
         ],
       ),
@@ -606,146 +886,81 @@ class _MissionTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Ink(
-          height: 116,
-          padding: const EdgeInsets.fromLTRB(18, 20, 10, 20),
+          height: 134,
+          padding: const EdgeInsets.fromLTRB(16, 18, 12, 18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFF6BDC8), width: 1.1),
             gradient: const LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [Color(0xFFFFEDEE), Color(0xFFFFF1F1), Color(0xFFFFEDED)],
+              colors: [Color(0xFFFFF7F8), Color(0xFFFFEDEF), Color(0xFFFFF5F6)],
             ),
           ),
-          child: Row(
+          child: Stack(
             children: [
-              const SizedBox(
-                width: 72,
-                height: 72,
-                child: CustomPaint(painter: _MissionIllustrationPainter()),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  mission,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF3A3A3D),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                    height: 1.45,
+              Positioned(
+                left: 2,
+                bottom: 8,
+                child: SizedBox(
+                  width: 132,
+                  height: 92,
+                  child: Image.asset(
+                    AppAssets.homeMissionTea,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
                   ),
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Color(0xFFF08B91),
-                size: 36,
+              Positioned(
+                left: 156,
+                top: 28,
+                right: 48,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    mission,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      color: Color(0xFF3A2721),
+                      fontSize: 21,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0,
+                      height: 1.42,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 10,
+                top: 38,
+                child: Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.58),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFEF7D95).withValues(alpha: 0.12),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: Color(0xFFE95478),
+                    size: 36,
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-class _MissionIllustrationPainter extends CustomPainter {
-  const _MissionIllustrationPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    canvas.drawCircle(
-      Offset(w * 0.52, h * 0.50),
-      w * 0.44,
-      Paint()
-        ..color = const Color(0xFFEFEAFA)
-        ..style = PaintingStyle.fill,
-    );
-    canvas.drawCircle(
-      Offset(w * 0.48, h * 0.42),
-      w * 0.19,
-      Paint()
-        ..color = const Color(0xFF163D31)
-        ..style = PaintingStyle.fill,
-    );
-
-    final applePaint = Paint()
-      ..color = const Color(0xFFE9433E)
-      ..style = PaintingStyle.fill;
-    canvas
-      ..drawCircle(Offset(w * 0.28, h * 0.62), w * 0.19, applePaint)
-      ..drawCircle(Offset(w * 0.40, h * 0.58), w * 0.17, applePaint);
-
-    final leafPath = Path()
-      ..moveTo(w * 0.37, h * 0.36)
-      ..cubicTo(w * 0.44, h * 0.26, w * 0.53, h * 0.31, w * 0.47, h * 0.42);
-    canvas.drawPath(
-      leafPath,
-      Paint()
-        ..color = const Color(0xFF3E8E4E)
-        ..style = PaintingStyle.fill,
-    );
-    canvas.drawLine(
-      Offset(w * 0.38, h * 0.42),
-      Offset(w * 0.36, h * 0.32),
-      Paint()
-        ..color = const Color(0xFF7A5132)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2
-        ..strokeCap = StrokeCap.round,
-    );
-
-    final slicedPaint = Paint()
-      ..color = const Color(0xFFFFC27A)
-      ..style = PaintingStyle.fill;
-    final slicedInnerPaint = Paint()
-      ..color = const Color(0xFFFFE0A9)
-      ..style = PaintingStyle.fill;
-    canvas
-      ..drawCircle(Offset(w * 0.58, h * 0.65), w * 0.22, slicedPaint)
-      ..drawCircle(Offset(w * 0.58, h * 0.65), w * 0.17, slicedInnerPaint)
-      ..drawOval(
-        Rect.fromCenter(
-          center: Offset(w * 0.58, h * 0.66),
-          width: w * 0.035,
-          height: h * 0.07,
-        ),
-        Paint()
-          ..color = const Color(0xFF9A5833)
-          ..style = PaintingStyle.fill,
-      );
-
-    final cupPaint = Paint()
-      ..color = const Color(0xFFE7784B)
-      ..style = PaintingStyle.fill;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(w * 0.58, h * 0.32, w * 0.32, h * 0.22),
-        Radius.circular(w * 0.08),
-      ),
-      cupPaint,
-    );
-    canvas.drawArc(
-      Rect.fromLTWH(w * 0.78, h * 0.35, w * 0.20, h * 0.18),
-      -math.pi / 2,
-      math.pi,
-      false,
-      Paint()
-        ..color = const Color(0xFFE7784B)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3
-        ..strokeCap = StrokeCap.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _MissionIllustrationPainter oldDelegate) {
-    return false;
   }
 }
 

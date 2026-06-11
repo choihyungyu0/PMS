@@ -1,5 +1,11 @@
 class AppAssets {
   static const moreCycleLogo = 'assets/images/more_cycle_logo.png';
+
+  static const homeCycleCardBg = 'assets/images/home_cycle_card_bg.png';
+  static const homeSleepCardBg = 'assets/images/home_sleep_card_bg.png';
+  static const homePmsCardBg = 'assets/images/home_pms_card_bg.png';
+  static const homeMissionTea = 'assets/images/home_mission_tea.png';
+
   static const recordCompleteCheck =
       'assets/images/record/record_complete_check.png';
 
@@ -55,4 +61,23 @@ class AppAssets {
   static const communityStretch =
       'assets/images/community/community_stretch.png';
   static const communityPcos = 'assets/images/community/community_pcos.png';
+
+  static const mypageAvatar = 'assets/images/mypage/mypage_avatar.png';
+  static const mypageProfileCardBg =
+      'assets/images/mypage/mypage_profile_card_bg.png';
+  static const mypageInfo = 'assets/images/mypage/mypage_info.png';
+  static const mypageReport = 'assets/images/mypage/mypage_report.png';
+  static const mypageRecord = 'assets/images/mypage/mypage_record.png';
+  static const mypageNotification =
+      'assets/images/mypage/mypage_notification.png';
+  static const mypageBackup = 'assets/images/mypage/mypage_backup.png';
+  static const mypageCustomerCenter =
+      'assets/images/mypage/mypage_customer_center.png';
+  static const mypageSettings = 'assets/images/mypage/mypage_settings.png';
+
+  static const bottomNavHome = 'assets/images/bottom_nav_home.png';
+  static const bottomNavRecord = 'assets/images/bottom_nav_record.png';
+  static const bottomNavAnalysis = 'assets/images/bottom_nav_analysis.png';
+  static const bottomNavCommunity = 'assets/images/bottom_nav_community.png';
+  static const bottomNavMy = 'assets/images/bottom_nav_my.png';
 }
