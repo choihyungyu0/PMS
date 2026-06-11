@@ -5,6 +5,7 @@ import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/auth_screen.dart';
 import 'screens/auth/signup_basic_info_screen.dart';
+import 'screens/auth/signup_goal_selection_screen.dart';
 import 'screens/home/main_shell.dart';
 import 'screens/onboarding/welcome_screen.dart';
 import 'screens/splash/splash_screen.dart';
@@ -37,6 +38,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
   bool _minimumSplashElapsed = false;
   _UnauthenticatedScreen _unauthenticatedScreen =
       _UnauthenticatedScreen.welcome;
+  PendingSignupData? _pendingSignupData;
 
   @override
   void initState() {
@@ -91,28 +93,74 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
             switch (_unauthenticatedScreen) {
               case _UnauthenticatedScreen.welcome:
                 return WelcomeScreen(
-                  onStart: () => setState(
-                    () =>
-                        _unauthenticatedScreen = _UnauthenticatedScreen.signup,
-                  ),
-                  onLogin: () => setState(
-                    () => _unauthenticatedScreen = _UnauthenticatedScreen.login,
-                  ),
+                  onStart: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.signup;
+                  }),
+                  onLogin: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.login;
+                  }),
                 );
               case _UnauthenticatedScreen.signup:
                 return SignupBasicInfoScreen(
+                  initialData: _pendingSignupData,
+                  onBackToWelcome: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.welcome;
+                  }),
+                  onCloseToWelcome: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.welcome;
+                  }),
+                  onLogin: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.login;
+                  }),
+                  onNext: (signupData) => setState(() {
+                    _pendingSignupData = signupData;
+                    _unauthenticatedScreen =
+                        _UnauthenticatedScreen.signupGoalSelection;
+                  }),
+                );
+              case _UnauthenticatedScreen.signupGoalSelection:
+                final signupData = _pendingSignupData;
+                if (signupData == null) {
+                  return SignupBasicInfoScreen(
+                    onBackToWelcome: () => setState(
+                      () => _unauthenticatedScreen =
+                          _UnauthenticatedScreen.welcome,
+                    ),
+                    onCloseToWelcome: () => setState(
+                      () => _unauthenticatedScreen =
+                          _UnauthenticatedScreen.welcome,
+                    ),
+                    onLogin: () => setState(
+                      () =>
+                          _unauthenticatedScreen = _UnauthenticatedScreen.login,
+                    ),
+                    onNext: (signupData) => setState(() {
+                      _pendingSignupData = signupData;
+                      _unauthenticatedScreen =
+                          _UnauthenticatedScreen.signupGoalSelection;
+                    }),
+                  );
+                }
+                return HealthGoalSelectionScreen(
                   controller: _authController,
-                  onBackToWelcome: () => setState(
+                  signupData: signupData,
+                  onBackToBasicInfo: () => setState(
                     () =>
-                        _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
+                        _unauthenticatedScreen = _UnauthenticatedScreen.signup,
                   ),
-                  onCloseToWelcome: () => setState(
-                    () =>
-                        _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
-                  ),
-                  onLogin: () => setState(
-                    () => _unauthenticatedScreen = _UnauthenticatedScreen.login,
-                  ),
+                  onCloseToWelcome: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.welcome;
+                  }),
+                  onSignupCompleted: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.welcome;
+                  }),
                 );
               case _UnauthenticatedScreen.login:
                 return AuthScreen(
@@ -121,10 +169,10 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
                     () =>
                         _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
                   ),
-                  onSignupRequested: () => setState(
-                    () =>
-                        _unauthenticatedScreen = _UnauthenticatedScreen.signup,
-                  ),
+                  onSignupRequested: () => setState(() {
+                    _pendingSignupData = null;
+                    _unauthenticatedScreen = _UnauthenticatedScreen.signup;
+                  }),
                 );
             }
           }
@@ -140,4 +188,4 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
   }
 }
 
-enum _UnauthenticatedScreen { welcome, signup, login }
+enum _UnauthenticatedScreen { welcome, signup, signupGoalSelection, login }

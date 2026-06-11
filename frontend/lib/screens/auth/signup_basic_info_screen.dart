@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/date_utils.dart';
-import '../../state/auth_controller.dart';
 
 class SignupBasicInfoScreen extends StatefulWidget {
   const SignupBasicInfoScreen({
     super.key,
-    required this.controller,
+    this.initialData,
     required this.onBackToWelcome,
     required this.onCloseToWelcome,
     required this.onLogin,
+    required this.onNext,
   });
 
-  final AuthController controller;
+  final PendingSignupData? initialData;
   final VoidCallback onBackToWelcome;
   final VoidCallback onCloseToWelcome;
   final VoidCallback onLogin;
+  final ValueChanged<PendingSignupData> onNext;
 
   @override
   State<SignupBasicInfoScreen> createState() => _SignupBasicInfoScreenState();
@@ -34,7 +35,22 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
   final _passwordController = TextEditingController();
 
   DateTime? _birthDate;
-  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialData = widget.initialData;
+    if (initialData == null) {
+      return;
+    }
+    _nameController.text = initialData.nickname;
+    _birthDateController.text = initialData.birthDate ?? '';
+    _birthDate = initialData.birthDate == null
+        ? null
+        : DateTime.tryParse(initialData.birthDate!);
+    _emailController.text = initialData.email;
+    _passwordController.text = initialData.password;
+  }
 
   @override
   void dispose() {
@@ -58,11 +74,11 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
               final horizontalPadding = (constraints.maxWidth * 0.1)
                   .clamp(32.0, 48.0)
                   .toDouble();
-              final topGap = (constraints.maxHeight * 0.034)
-                  .clamp(22.0, 36.0)
+              final topGap = (constraints.maxHeight * 0.018)
+                  .clamp(12.0, 24.0)
                   .toDouble();
-              final fieldGap = (constraints.maxHeight * 0.034)
-                  .clamp(24.0, 30.0)
+              final fieldGap = (constraints.maxHeight * 0.024)
+                  .clamp(18.0, 22.0)
                   .toDouble();
 
               return SingleChildScrollView(
@@ -74,199 +90,165 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
                     padding: EdgeInsets.symmetric(
                       horizontal: horizontalPadding,
                     ),
-                    child: AnimatedBuilder(
-                      animation: widget.controller,
-                      builder: (context, _) {
-                        return Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(height: topGap),
-                              SizedBox(
-                                height: 48,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: _TopIconButton(
-                                        semanticLabel: '이전 화면',
-                                        icon: Icons.arrow_back_ios_new_rounded,
-                                        onTap: _handleBack,
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: _TopIconButton(
-                                        semanticLabel: '회원가입 닫기',
-                                        icon: Icons.close_rounded,
-                                        onTap: widget.onCloseToWelcome,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 34),
-                              const Text(
-                                '회원가입',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0,
-                                  height: 1,
-                                ),
-                              ),
-                              const SizedBox(height: 32),
-                              const Text(
-                                '더 정확한 맞춤 케어를 위해\n기본 정보를 입력해주세요.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Color(0xFF46464D),
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  letterSpacing: 0,
-                                  height: 1.62,
-                                ),
-                              ),
-                              const SizedBox(height: 66),
-                              _SignupInputField(
-                                key: const Key('signupNameField'),
-                                label: '이름',
-                                controller: _nameController,
-                                textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return '이름을 입력해주세요.';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: fieldGap),
-                              _SignupInputField(
-                                key: const Key('signupBirthDateField'),
-                                label: '생년월일',
-                                controller: _birthDateController,
-                                readOnly: true,
-                                onTap: _pickBirthDate,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return '생년월일을 선택해주세요.';
-                                  }
-                                  if (_birthDate == null) {
-                                    return '올바른 생년월일을 선택해주세요.';
-                                  }
-                                  if (_birthDate!.isAfter(DateTime.now())) {
-                                    return '미래 날짜는 선택할 수 없어요.';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: fieldGap),
-                              _SignupInputField(
-                                key: const Key('signupEmailField'),
-                                label: '이메일',
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                validator: (value) {
-                                  final email = value?.trim() ?? '';
-                                  final valid = RegExp(
-                                    r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-                                  ).hasMatch(email);
-                                  if (!valid) {
-                                    return '올바른 이메일을 입력해주세요.';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: fieldGap),
-                              _SignupInputField(
-                                key: const Key('signupPasswordField'),
-                                label: '비밀번호',
-                                controller: _passwordController,
-                                obscureText: _obscurePassword,
-                                textInputAction: TextInputAction.done,
-                                suffixIcon: IconButton(
-                                  tooltip: _obscurePassword
-                                      ? '비밀번호 보기'
-                                      : '비밀번호 숨기기',
-                                  onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword,
-                                  ),
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off_outlined
-                                        : Icons.visibility_outlined,
-                                    color: AppColors.textSecondary,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(height: topGap),
+                          SizedBox(
+                            height: 48,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: _TopIconButton(
+                                    semanticLabel: '이전 화면',
+                                    icon: Icons.arrow_back_ios_new_rounded,
+                                    onTap: _handleBack,
                                   ),
                                 ),
-                                validator: (value) {
-                                  final password = value ?? '';
-                                  if (password.length < 8) {
-                                    return '비밀번호는 8자 이상 입력해주세요.';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              if (widget.controller.errorMessage != null) ...[
-                                const SizedBox(height: 14),
-                                Text(
-                                  widget.controller.errorMessage!.isEmpty
-                                      ? '회원가입에 실패했어요. 입력 정보를 확인해주세요.'
-                                      : widget.controller.errorMessage!,
-                                  key: const Key('signupErrorMessage'),
-                                  style: const TextStyle(
-                                    color: _errorColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0,
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: _TopIconButton(
+                                    semanticLabel: '회원가입 닫기',
+                                    icon: Icons.close_rounded,
+                                    onTap: widget.onCloseToWelcome,
                                   ),
                                 ),
                               ],
-                              const SizedBox(height: 50),
-                              _GradientButton(
-                                key: const Key('signupNextButton'),
-                                label: '다음',
-                                loading: widget.controller.loading,
-                                onTap: _submit,
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          const Text(
+                            '회원가입',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0,
+                              height: 1,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          const Text(
+                            '더 정확한 맞춤 케어를 위해\n기본 정보를 입력해주세요.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF46464D),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0,
+                              height: 1.62,
+                            ),
+                          ),
+                          const SizedBox(height: 44),
+                          _SignupInputField(
+                            key: const Key('signupNameField'),
+                            label: '이름',
+                            controller: _nameController,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return '이름을 입력해주세요.';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: fieldGap),
+                          _SignupInputField(
+                            key: const Key('signupBirthDateField'),
+                            label: '생년월일',
+                            controller: _birthDateController,
+                            readOnly: true,
+                            onTap: _pickBirthDate,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return '생년월일을 선택해주세요.';
+                              }
+                              if (_birthDate == null) {
+                                return '올바른 생년월일을 선택해주세요.';
+                              }
+                              if (_birthDate!.isAfter(DateTime.now())) {
+                                return '미래 날짜는 선택할 수 없어요.';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: fieldGap),
+                          _SignupInputField(
+                            key: const Key('signupEmailField'),
+                            label: '이메일',
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              final email = value?.trim() ?? '';
+                              final valid = RegExp(
+                                r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                              ).hasMatch(email);
+                              if (!valid) {
+                                return '올바른 이메일을 입력해주세요.';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: fieldGap),
+                          _SignupInputField(
+                            key: const Key('signupPasswordField'),
+                            label: '비밀번호',
+                            controller: _passwordController,
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            validator: (value) {
+                              final password = value ?? '';
+                              if (password.length < 8) {
+                                return '비밀번호는 8자 이상 입력해주세요.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 34),
+                          _GradientButton(
+                            key: const Key('signupNextButton'),
+                            label: '다음',
+                            loading: false,
+                            onTap: _submit,
+                          ),
+                          const SizedBox(height: 28),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Text(
+                                '이미 계정이 있으신가요? ',
+                                style: TextStyle(
+                                  color: Color(0xFF46464D),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0,
+                                ),
                               ),
-                              const SizedBox(height: 42),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  const Text(
-                                    '이미 계정이 있으신가요? ',
-                                    style: TextStyle(
-                                      color: Color(0xFF46464D),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0,
-                                    ),
+                              GestureDetector(
+                                key: const Key('signupLoginLink'),
+                                onTap: widget.onLogin,
+                                child: const Text(
+                                  '로그인',
+                                  style: TextStyle(
+                                    color: AppColors.primaryPurple,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0,
                                   ),
-                                  GestureDetector(
-                                    key: const Key('signupLoginLink'),
-                                    onTap: widget.onLogin,
-                                    child: const Text(
-                                      '로그인',
-                                      style: TextStyle(
-                                        color: AppColors.primaryPurple,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              const SizedBox(height: 34),
                             ],
                           ),
-                        );
-                      },
+                          const SizedBox(height: 24),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -324,21 +306,29 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
-    final success = await widget.controller.signup(
-      _emailController.text.trim().toLowerCase(),
-      _passwordController.text,
-      _nameController.text.trim(),
-      _birthDate == null ? null : AppDateUtils.date(_birthDate!),
+    widget.onNext(
+      PendingSignupData(
+        email: _emailController.text.trim().toLowerCase(),
+        password: _passwordController.text,
+        nickname: _nameController.text.trim(),
+        birthDate: _birthDate == null ? null : AppDateUtils.date(_birthDate!),
+      ),
     );
-    if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('회원가입이 완료되었어요.'),
-          backgroundColor: AppColors.primaryPurple,
-        ),
-      );
-    }
   }
+}
+
+class PendingSignupData {
+  const PendingSignupData({
+    required this.email,
+    required this.password,
+    required this.nickname,
+    required this.birthDate,
+  });
+
+  final String email;
+  final String password;
+  final String nickname;
+  final String? birthDate;
 }
 
 class _TopIconButton extends StatelessWidget {
@@ -384,7 +374,6 @@ class _SignupInputField extends StatelessWidget {
     this.obscureText = false,
     this.readOnly = false,
     this.onTap,
-    this.suffixIcon,
     this.validator,
   });
 
@@ -395,7 +384,6 @@ class _SignupInputField extends StatelessWidget {
   final bool obscureText;
   final bool readOnly;
   final VoidCallback? onTap;
-  final Widget? suffixIcon;
   final String? Function(String?)? validator;
 
   @override
@@ -413,7 +401,7 @@ class _SignupInputField extends StatelessWidget {
             height: 1,
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 12),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
@@ -432,8 +420,7 @@ class _SignupInputField extends StatelessWidget {
             filled: true,
             fillColor: Colors.white,
             contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-            constraints: const BoxConstraints(minHeight: 58),
-            suffixIcon: suffixIcon,
+            constraints: const BoxConstraints(minHeight: 52),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18),
               borderSide: const BorderSide(
@@ -502,7 +489,7 @@ class _GradientButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Ink(
             width: double.infinity,
-            height: 68,
+            height: 62,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
               gradient: const LinearGradient(
