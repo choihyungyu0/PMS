@@ -338,12 +338,14 @@ void main() {
     expect(find.text('홈'), findsOneWidget);
     expect(find.text('기록'), findsOneWidget);
     expect(find.text('분석'), findsOneWidget);
-    expect(find.text('커뮤니티'), findsOneWidget);
+    expect(find.text('병원'), findsOneWidget);
     expect(find.text('마이'), findsOneWidget);
-    expect(find.text('병원'), findsNothing);
+    expect(find.text('커뮤니티'), findsNothing);
   });
 
-  testWidgets('community tab shows demo post list', (tester) async {
+  testWidgets('hospital tab shows CSV-backed institution guidance', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     final controllers = _buildShellControllers();
 
@@ -360,13 +362,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('커뮤니티'));
+    await tester.tap(find.text('병원'));
     await tester.pumpAndSettle();
 
-    expect(find.text('추천'), findsOneWidget);
-    expect(find.text('최신'), findsOneWidget);
-    expect(find.text('인기'), findsOneWidget);
-    expect(find.text('PMS 심할 때\n나만의 극복 방법 공유해요!'), findsOneWidget);
+    expect(find.text('인천 공공데이터 기반 의료기관 정보를 확인해요.'), findsOneWidget);
+    expect(find.text(AppText.hospitalDisclaimer), findsOneWidget);
+    expect(find.text(AppText.availabilityNotice), findsWidgets);
+    await tester.drag(find.byType(ListView), const Offset(0, -500));
+    await tester.pumpAndSettle();
+    expect(find.text('인천여성의원'), findsOneWidget);
   });
 }
 

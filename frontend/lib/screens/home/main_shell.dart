@@ -8,7 +8,7 @@ import '../../state/institution_controller.dart';
 import '../../state/record_controller.dart';
 import '../../state/report_controller.dart';
 import '../analysis/ai_report_screen.dart';
-import '../community/community_screen.dart';
+import '../hospital/hospital_screen.dart';
 import '../mypage/mypage_screen.dart';
 import '../record/record_screen.dart';
 import 'home_screen.dart';
@@ -67,7 +67,10 @@ class _MainShellState extends State<MainShell> {
         reportController: widget.reportController,
         analysisController: widget.analysisController,
       ),
-      const CommunityScreen(),
+      HospitalScreen(
+        institutionController: widget.institutionController,
+        reportController: widget.reportController,
+      ),
       MyPageScreen(
         authController: widget.authController,
         onClose: () => setState(() => _index = 0),
@@ -109,11 +112,7 @@ class _DashboardBottomNav extends StatelessWidget {
       assetPath: AppAssets.bottomNavAnalysis,
       label: '분석',
     ),
-    _BottomNavItemData(
-      icon: Icons.diversity_3_outlined,
-      assetPath: AppAssets.bottomNavCommunity,
-      label: '커뮤니티',
-    ),
+    _BottomNavItemData(icon: Icons.local_hospital_outlined, label: '병원'),
     _BottomNavItemData(
       icon: Icons.person_outline_rounded,
       assetPath: AppAssets.bottomNavMy,
@@ -124,46 +123,37 @@ class _DashboardBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0x00FFFFFF), Color(0xFFF4EFFF)],
-        ),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.96),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        border: Border.all(color: const Color(0xFFE8DDF8), width: 1.0),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryPurple.withValues(alpha: 0.13),
+            blurRadius: 28,
+            offset: const Offset(0, -10),
+          ),
+        ],
       ),
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 120,
+          height: 86,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(18, 10, 18, 16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.94),
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: const Color(0xFFE4D7FA), width: 1.1),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primaryPurple.withValues(alpha: 0.12),
-                    blurRadius: 26,
-                    offset: const Offset(0, 12),
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 8),
+            child: Row(
+              children: List.generate(_items.length, (index) {
+                final item = _items[index];
+                return Expanded(
+                  child: _BottomNavItem(
+                    icon: item.icon,
+                    assetPath: item.assetPath,
+                    label: item.label,
+                    selected: selectedIndex == index,
+                    onTap: () => onTap(index),
                   ),
-                ],
-              ),
-              child: Row(
-                children: List.generate(_items.length, (index) {
-                  final item = _items[index];
-                  return Expanded(
-                    child: _BottomNavItem(
-                      icon: item.icon,
-                      assetPath: item.assetPath,
-                      label: item.label,
-                      selected: selectedIndex == index,
-                      onTap: () => onTap(index),
-                    ),
-                  );
-                }),
-              ),
+                );
+              }),
             ),
           ),
         ),
@@ -175,26 +165,26 @@ class _DashboardBottomNav extends StatelessWidget {
 class _BottomNavItemData {
   const _BottomNavItemData({
     required this.icon,
-    required this.assetPath,
     required this.label,
+    this.assetPath,
   });
 
   final IconData icon;
-  final String assetPath;
+  final String? assetPath;
   final String label;
 }
 
 class _BottomNavItem extends StatelessWidget {
   const _BottomNavItem({
     required this.icon,
-    required this.assetPath,
     required this.label,
     required this.selected,
     required this.onTap,
+    this.assetPath,
   });
 
   final IconData icon;
-  final String assetPath;
+  final String? assetPath;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -210,43 +200,32 @@ class _BottomNavItem extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOut,
-          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          decoration: BoxDecoration(
-            color: selected
-                ? Colors.white.withValues(alpha: 0.98)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(22),
-            border: selected
-                ? Border.all(color: const Color(0xFFD8C2FF), width: 1.2)
-                : null,
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: AppColors.primaryPurple.withValues(alpha: 0.15),
-                      blurRadius: 18,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : null,
-          ),
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          decoration: const BoxDecoration(color: Colors.transparent),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Opacity(
-                  opacity: selected ? 1 : 0.82,
-                  child: Image.asset(
-                    assetPath,
-                    width: selected ? 40 : 35,
-                    height: selected ? 40 : 35,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Icon(icon, color: color, size: selected ? 34 : 31);
-                    },
-                  ),
+                  opacity: selected ? 1 : 0.76,
+                  child: assetPath == null
+                      ? Icon(icon, color: color, size: selected ? 34 : 31)
+                      : Image.asset(
+                          assetPath!,
+                          width: selected ? 42 : 33,
+                          height: selected ? 42 : 33,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              icon,
+                              color: color,
+                              size: selected ? 34 : 31,
+                            );
+                          },
+                        ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   label,
                   maxLines: 1,
