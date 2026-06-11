@@ -4,17 +4,21 @@ import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/health_report.dart';
 import '../../state/analysis_controller.dart';
+import '../../state/auth_controller.dart';
 import '../../state/report_controller.dart';
 import '../../widgets/loading_view.dart';
+import 'ai_care_recommendation_screen.dart';
 import 'analysis_screen.dart';
 
 class AiReportScreen extends StatefulWidget {
   const AiReportScreen({
     super.key,
+    required this.authController,
     required this.reportController,
     required this.analysisController,
   });
 
+  final AuthController authController;
   final ReportController reportController;
   final AnalysisController analysisController;
 
@@ -69,6 +73,18 @@ class _AiReportScreenState extends State<AiReportScreen> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => AnalysisScreen(controller: widget.analysisController),
+      ),
+    );
+  }
+
+  void _openCareRecommendations() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => AiCareRecommendationScreen(
+          authController: widget.authController,
+          reportController: widget.reportController,
+          analysisController: widget.analysisController,
+        ),
       ),
     );
   }
@@ -151,7 +167,10 @@ class _AiReportScreenState extends State<AiReportScreen> {
                             report: report,
                           ),
                           const SizedBox(height: 22),
-                          _AiCareCard(report: report),
+                          _AiCareCard(
+                            report: report,
+                            onTap: _openCareRecommendations,
+                          ),
                           const SizedBox(height: 18),
                           _DisclaimerText(
                             text: report.disclaimer.isEmpty
@@ -508,72 +527,90 @@ class _ChangeMetricRow extends StatelessWidget {
 }
 
 class _AiCareCard extends StatelessWidget {
-  const _AiCareCard({required this.report});
+  const _AiCareCard({required this.report, required this.onTap});
 
   final HealthReport report;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final tips = _careTips(report);
-    return _GlassCard(
-      padding: EdgeInsets.zero,
-      child: SizedBox(
-        height: 180,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              left: 18,
-              top: 20,
-              child: Image.asset(
-                AppAssets.aiReportCareHeart,
-                width: 150,
-                height: 135,
-                fit: BoxFit.contain,
-              ),
-            ),
-            Positioned(
-              left: 166,
-              top: 28,
-              child: _Sparkle(size: 12, color: const Color(0xFFE3D5FF)),
-            ),
-            const Positioned(
-              left: 184,
-              top: 36,
-              right: 18,
-              child: Text(
-                'AI 추천 케어',
-                style: TextStyle(
-                  color: Color(0xFF121033),
-                  fontSize: 27,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0,
-                  height: 1,
+    return Semantics(
+      button: true,
+      label: 'AI 추천 케어 보기',
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: _GlassCard(
+          padding: EdgeInsets.zero,
+          child: SizedBox(
+            height: 180,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  left: 18,
+                  top: 20,
+                  child: Image.asset(
+                    AppAssets.aiReportCareHeart,
+                    width: 150,
+                    height: 135,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
+                Positioned(
+                  left: 166,
+                  top: 28,
+                  child: _Sparkle(size: 12, color: const Color(0xFFE3D5FF)),
+                ),
+                const Positioned(
+                  left: 184,
+                  top: 36,
+                  right: 18,
+                  child: Text(
+                    'AI 추천 케어',
+                    style: TextStyle(
+                      color: Color(0xFF121033),
+                      fontSize: 27,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 184,
+                  top: 84,
+                  right: 18,
+                  child: Column(
+                    children: tips
+                        .take(2)
+                        .map(
+                          (tip) => Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _CareCheckRow(text: tip),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                const Positioned(
+                  right: 18,
+                  top: 34,
+                  child: Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.primaryPurple,
+                    size: 30,
+                  ),
+                ),
+                Positioned(
+                  left: 24,
+                  top: 22,
+                  child: _Sparkle(size: 19, color: const Color(0xFFA17AF8)),
+                ),
+              ],
             ),
-            Positioned(
-              left: 184,
-              top: 84,
-              right: 18,
-              child: Column(
-                children: tips
-                    .take(2)
-                    .map(
-                      (tip) => Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: _CareCheckRow(text: tip),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-            Positioned(
-              left: 24,
-              top: 22,
-              child: _Sparkle(size: 19, color: const Color(0xFFA17AF8)),
-            ),
-          ],
+          ),
         ),
       ),
     );

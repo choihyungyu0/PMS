@@ -40,4 +40,7 @@ class AppAssets {
       'assets/images/ai_report/ai_report_document.png';
   static const aiReportSparkle =
       'assets/images/ai_report/ai_report_sparkle.png';
+  static const aiCareFood = 'assets/images/ai_care/ai_care_food.png';
+  static const aiCareHabit = 'assets/images/ai_care/ai_care_habit.png';
+  static const aiCareExercise = 'assets/images/ai_care/ai_care_exercise.png';
 }

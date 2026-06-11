@@ -61,6 +61,7 @@ class _MainShellState extends State<MainShell> {
         onComplete: () => setState(() => _index = 0),
       ),
       AiReportScreen(
+        authController: widget.authController,
         reportController: widget.reportController,
         analysisController: widget.analysisController,
       ),
