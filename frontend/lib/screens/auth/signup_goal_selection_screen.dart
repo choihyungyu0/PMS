@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/storage/health_goal_storage.dart';
 import '../../state/auth_controller.dart';
@@ -11,38 +13,34 @@ enum HealthGoalOption {
   cycleManagement(
     id: 'cycle_management',
     label: '생리 주기 관리',
-    iconType: GoalIconType.cycle,
+    assetPath: AppAssets.goalCycle,
   ),
-  pmsRelief(
-    id: 'pms_relief',
-    label: 'PMS 증상 완화',
-    iconType: GoalIconType.calendarHeart,
-  ),
+  pmsRelief(id: 'pms_relief', label: 'PMS 증상 완화', assetPath: AppAssets.goalPms),
   sleepStressManagement(
     id: 'sleep_stress_management',
     label: '수면 & 스트레스 관리',
-    iconType: GoalIconType.moon,
+    assetPath: AppAssets.goalSleepStress,
   ),
   skinBodyManagement(
     id: 'skin_body_management',
     label: '피부 & 체형 관리',
-    iconType: GoalIconType.skin,
+    assetPath: AppAssets.goalSkinBody,
   ),
   womenDiseasePrevention(
     id: 'women_disease_prevention',
     label: '여성 질환 예방',
-    iconType: GoalIconType.shield,
+    assetPath: AppAssets.goalPrevention,
   );
 
   const HealthGoalOption({
     required this.id,
     required this.label,
-    required this.iconType,
+    required this.assetPath,
   });
 
   final String id;
   final String label;
-  final GoalIconType iconType;
+  final String assetPath;
 }
 
 class HealthGoalSelectionScreen extends StatefulWidget {
@@ -69,8 +67,10 @@ class HealthGoalSelectionScreen extends StatefulWidget {
 }
 
 class _HealthGoalSelectionScreenState extends State<HealthGoalSelectionScreen> {
-  static const _borderColor = Color(0xFFD6D2E6);
-  static const _chevronColor = Color(0xFFB8B3C8);
+  static const _screenTextColor = Color(0xFF181337);
+  static const _cardBorderColor = Color(0xFFFFFFFF);
+  static const _selectedBorderColor = Color(0xFFC36AFF);
+  static const _chevronColor = Color(0xFF9B66D8);
   static const _errorColor = Color(0xFFC44949);
 
   final Set<HealthGoalOption> _selectedGoals = {};
@@ -90,131 +90,150 @@ class _HealthGoalSelectionScreenState extends State<HealthGoalSelectionScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          top: false,
-          child: AnimatedBuilder(
-            animation: widget.controller,
-            builder: (context, _) {
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final screenWidth = constraints.maxWidth;
-                  final screenHeight = constraints.maxHeight;
-                  final horizontalPadding = (screenWidth * 0.085)
-                      .clamp(30.0, 44.0)
-                      .toDouble();
-                  final topGap = (screenHeight * 0.026)
-                      .clamp(24.0, 30.0)
-                      .toDouble();
-                  final titleTopGap = (screenHeight * 0.024)
-                      .clamp(18.0, 26.0)
-                      .toDouble();
-                  final titleSize = (screenWidth * 0.089)
-                      .clamp(33.0, 42.0)
-                      .toDouble();
-                  final listTopGap = (screenHeight * 0.040)
-                      .clamp(34.0, 42.0)
-                      .toDouble();
-                  final cardHeight = (screenHeight * 0.087)
-                      .clamp(74.0, 86.0)
-                      .toDouble();
-                  final cardGap = (screenHeight * 0.020)
-                      .clamp(16.0, 22.0)
-                      .toDouble();
-                  final buttonHeight = (screenHeight * 0.082)
-                      .clamp(66.0, 78.0)
-                      .toDouble();
-                  final bottomGap = (screenHeight * 0.050)
-                      .clamp(34.0, 52.0)
-                      .toDouble();
+        backgroundColor: const Color(0xFFFBF8FF),
+        body: Stack(
+          children: [
+            const Positioned.fill(child: _GoalSelectionBackground()),
+            SafeArea(
+              top: false,
+              child: AnimatedBuilder(
+                animation: widget.controller,
+                builder: (context, _) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final screenWidth = constraints.maxWidth;
+                      final screenHeight = constraints.maxHeight;
+                      final compactHeight = screenHeight < 760;
+                      final horizontalPadding = (screenWidth * 0.077)
+                          .clamp(28.0, 40.0)
+                          .toDouble();
+                      final topGap = (screenHeight * 0.044)
+                          .clamp(compactHeight ? 18.0 : 32.0, 46.0)
+                          .toDouble();
+                      final closeSize = compactHeight
+                          ? (screenWidth * 0.092).clamp(40.0, 46.0).toDouble()
+                          : (screenWidth * 0.112).clamp(42.0, 52.0).toDouble();
+                      final titleTopGap = compactHeight
+                          ? (screenHeight * 0.022).clamp(13.0, 18.0).toDouble()
+                          : (screenHeight * 0.033).clamp(24.0, 42.0).toDouble();
+                      final titleSize = compactHeight
+                          ? (screenHeight * 0.052).clamp(32.0, 38.0).toDouble()
+                          : (screenWidth * 0.091).clamp(34.0, 45.0).toDouble();
+                      final listTopGap = compactHeight
+                          ? (screenHeight * 0.028).clamp(16.0, 22.0).toDouble()
+                          : (screenHeight * 0.039).clamp(28.0, 40.0).toDouble();
+                      final cardHeight = compactHeight
+                          ? (screenHeight * 0.091).clamp(60.0, 68.0).toDouble()
+                          : (screenHeight * 0.101).clamp(78.0, 94.0).toDouble();
+                      final cardGap = compactHeight
+                          ? (screenHeight * 0.014).clamp(8.0, 11.0).toDouble()
+                          : (screenHeight * 0.019).clamp(14.0, 19.0).toDouble();
+                      final buttonHeight = compactHeight
+                          ? (screenHeight * 0.074).clamp(52.0, 58.0).toDouble()
+                          : (screenHeight * 0.083).clamp(66.0, 78.0).toDouble();
+                      final buttonTopGap = compactHeight
+                          ? (screenHeight * 0.018).clamp(10.0, 14.0).toDouble()
+                          : (screenHeight * 0.030).clamp(22.0, 30.0).toDouble();
+                      final bottomGap = compactHeight
+                          ? (screenHeight * 0.022).clamp(12.0, 18.0).toDouble()
+                          : (screenHeight * 0.037).clamp(24.0, 38.0).toDouble();
 
-                  return SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    physics: const BouncingScrollPhysics(),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: screenHeight),
-                      child: IntrinsicHeight(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: topGap),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _TopCloseButton(
-                                  enabled: !_isBusy,
-                                  onTap: widget.onCloseToWelcome,
-                                ),
+                      return SingleChildScrollView(
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        physics: const BouncingScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: screenHeight),
+                          child: IntrinsicHeight(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding,
                               ),
-                              SizedBox(height: titleTopGap),
-                              Text(
-                                '나의 건강 목표를\n선택해주세요.',
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: titleSize,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 0,
-                                  height: 1.38,
-                                ),
-                              ),
-                              SizedBox(height: listTopGap),
-                              Column(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  for (final goal in HealthGoalOption.values)
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom:
-                                            goal == HealthGoalOption.values.last
-                                            ? 0
-                                            : cardGap,
+                                  SizedBox(height: topGap),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: _TopCloseButton(
+                                      size: closeSize,
+                                      enabled: !_isBusy,
+                                      onTap: widget.onCloseToWelcome,
+                                    ),
+                                  ),
+                                  SizedBox(height: titleTopGap),
+                                  Text(
+                                    '나의 건강 목표를\n선택해주세요.',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: _screenTextColor,
+                                      fontSize: titleSize,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0,
+                                      height: 1.30,
+                                    ),
+                                  ),
+                                  SizedBox(height: listTopGap),
+                                  Column(
+                                    children: [
+                                      for (final goal
+                                          in HealthGoalOption.values)
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom:
+                                                goal ==
+                                                    HealthGoalOption.values.last
+                                                ? 0
+                                                : cardGap,
+                                          ),
+                                          child: _GoalOptionCard(
+                                            height: cardHeight,
+                                            goal: goal,
+                                            selected: _selectedGoals.contains(
+                                              goal,
+                                            ),
+                                            enabled: !_isBusy,
+                                            onTap: () => _toggleGoal(goal),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  if (_visibleErrorMessage != null) ...[
+                                    const SizedBox(height: 14),
+                                    Text(
+                                      _visibleErrorMessage!,
+                                      key: const Key(
+                                        'goalSelectionErrorMessage',
                                       ),
-                                      child: _GoalOptionCard(
-                                        height: cardHeight,
-                                        goal: goal,
-                                        selected: _selectedGoals.contains(goal),
-                                        enabled: !_isBusy,
-                                        onTap: () => _toggleGoal(goal),
+                                      style: const TextStyle(
+                                        color: _errorColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0,
                                       ),
                                     ),
+                                  ],
+                                  const Spacer(),
+                                  SizedBox(height: buttonTopGap),
+                                  _GradientNextButton(
+                                    key: const Key('goalSelectionNextButton'),
+                                    height: buttonHeight,
+                                    loading: _isBusy,
+                                    onTap: _submit,
+                                  ),
+                                  SizedBox(height: bottomGap),
                                 ],
                               ),
-                              if (_visibleErrorMessage != null) ...[
-                                const SizedBox(height: 18),
-                                Text(
-                                  _visibleErrorMessage!,
-                                  key: const Key('goalSelectionErrorMessage'),
-                                  style: const TextStyle(
-                                    color: _errorColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0,
-                                  ),
-                                ),
-                              ],
-                              const Spacer(),
-                              SizedBox(height: screenHeight * 0.04),
-                              _GradientNextButton(
-                                key: const Key('goalSelectionNextButton'),
-                                height: buttonHeight,
-                                loading: _isBusy,
-                                onTap: _submit,
-                              ),
-                              SizedBox(height: bottomGap),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   );
                 },
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -326,8 +345,13 @@ class _DefaultHealthGoalStorage extends HealthGoalStorage {
 }
 
 class _TopCloseButton extends StatelessWidget {
-  const _TopCloseButton({required this.enabled, required this.onTap});
+  const _TopCloseButton({
+    required this.size,
+    required this.enabled,
+    required this.onTap,
+  });
 
+  final double size;
   final bool enabled;
   final VoidCallback onTap;
 
@@ -337,16 +361,34 @@ class _TopCloseButton extends StatelessWidget {
       button: true,
       label: '닫기',
       child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(28),
+        color: Colors.white.withValues(alpha: 0.94),
+        shape: const CircleBorder(),
+        elevation: 0,
+        shadowColor: AppColors.primaryPurple.withValues(alpha: 0.18),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(28),
-          child: const SizedBox(
-            width: 48,
-            height: 48,
-            child: Icon(Icons.close_rounded, color: Colors.black, size: 38),
+          customBorder: const CircleBorder(),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFB998F8).withValues(alpha: 0.22),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: SizedBox(
+              width: size,
+              height: size,
+              child: Icon(
+                Icons.close_rounded,
+                color: const Color(0xFF2E1B82),
+                size: size * 0.68,
+              ),
+            ),
           ),
         ),
       ),
@@ -372,12 +414,12 @@ class _GoalOptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor = selected
-        ? AppColors.primaryPurple
-        : _HealthGoalSelectionScreenState._borderColor;
-    final backgroundColor = selected ? AppColors.lightPurpleCard : Colors.white;
-    final chevronColor = selected
-        ? AppColors.primaryPurple
-        : _HealthGoalSelectionScreenState._chevronColor;
+        ? _HealthGoalSelectionScreenState._selectedBorderColor
+        : _HealthGoalSelectionScreenState._cardBorderColor;
+    final iconSize = (height * 0.80).clamp(58.0, 76.0).toDouble();
+    final leftPadding = (height * 0.18).clamp(14.0, 22.0).toDouble();
+    final textGap = (height * 0.25).clamp(18.0, 25.0).toDouble();
+    final fontSize = (height * 0.28).clamp(19.0, 25.0).toDouble();
 
     return Semantics(
       button: true,
@@ -385,59 +427,67 @@ class _GoalOptionCard extends StatelessWidget {
       label: goal.label,
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(22),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(22),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeOut,
             width: double.infinity,
             height: height,
-            padding: const EdgeInsets.symmetric(horizontal: 22),
+            padding: EdgeInsets.only(left: leftPadding, right: 24),
             decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: borderColor, width: selected ? 2.2 : 2),
+              color: Colors.white.withValues(alpha: selected ? 0.98 : 0.92),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: borderColor, width: selected ? 2.0 : 1),
               boxShadow: [
-                if (selected)
-                  BoxShadow(
-                    color: AppColors.primaryPurple.withValues(alpha: 0.08),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  ),
+                BoxShadow(
+                  color: const Color(
+                    0xFFB99AF4,
+                  ).withValues(alpha: selected ? 0.22 : 0.13),
+                  blurRadius: selected ? 24 : 18,
+                  offset: const Offset(0, 10),
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.80),
+                  blurRadius: 10,
+                  offset: const Offset(-2, -2),
+                ),
               ],
             ),
             child: Row(
               children: [
-                _GoalIcon(
-                  type: goal.iconType,
-                  color: AppColors.primaryPurple,
-                  size: 30,
+                Image.asset(
+                  goal.assetPath,
+                  width: iconSize,
+                  height: iconSize,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
                 ),
-                const SizedBox(width: 20),
+                SizedBox(width: textGap),
                 Expanded(
                   child: Text(
                     goal.label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 21,
-                      fontWeight: FontWeight.w600,
+                    style: TextStyle(
+                      color: _HealthGoalSelectionScreenState._screenTextColor,
+                      fontSize: fontSize,
+                      fontWeight: FontWeight.w700,
                       letterSpacing: 0,
-                      height: 1,
+                      height: 1.05,
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Icon(
-                  selected
-                      ? Icons.check_circle_rounded
-                      : Icons.chevron_right_rounded,
-                  color: chevronColor,
-                  size: selected ? 28 : 36,
+                  Icons.chevron_right_rounded,
+                  color: selected
+                      ? AppColors.primaryPurple
+                      : _HealthGoalSelectionScreenState._chevronColor,
+                  size: (height * 0.43).clamp(30.0, 38.0).toDouble(),
                 ),
               ],
             ),
@@ -462,57 +512,88 @@ class _GradientNextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final borderRadius = BorderRadius.circular(26);
+
     return Semantics(
       button: true,
       label: '다음',
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: borderRadius,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: loading ? null : onTap,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: borderRadius,
           child: Ink(
             width: double.infinity,
             height: height,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: borderRadius,
               gradient: const LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF7A35F4),
+                  Color(0xFFE15AFF),
+                  Color(0xFF8E27EE),
                   AppColors.primaryPurple,
                   AppColors.deepPurple,
                 ],
+                stops: [0.0, 0.30, 0.66, 1.0],
+              ),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.44),
+                width: 1.4,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryPurple.withValues(alpha: 0.22),
-                  blurRadius: 22,
-                  offset: const Offset(0, 10),
+                  color: const Color(0xFF6D27DE).withValues(alpha: 0.36),
+                  blurRadius: 25,
+                  offset: const Offset(0, 14),
+                ),
+                BoxShadow(
+                  color: const Color(0xFF2D0D86).withValues(alpha: 0.50),
+                  blurRadius: 0,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
-            child: Center(
-              child: loading
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.4,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Text(
-                      '다음',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 27,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                      ),
-                    ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(painter: _ButtonHighlightPainter()),
+                ),
+                Center(
+                  child: loading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.4,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          '다음',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: (height * 0.41).clamp(24.0, 31.0),
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0,
+                            height: 1,
+                            shadows: [
+                              Shadow(
+                                color: const Color(
+                                  0xFF391199,
+                                ).withValues(alpha: 0.35),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+              ],
             ),
           ),
         ),
@@ -521,220 +602,222 @@ class _GradientNextButton extends StatelessWidget {
   }
 }
 
-enum GoalIconType { cycle, calendarHeart, moon, skin, shield }
-
-class _GoalIcon extends StatelessWidget {
-  const _GoalIcon({
-    required this.type,
-    required this.color,
-    required this.size,
-  });
-
-  final GoalIconType type;
-  final Color color;
-  final double size;
+class _GoalSelectionBackground extends StatelessWidget {
+  const _GoalSelectionBackground();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _GoalIconPainter(type: type, color: color),
+    return const DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFBFAFF), Color(0xFFF8F2FF), Color(0xFFFFFFFF)],
+          stops: [0.0, 0.48, 1.0],
+        ),
       ),
+      child: CustomPaint(painter: _GoalSelectionBackgroundPainter()),
     );
   }
 }
 
-class _GoalIconPainter extends CustomPainter {
-  const _GoalIconPainter({required this.type, required this.color});
-
-  final GoalIconType type;
-  final Color color;
+class _GoalSelectionBackgroundPainter extends CustomPainter {
+  const _GoalSelectionBackgroundPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokePaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.085
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-
-    final fillPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    switch (type) {
-      case GoalIconType.cycle:
-        _drawCycleIcon(canvas, size, strokePaint, fillPaint);
-        break;
-      case GoalIconType.calendarHeart:
-        _drawCalendarHeartIcon(canvas, size, strokePaint);
-        break;
-      case GoalIconType.moon:
-        _drawMoonIcon(canvas, size, strokePaint, fillPaint);
-        break;
-      case GoalIconType.skin:
-        _drawSkinIcon(canvas, size, strokePaint, fillPaint);
-        break;
-      case GoalIconType.shield:
-        _drawShieldIcon(canvas, size, strokePaint);
-        break;
-    }
-  }
-
-  void _drawCycleIcon(
-    Canvas canvas,
-    Size size,
-    Paint strokePaint,
-    Paint fillPaint,
-  ) {
-    final w = size.width;
-    final h = size.height;
-    final arcRect = Rect.fromCenter(
-      center: Offset(w * 0.50, h * 0.50),
-      width: w * 0.74,
-      height: h * 0.74,
+    final waveRect = Rect.fromLTWH(
+      size.width * 0.36,
+      size.height * 0.04,
+      size.width * 0.78,
+      size.height * 0.42,
     );
+    final wavePaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0x00FFFFFF), Color(0xBFE9DAFF), Color(0x66B987FF)],
+      ).createShader(waveRect)
+      ..maskFilter = const ui.MaskFilter.blur(ui.BlurStyle.normal, 10);
 
-    canvas.drawArc(
-      arcRect,
-      -math.pi * 0.25,
-      math.pi * 1.65,
-      false,
-      strokePaint,
-    );
-
-    final arrowPath = Path()
-      ..moveTo(w * 0.78, h * 0.24)
-      ..lineTo(w * 0.86, h * 0.26)
-      ..lineTo(w * 0.83, h * 0.35);
-    canvas.drawPath(arrowPath, strokePaint);
-    canvas.drawCircle(Offset(w * 0.50, h * 0.50), w * 0.055, fillPaint);
-  }
-
-  void _drawCalendarHeartIcon(Canvas canvas, Size size, Paint strokePaint) {
-    final w = size.width;
-    final h = size.height;
-    final calendarRect = Rect.fromLTWH(w * 0.17, h * 0.20, w * 0.66, h * 0.64);
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(calendarRect, Radius.circular(w * 0.14)),
-      strokePaint,
-    );
-    canvas.drawLine(
-      Offset(w * 0.32, h * 0.12),
-      Offset(w * 0.32, h * 0.28),
-      strokePaint,
-    );
-    canvas.drawLine(
-      Offset(w * 0.68, h * 0.12),
-      Offset(w * 0.68, h * 0.28),
-      strokePaint,
-    );
-
-    final heartPath = Path()
-      ..moveTo(w * 0.50, h * 0.66)
-      ..cubicTo(w * 0.28, h * 0.52, w * 0.36, h * 0.39, w * 0.50, h * 0.49)
-      ..cubicTo(w * 0.64, h * 0.39, w * 0.72, h * 0.52, w * 0.50, h * 0.66);
-    canvas.drawPath(heartPath, strokePaint);
-  }
-
-  void _drawMoonIcon(
-    Canvas canvas,
-    Size size,
-    Paint strokePaint,
-    Paint fillPaint,
-  ) {
-    final w = size.width;
-    final h = size.height;
-    final moonPath = Path()
-      ..moveTo(w * 0.68, h * 0.18)
-      ..cubicTo(w * 0.36, h * 0.15, w * 0.17, h * 0.40, w * 0.20, h * 0.62)
-      ..cubicTo(w * 0.24, h * 0.89, w * 0.58, h * 0.96, w * 0.78, h * 0.75)
-      ..cubicTo(w * 0.55, h * 0.79, w * 0.43, h * 0.59, w * 0.47, h * 0.43)
-      ..cubicTo(w * 0.50, h * 0.30, w * 0.58, h * 0.22, w * 0.68, h * 0.18);
-    canvas.drawPath(moonPath, strokePaint);
-    _drawSmallSparkle(canvas, Offset(w * 0.78, h * 0.35), w * 0.10, fillPaint);
-    canvas.drawCircle(Offset(w * 0.70, h * 0.25), w * 0.035, fillPaint);
-  }
-
-  void _drawSkinIcon(
-    Canvas canvas,
-    Size size,
-    Paint strokePaint,
-    Paint fillPaint,
-  ) {
-    final w = size.width;
-    final h = size.height;
-    final faceRect = Rect.fromLTWH(w * 0.17, h * 0.16, w * 0.58, h * 0.70);
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(faceRect, Radius.circular(w * 0.20)),
-      strokePaint,
-    );
-
-    final faceLine = Path()
-      ..moveTo(w * 0.38, h * 0.61)
-      ..quadraticBezierTo(w * 0.48, h * 0.72, w * 0.63, h * 0.64);
-    canvas.drawPath(faceLine, strokePaint);
-    canvas.drawLine(
-      Offset(w * 0.33, h * 0.66),
-      Offset(w * 0.42, h * 0.66),
-      strokePaint,
-    );
-    _drawSmallSparkle(canvas, Offset(w * 0.78, h * 0.61), w * 0.12, fillPaint);
-  }
-
-  void _drawShieldIcon(Canvas canvas, Size size, Paint strokePaint) {
-    final w = size.width;
-    final h = size.height;
-    final shieldPath = Path()
-      ..moveTo(w * 0.50, h * 0.12)
-      ..lineTo(w * 0.78, h * 0.24)
-      ..lineTo(w * 0.75, h * 0.56)
-      ..cubicTo(w * 0.73, h * 0.74, w * 0.61, h * 0.84, w * 0.50, h * 0.90)
-      ..cubicTo(w * 0.39, h * 0.84, w * 0.27, h * 0.74, w * 0.25, h * 0.56)
-      ..lineTo(w * 0.22, h * 0.24)
+    final wavePath = Path()
+      ..moveTo(size.width * 0.46, size.height * 0.30)
+      ..cubicTo(
+        size.width * 0.66,
+        size.height * 0.25,
+        size.width * 0.77,
+        size.height * 0.11,
+        size.width * 1.08,
+        size.height * 0.02,
+      )
+      ..lineTo(size.width * 1.08, size.height * 0.24)
+      ..cubicTo(
+        size.width * 0.86,
+        size.height * 0.31,
+        size.width * 0.74,
+        size.height * 0.39,
+        size.width * 0.50,
+        size.height * 0.38,
+      )
       ..close();
-    canvas.drawPath(shieldPath, strokePaint);
-    canvas.drawLine(
-      Offset(w * 0.50, h * 0.40),
-      Offset(w * 0.50, h * 0.63),
-      strokePaint,
+    canvas.drawPath(wavePath, wavePaint);
+
+    final ribbonPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.0
+      ..shader = LinearGradient(
+        colors: [
+          Colors.white.withValues(alpha: 0.0),
+          Colors.white.withValues(alpha: 0.78),
+          const Color(0xFFCFA8FF).withValues(alpha: 0.50),
+          Colors.white.withValues(alpha: 0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height * 0.46))
+      ..maskFilter = const ui.MaskFilter.blur(ui.BlurStyle.normal, 1.2);
+
+    final ribbonPath = Path()
+      ..moveTo(size.width * 0.52, size.height * 0.29)
+      ..cubicTo(
+        size.width * 0.70,
+        size.height * 0.27,
+        size.width * 0.76,
+        size.height * 0.15,
+        size.width * 1.04,
+        size.height * 0.08,
+      );
+    canvas.drawPath(ribbonPath, ribbonPaint);
+
+    final secondRibbon = Path()
+      ..moveTo(size.width * 0.70, size.height * 0.35)
+      ..cubicTo(
+        size.width * 0.84,
+        size.height * 0.27,
+        size.width * 0.88,
+        size.height * 0.18,
+        size.width * 1.05,
+        size.height * 0.12,
+      );
+    canvas.drawPath(secondRibbon, ribbonPaint..strokeWidth = 1.2);
+
+    final sparklePaint = Paint()..color = Colors.white.withValues(alpha: 0.82);
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.79, size.height * 0.17),
+      7,
+      sparklePaint,
     );
-    canvas.drawLine(
-      Offset(w * 0.39, h * 0.515),
-      Offset(w * 0.61, h * 0.515),
-      strokePaint,
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.70, size.height * 0.21),
+      4,
+      sparklePaint,
+    );
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.93, size.height * 0.13),
+      5,
+      sparklePaint,
     );
   }
 
-  void _drawSmallSparkle(
-    Canvas canvas,
-    Offset center,
-    double radius,
-    Paint fillPaint,
-  ) {
-    final sparklePath = Path();
+  void _drawSparkle(Canvas canvas, Offset center, double radius, Paint paint) {
+    final path = Path();
     for (var i = 0; i < 8; i++) {
       final angle = -math.pi / 2 + i * math.pi / 4;
-      final currentRadius = i.isEven ? radius : radius * 0.32;
-      final x = center.dx + math.cos(angle) * currentRadius;
-      final y = center.dy + math.sin(angle) * currentRadius;
+      final currentRadius = i.isEven ? radius : radius * 0.28;
+      final point = Offset(
+        center.dx + math.cos(angle) * currentRadius,
+        center.dy + math.sin(angle) * currentRadius,
+      );
       if (i == 0) {
-        sparklePath.moveTo(x, y);
+        path.moveTo(point.dx, point.dy);
       } else {
-        sparklePath.lineTo(x, y);
+        path.lineTo(point.dx, point.dy);
       }
     }
-    sparklePath.close();
-    canvas.drawPath(sparklePath, fillPaint);
+    path.close();
+    canvas.drawPath(path, paint);
   }
 
   @override
-  bool shouldRepaint(covariant _GoalIconPainter oldDelegate) {
-    return oldDelegate.type != type || oldDelegate.color != color;
+  bool shouldRepaint(covariant _GoalSelectionBackgroundPainter oldDelegate) {
+    return false;
+  }
+}
+
+class _ButtonHighlightPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final topGlow = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          Colors.white.withValues(alpha: 0.58),
+          Colors.white.withValues(alpha: 0.0),
+        ],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height * 0.46));
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(3, 3, size.width - 6, size.height * 0.40),
+        const Radius.circular(22),
+      ),
+      topGlow,
+    );
+
+    final lowerEdge = Paint()
+      ..color = const Color(0xFF2E0C92).withValues(alpha: 0.52)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+    canvas.drawArc(
+      Rect.fromLTWH(3, size.height * 0.23, size.width - 6, size.height * 0.68),
+      0,
+      math.pi,
+      false,
+      lowerEdge,
+    );
+
+    final sparklePaint = Paint()..color = Colors.white.withValues(alpha: 0.78);
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.13, size.height * 0.45),
+      8,
+      sparklePaint,
+    );
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.85, size.height * 0.42),
+      9,
+      sparklePaint,
+    );
+    _drawSparkle(
+      canvas,
+      Offset(size.width * 0.93, size.height * 0.64),
+      5,
+      sparklePaint,
+    );
+  }
+
+  void _drawSparkle(Canvas canvas, Offset center, double radius, Paint paint) {
+    final path = Path();
+    for (var i = 0; i < 8; i++) {
+      final angle = -math.pi / 2 + i * math.pi / 4;
+      final currentRadius = i.isEven ? radius : radius * 0.30;
+      final point = Offset(
+        center.dx + math.cos(angle) * currentRadius,
+        center.dy + math.sin(angle) * currentRadius,
+      );
+      if (i == 0) {
+        path.moveTo(point.dx, point.dy);
+      } else {
+        path.lineTo(point.dx, point.dy);
+      }
+    }
+    path.close();
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ButtonHighlightPainter oldDelegate) {
+    return false;
   }
 }

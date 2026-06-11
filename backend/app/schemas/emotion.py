@@ -10,6 +10,7 @@ EmotionType = Literal["happy", "calm", "anxious", "sad", "angry", "irritated", "
 class EmotionCreate(BaseModel):
     emotion_type: EmotionType
     intensity: int = Field(ge=0, le=5)
+    created_at: datetime | None = None
 
 
 class EmotionRead(BaseModel):

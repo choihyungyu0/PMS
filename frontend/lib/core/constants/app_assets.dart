@@ -1,6 +1,12 @@
 class AppAssets {
   static const moreCycleLogo = 'assets/images/more_cycle_logo.png';
 
+  static const goalCycle = 'assets/images/image-removebg-preview (4).png';
+  static const goalPms = 'assets/images/image-removebg-preview (5).png';
+  static const goalSleepStress = 'assets/images/image-removebg-preview (6).png';
+  static const goalSkinBody = 'assets/images/image-removebg-preview (7).png';
+  static const goalPrevention = 'assets/images/image-removebg-preview (8).png';
+
   static const homeCycleCardBg = 'assets/images/home_cycle_card_bg.png';
   static const homeSleepCardBg = 'assets/images/home_sleep_card_bg.png';
   static const homePmsCardBg = 'assets/images/home_pms_card_bg.png';

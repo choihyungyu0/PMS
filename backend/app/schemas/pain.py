@@ -18,6 +18,7 @@ class PainCreate(BaseModel):
     pain_type: PainType
     pain_score: int = Field(ge=0, le=10)
     memo: str | None = Field(default=None, max_length=1000)
+    created_at: datetime | None = None
 
 
 class PainRead(BaseModel):

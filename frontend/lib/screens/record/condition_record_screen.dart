@@ -28,6 +28,10 @@ class ConditionRecordScreen extends StatefulWidget {
 
 class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
   DateTime _selectedDate = DateTime.now();
+  bool _cycleStartSelected = false;
+  double _sleepHours = 0;
+  int _sleepQuality = 6;
+  int _painScore = 5;
   final Set<String> _selectedSymptomIds = {};
   final Set<String> _selectedEmotionIds = {};
 
@@ -189,6 +193,34 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
                               ),
                               SizedBox(height: height * 0.030),
                               _SectionTitle(
+                                title: '생리 기록',
+                                fontSize: sectionTitleSize,
+                              ),
+                              const SizedBox(height: 12),
+                              _CycleStartToggle(
+                                selected: _cycleStartSelected,
+                                onChanged: (value) {
+                                  setState(() => _cycleStartSelected = value);
+                                },
+                              ),
+                              SizedBox(height: height * 0.022),
+                              _SectionTitle(
+                                title: '수면 기록',
+                                fontSize: sectionTitleSize,
+                              ),
+                              const SizedBox(height: 12),
+                              _SleepRecordPanel(
+                                sleepHours: _sleepHours,
+                                qualityScore: _sleepQuality,
+                                onSleepHoursChanged: (value) {
+                                  setState(() => _sleepHours = value);
+                                },
+                                onQualityChanged: (value) {
+                                  setState(() => _sleepQuality = value);
+                                },
+                              ),
+                              SizedBox(height: height * 0.025),
+                              _SectionTitle(
                                 title: '신체 증상',
                                 fontSize: sectionTitleSize,
                               ),
@@ -203,6 +235,15 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
                                 labelFontSize: 19,
                                 onTap: _toggleSymptom,
                               ),
+                              if (_selectedSymptomIds.isNotEmpty) ...[
+                                const SizedBox(height: 16),
+                                _PainScorePanel(
+                                  painScore: _painScore,
+                                  onChanged: (value) {
+                                    setState(() => _painScore = value);
+                                  },
+                                ),
+                              ],
                               SizedBox(height: height * 0.015),
                               _SectionTitle(
                                 title: '감정 상태',
@@ -285,7 +326,10 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
   }
 
   Future<void> _save() async {
-    if (_selectedSymptomIds.isEmpty && _selectedEmotionIds.isEmpty) {
+    if (!_cycleStartSelected &&
+        _sleepHours <= 0 &&
+        _selectedSymptomIds.isEmpty &&
+        _selectedEmotionIds.isEmpty) {
       _showSnackBar('오늘의 컨디션을 하나 이상 선택해주세요.');
       return;
     }
@@ -297,12 +341,15 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
         .where((option) => _selectedEmotionIds.contains(option.id))
         .toList();
 
-    // TODO: Add a pain severity selector; the MVP uses a neutral default.
+    final recordedAt = _recordedAtForSelectedDate();
     final painDrafts = selectedSymptoms
         .where((option) => option.isSupportedByBackend)
         .map(
-          (option) =>
-              ConditionPainDraft(painType: option.backendType!, painScore: 5),
+          (option) => ConditionPainDraft(
+            painType: option.backendType!,
+            painScore: _painScore,
+            createdAt: recordedAt,
+          ),
         )
         .toList();
     final unsupportedSymptoms = selectedSymptoms
@@ -319,12 +366,27 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
           (option) => ConditionEmotionDraft(
             emotionType: option.backendType!,
             intensity: option.intensity,
+            createdAt: recordedAt,
           ),
         )
         .toList();
 
     final ok = await widget.recordController.createConditionRecords(
       recordDate: _dateKey(_selectedDate),
+      cycleDraft: _cycleStartSelected
+          ? ConditionCycleDraft(
+              startDate: _dateKey(_selectedDate),
+              memo: 'MORE Cycle 앱에서 기록한 생리 시작일',
+            )
+          : null,
+      sleepDraft: _sleepHours > 0
+          ? ConditionSleepDraft(
+              sleepStart: _sleepStartForSelectedDate(),
+              sleepEnd: _sleepEndForSelectedDate(),
+              sleepHours: _sleepHours,
+              qualityScore: _sleepQuality,
+            )
+          : null,
       painDrafts: painDrafts,
       emotionDrafts: emotionDrafts,
       unsupportedSymptoms: unsupportedSymptoms,
@@ -378,6 +440,35 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
 
   String _dateKey(DateTime date) {
     return '${date.year}-${_twoDigits(date.month)}-${_twoDigits(date.day)}';
+  }
+
+  DateTime _recordedAtForSelectedDate() {
+    final now = DateTime.now();
+    if (now.year == _selectedDate.year &&
+        now.month == _selectedDate.month &&
+        now.day == _selectedDate.day) {
+      return now;
+    }
+    return DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      12,
+    );
+  }
+
+  DateTime _sleepEndForSelectedDate() {
+    return DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      7,
+    );
+  }
+
+  DateTime _sleepStartForSelectedDate() {
+    final minutes = (_sleepHours * 60).round();
+    return _sleepEndForSelectedDate().subtract(Duration(minutes: minutes));
   }
 
   String _twoDigits(int value) => value.toString().padLeft(2, '0');
@@ -445,6 +536,189 @@ class _SectionTitle extends StatelessWidget {
         fontWeight: FontWeight.w900,
         letterSpacing: 0,
       ),
+    );
+  }
+}
+
+class _CycleStartToggle extends StatelessWidget {
+  const _CycleStartToggle({required this.selected, required this.onChanged});
+
+  final bool selected;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SoftInputPanel(
+      child: SwitchListTile.adaptive(
+        contentPadding: EdgeInsets.zero,
+        value: selected,
+        activeThumbColor: AppColors.primaryPurple,
+        title: const Text(
+          '선택한 날짜를 생리 시작일로 저장',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0,
+          ),
+        ),
+        subtitle: const Text(
+          '주기 예측과 PMS 위험도 계산에 반영돼요.',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            height: 1.35,
+          ),
+        ),
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+class _SleepRecordPanel extends StatelessWidget {
+  const _SleepRecordPanel({
+    required this.sleepHours,
+    required this.qualityScore,
+    required this.onSleepHoursChanged,
+    required this.onQualityChanged,
+  });
+
+  final double sleepHours;
+  final int qualityScore;
+  final ValueChanged<double> onSleepHoursChanged;
+  final ValueChanged<int> onQualityChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SoftInputPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SliderHeader(
+            title: '수면 시간',
+            value: sleepHours <= 0
+                ? '기록 안 함'
+                : '${sleepHours.toStringAsFixed(1)}시간',
+          ),
+          Slider(
+            value: sleepHours,
+            min: 0,
+            max: 12,
+            divisions: 24,
+            activeColor: AppColors.primaryPurple,
+            inactiveColor: const Color(0xFFE7DDF8),
+            label: sleepHours <= 0
+                ? '기록 안 함'
+                : '${sleepHours.toStringAsFixed(1)}시간',
+            onChanged: onSleepHoursChanged,
+          ),
+          const SizedBox(height: 4),
+          _SliderHeader(title: '수면 질', value: '$qualityScore/10'),
+          Slider(
+            value: qualityScore.toDouble(),
+            min: 0,
+            max: 10,
+            divisions: 10,
+            activeColor: AppColors.deepPurple,
+            inactiveColor: const Color(0xFFE7DDF8),
+            label: '$qualityScore/10',
+            onChanged: (value) => onQualityChanged(value.round()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PainScorePanel extends StatelessWidget {
+  const _PainScorePanel({required this.painScore, required this.onChanged});
+
+  final int painScore;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SoftInputPanel(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SliderHeader(title: '통증 강도', value: '$painScore/10'),
+          Slider(
+            value: painScore.toDouble(),
+            min: 0,
+            max: 10,
+            divisions: 10,
+            activeColor: AppColors.primaryPurple,
+            inactiveColor: const Color(0xFFE7DDF8),
+            label: '$painScore/10',
+            onChanged: (value) => onChanged(value.round()),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SliderHeader extends StatelessWidget {
+  const _SliderHeader({required this.title, required this.value});
+
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0,
+            ),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: AppColors.primaryPurple,
+            fontSize: 15,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 0,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SoftInputPanel extends StatelessWidget {
+  const _SoftInputPanel({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFCFAFF),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFE5DDF6), width: 1.4),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryPurple.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }

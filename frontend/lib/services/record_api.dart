@@ -44,11 +44,17 @@ class RecordApi {
   Future<EmotionLog> createEmotion({
     required String emotionType,
     required int intensity,
+    DateTime? createdAt,
   }) async {
     final json =
         await _client.post(
               '/api/emotions',
-              body: {'emotion_type': emotionType, 'intensity': intensity},
+              body: {
+                'emotion_type': emotionType,
+                'intensity': intensity,
+                if (createdAt != null)
+                  'created_at': createdAt.toIso8601String(),
+              },
             )
             as Map<String, dynamic>;
     return EmotionLog.fromJson(json);
@@ -94,6 +100,7 @@ class RecordApi {
     required String painType,
     required int painScore,
     String? memo,
+    DateTime? createdAt,
   }) async {
     final json =
         await _client.post(
@@ -102,6 +109,8 @@ class RecordApi {
                 'pain_type': painType,
                 'pain_score': painScore,
                 if (memo != null && memo.isNotEmpty) 'memo': memo,
+                if (createdAt != null)
+                  'created_at': createdAt.toIso8601String(),
               },
             )
             as Map<String, dynamic>;

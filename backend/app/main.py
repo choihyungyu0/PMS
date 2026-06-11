@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.db.database import Base, engine
+from app.db.database import Base, SessionLocal, engine
+from app.db.models import MedicalInstitution
+from app.db.seed_medical import seed_medical_institutions
 from app.routers import auth, cycles, emotions, health, institutions, pain, reports, sleep, users
 
 
@@ -25,6 +27,17 @@ app.add_middleware(
 @app.on_event("startup")
 def on_startup() -> None:
     Base.metadata.create_all(bind=engine)
+    _seed_medical_institutions_if_empty()
+
+
+def _seed_medical_institutions_if_empty() -> None:
+    db = SessionLocal()
+    try:
+        has_records = db.query(MedicalInstitution.id).first() is not None
+    finally:
+        db.close()
+    if not has_records:
+        seed_medical_institutions()
 
 
 app.include_router(health.router, prefix="/api")

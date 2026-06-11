@@ -86,7 +86,7 @@ void main() {
     expect(find.byKey(const Key('signupNextButton')), findsOneWidget);
   });
 
-  testWidgets('signup basic info allows empty values with demo defaults', (
+  testWidgets('signup basic info validates required real account fields', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -103,7 +103,11 @@ void main() {
     await tester.tap(find.byKey(const Key('signupNextButton')));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const Key('goalSelectionNextButton')), findsOneWidget);
+    expect(find.byKey(const Key('goalSelectionNextButton')), findsNothing);
+    expect(find.text('이름을 입력해주세요.'), findsOneWidget);
+    expect(find.text('생년월일을 선택해주세요.'), findsOneWidget);
+    expect(find.text('올바른 이메일을 입력해주세요.'), findsOneWidget);
+    expect(find.text('비밀번호는 8자 이상 입력해주세요.'), findsOneWidget);
   });
 
   testWidgets('valid signup basic info proceeds to goal selection', (

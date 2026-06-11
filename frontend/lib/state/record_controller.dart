@@ -147,6 +147,8 @@ class RecordController extends ChangeNotifier {
 
   Future<bool> createConditionRecords({
     required String recordDate,
+    ConditionCycleDraft? cycleDraft,
+    ConditionSleepDraft? sleepDraft,
     required List<ConditionPainDraft> painDrafts,
     required List<ConditionEmotionDraft> emotionDrafts,
     required List<ConditionUnsupportedSymptomDraft> unsupportedSymptoms,
@@ -157,6 +159,21 @@ class RecordController extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (cycleDraft != null) {
+        latestCycle = await _recordApi.createCycle(
+          startDate: cycleDraft.startDate,
+          endDate: cycleDraft.endDate,
+          memo: cycleDraft.memo,
+        );
+      }
+      if (sleepDraft != null) {
+        latestSleep = await _recordApi.createSleep(
+          sleepStart: sleepDraft.sleepStart,
+          sleepEnd: sleepDraft.sleepEnd,
+          sleepHours: sleepDraft.sleepHours,
+          qualityScore: sleepDraft.qualityScore,
+        );
+      }
       if (unsupportedSymptoms.isNotEmpty) {
         await _saveUnsupportedBodySymptoms(recordDate, unsupportedSymptoms);
       }
@@ -165,12 +182,14 @@ class RecordController extends ChangeNotifier {
           painType: draft.painType,
           painScore: draft.painScore,
           memo: draft.memo,
+          createdAt: draft.createdAt,
         );
       }
       for (final draft in emotionDrafts) {
         await _recordApi.createEmotion(
           emotionType: draft.emotionType,
           intensity: draft.intensity,
+          createdAt: draft.createdAt,
         );
       }
       successMessage = '오늘의 컨디션이 저장되었어요.';
@@ -236,26 +255,52 @@ class RecordController extends ChangeNotifier {
   }
 }
 
+class ConditionCycleDraft {
+  const ConditionCycleDraft({required this.startDate, this.endDate, this.memo});
+
+  final String startDate;
+  final String? endDate;
+  final String? memo;
+}
+
+class ConditionSleepDraft {
+  const ConditionSleepDraft({
+    required this.sleepStart,
+    required this.sleepEnd,
+    required this.sleepHours,
+    required this.qualityScore,
+  });
+
+  final DateTime sleepStart;
+  final DateTime sleepEnd;
+  final double sleepHours;
+  final int qualityScore;
+}
+
 class ConditionPainDraft {
   const ConditionPainDraft({
     required this.painType,
     required this.painScore,
     this.memo,
+    this.createdAt,
   });
 
   final String painType;
   final int painScore;
   final String? memo;
+  final DateTime? createdAt;
 }
 
 class ConditionEmotionDraft {
   const ConditionEmotionDraft({
     required this.emotionType,
     required this.intensity,
+    this.createdAt,
   });
 
   final String emotionType;
   final int intensity;
+  final DateTime? createdAt;
 }
 
 class ConditionUnsupportedSymptomDraft {
