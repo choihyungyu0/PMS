@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         padding: EdgeInsets.fromLTRB(
                           horizontalPadding,
-                          16,
+                          18,
                           horizontalPadding,
                           28,
                         ),
@@ -114,12 +114,12 @@ class HomeScreen extends StatelessWidget {
                               },
                               onCalendar: onOpenRecord,
                             ),
-                            const SizedBox(height: 38),
+                            const SizedBox(height: 44),
                             Text(
                               '안녕하세요, $displayName님 👋',
                               style: const TextStyle(
                                 color: Color(0xFF190B2C),
-                                fontSize: 28,
+                                fontSize: 30,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 0,
                                 height: 1.08,
@@ -143,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                             ],
-                            const SizedBox(height: 34),
+                            const SizedBox(height: 44),
                             _HealthSummaryCard(
                               cycle: recordController.latestCycle,
                               report: report,
@@ -397,10 +397,10 @@ class _HealthSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 22, 16, 18),
+      padding: const EdgeInsets.fromLTRB(16, 26, 16, 18),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.88),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(30),
         border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -421,7 +421,7 @@ class _HealthSummaryCard extends StatelessWidget {
                   '오늘의 건강 요약',
                   style: TextStyle(
                     color: Color(0xFF121324),
-                    fontSize: 23,
+                    fontSize: 24,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0,
                     height: 1,
@@ -440,7 +440,7 @@ class _HealthSummaryCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 24),
           _CycleStatusPanel(summary: _cycleSummary(cycle)),
           const SizedBox(height: 16),
           Row(
@@ -489,7 +489,7 @@ class _CycleStatusPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleFontSize = summary.isPlaceholder ? 30.0 : 31.0;
+    final titleFontSize = summary.isPlaceholder ? 31.0 : 34.0;
     final subtitleMaxLines = summary.isPlaceholder ? 2 : 1;
 
     return Container(
@@ -527,18 +527,18 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           const Positioned(
-            right: 18,
-            top: 48,
+            right: 22,
+            top: 42,
             child: SizedBox(
-              width: 102,
-              height: 102,
+              width: 112,
+              height: 112,
               child: CustomPaint(painter: _CycleRingPainter()),
             ),
           ),
           Positioned(
             left: 0,
             top: 6,
-            right: 122,
+            right: 138,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -552,7 +552,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 25),
                 Text(
                   summary.title,
                   maxLines: 1,
@@ -830,10 +830,10 @@ class _TodayMissionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 22, 16, 24),
+      padding: const EdgeInsets.fromLTRB(16, 26, 16, 24),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.90),
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(30),
         border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
         boxShadow: [
           BoxShadow(
@@ -854,7 +854,7 @@ class _TodayMissionCard extends StatelessWidget {
                   '오늘의 미션',
                   style: TextStyle(
                     color: Color(0xFF121324),
-                    fontSize: 23,
+                    fontSize: 24,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0,
                     height: 1,
@@ -873,7 +873,7 @@ class _TodayMissionCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 22),
+          const SizedBox(height: 24),
           _MissionTile(mission: mission, onTap: onTap),
         ],
       ),
@@ -896,7 +896,7 @@ class _MissionTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Ink(
-          height: 140,
+          height: 142,
           padding: const EdgeInsets.fromLTRB(16, 18, 12, 18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
@@ -913,8 +913,8 @@ class _MissionTile extends StatelessWidget {
                 left: -2,
                 bottom: 10,
                 child: SizedBox(
-                  width: 158,
-                  height: 102,
+                  width: 156,
+                  height: 104,
                   child: Image.asset(
                     AppAssets.homeMissionTea,
                     fit: BoxFit.contain,
@@ -923,16 +923,16 @@ class _MissionTile extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 172,
-                top: 32,
-                right: 54,
+                left: 168,
+                top: 31,
+                right: 52,
                 child: Text(
                   mission,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF3A2721),
-                    fontSize: 18,
+                    fontSize: 19,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 0,
                     height: 1.35,

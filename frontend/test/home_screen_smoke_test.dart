@@ -52,6 +52,7 @@ void main() {
     expect(find.text('안녕하세요, 지은님 👋'), findsOneWidget);
     expect(find.text('오늘의 건강 요약'), findsOneWidget);
     expect(find.text('오늘의 미션'), findsOneWidget);
+    expect(find.text('가임기 5일차'), findsOneWidget);
     expect(find.text('PMS 예측'), findsOneWidget);
     expect(find.text('보통'), findsOneWidget);
     expect(find.text('수면 시간'), findsOneWidget);
@@ -115,7 +116,7 @@ Finder _asset(String assetPath) {
 
 _Controllers _buildControllers({bool hasRecords = true}) {
   final today = DateTime.now();
-  final cycleStart = today.subtract(const Duration(days: 4));
+  final cycleStart = today.subtract(const Duration(days: 14));
   final sleepStart = DateTime(
     today.year,
     today.month,
@@ -136,7 +137,7 @@ _Controllers _buildControllers({bool hasRecords = true}) {
             'id': 1,
             'start_date': _date(cycleStart),
             'end_date': null,
-            'cycle_length': 7,
+            'cycle_length': 17,
             'memo': null,
             'created_at': today.toIso8601String(),
           });
