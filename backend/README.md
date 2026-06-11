@@ -20,6 +20,30 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+## Environment
+
+Create a local environment file:
+
+```powershell
+cd backend
+Copy-Item .env.example .env
+notepad .env
+```
+
+For Supabase DB, set `MORE_CYCLE_DATABASE_URL` to the PostgreSQL URI from:
+
+```text
+Supabase Dashboard > Connect > Session pooler
+```
+
+Example for this project ref:
+
+```env
+MORE_CYCLE_DATABASE_URL=postgresql://postgres.xvphevruvqlnmpdmsxki:<YOUR_DB_PASSWORD>@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres
+```
+
+If your password contains special characters such as `@`, `#`, `/`, or `:`, URL-encode it before placing it in the URI. Keep `backend/.env` local only.
+
 ## Dataset
 
 Place the provided public-data CSV at:
@@ -39,6 +63,8 @@ institution_name,institution_type,department,service_category,address,sigungu,ph
 `location_status`, `geocode_query`, and `matched_address` are treated as internal/debug data and are not exposed in public institution responses.
 
 ## Seed CSV
+
+This command creates the SQLAlchemy tables on the configured database and inserts only records from `backend/data/mc_incheon_medical.csv`.
 
 ```bash
 python -m app.db.seed_medical
@@ -61,7 +87,7 @@ http://127.0.0.1:8000/docs
 ## Test
 
 ```bash
-pytest
+python -m pytest
 ```
 
 ## Main APIs
