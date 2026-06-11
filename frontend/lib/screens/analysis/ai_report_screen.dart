@@ -72,7 +72,10 @@ class _AiReportScreenState extends State<AiReportScreen> {
   void _openDetail() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => AnalysisScreen(controller: widget.analysisController),
+        builder: (_) => AnalysisScreen(
+          controller: widget.analysisController,
+          onOpenCareRecommendations: _openCareRecommendations,
+        ),
       ),
     );
   }

@@ -8,9 +8,14 @@ import '../../core/constants/app_colors.dart';
 import '../../state/analysis_controller.dart';
 
 class AnalysisScreen extends StatefulWidget {
-  const AnalysisScreen({super.key, required this.controller});
+  const AnalysisScreen({
+    super.key,
+    required this.controller,
+    this.onOpenCareRecommendations,
+  });
 
   final AnalysisController controller;
+  final VoidCallback? onOpenCareRecommendations;
 
   @override
   State<AnalysisScreen> createState() => _AnalysisScreenState();
@@ -81,6 +86,10 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
                         _MetricCards(summary: widget.controller.summary),
                         const SizedBox(height: 22),
                         _DownloadReportButton(onTap: _showDownloadNotice),
+                        const SizedBox(height: 12),
+                        _CareRecommendationButton(
+                          onTap: _openCareRecommendations,
+                        ),
                         const SizedBox(height: 14),
                         const _DisclaimerText(),
                       ],
@@ -99,6 +108,21 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('리포트 다운로드 기능은 준비 중이에요.'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _openCareRecommendations() {
+    final onOpenCareRecommendations = widget.onOpenCareRecommendations;
+    if (onOpenCareRecommendations != null) {
+      onOpenCareRecommendations();
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('맞춤 케어 추천 화면은 리포트 화면에서 확인할 수 있어요.'),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -918,6 +942,79 @@ class _DownloadReportButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 30),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CareRecommendationButton extends StatelessWidget {
+  const _CareRecommendationButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '맞춤 케어 추천',
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(24),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Ink(
+            height: 74,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7F2FF),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: const Color(0xFFD8C7FF), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.deepPurple.withValues(alpha: 0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                const SizedBox(width: 24),
+                Image.asset(
+                  AppAssets.aiReportCareHeart,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '맞춤 케어 추천',
+                      style: TextStyle(
+                        color: AppColors.deepPurple,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0,
+                        height: 1,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  color: AppColors.deepPurple,
+                  size: 28,
+                ),
+                const SizedBox(width: 22),
               ],
             ),
           ),
