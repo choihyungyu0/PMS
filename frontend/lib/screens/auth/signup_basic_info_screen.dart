@@ -303,6 +303,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
+
     final email = _normalizeEmail(_emailController.text);
     final password = _normalizePassword(_passwordController.text);
     final nickname = _normalizeNickname(_nameController.text);
@@ -323,7 +324,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
     if (valid) {
       return email;
     }
-    return 'demo_${DateTime.now().millisecondsSinceEpoch}@morecycle.local';
+    return 'demo_${DateTime.now().millisecondsSinceEpoch}@morecycle.kr';
   }
 
   String _normalizePassword(String value) {

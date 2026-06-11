@@ -84,12 +84,59 @@ void main() {
     expect(find.byKey(const Key('signupEmailField')), findsOneWidget);
     expect(find.byKey(const Key('signupPasswordField')), findsOneWidget);
     expect(find.byKey(const Key('signupNextButton')), findsOneWidget);
+  });
+
+  testWidgets('signup basic info allows empty values with demo defaults', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const MoreCycleApp());
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('시작하기'));
+    await tester.pumpAndSettle();
 
     await tester.ensureVisible(find.byKey(const Key('signupNextButton')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('signupNextButton')));
     await tester.pumpAndSettle();
+
     expect(find.byKey(const Key('goalSelectionNextButton')), findsOneWidget);
+  });
+
+  testWidgets('valid signup basic info proceeds to goal selection', (
+    tester,
+  ) async {
+    PendingSignupData? submitted;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SignupBasicInfoScreen(
+          initialData: const PendingSignupData(
+            email: 'TEST@Example.com',
+            password: 'password123',
+            nickname: '테스터',
+            birthDate: '2000-01-01',
+          ),
+          onBackToWelcome: () {},
+          onCloseToWelcome: () {},
+          onLogin: () {},
+          onNext: (value) => submitted = value,
+        ),
+      ),
+    );
+
+    await tester.ensureVisible(find.byKey(const Key('signupNextButton')));
+    await tester.tap(find.byKey(const Key('signupNextButton')));
+    await tester.pumpAndSettle();
+
+    expect(submitted, isNotNull);
+    expect(submitted!.email, 'test@example.com');
+    expect(submitted!.password, 'password123');
+    expect(submitted!.nickname, '테스터');
+    expect(submitted!.birthDate, '2000-01-01');
   });
 
   testWidgets('signup login link opens existing login screen', (tester) async {

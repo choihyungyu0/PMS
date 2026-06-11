@@ -95,9 +95,37 @@ class ApiClient {
         return detail;
       }
       if (detail is List && detail.isNotEmpty) {
-        return '입력값을 다시 확인해주세요.';
+        return _validationMessage(detail);
       }
     }
     return '서버 요청에 실패했어요. 백엔드 실행 상태를 확인해주세요.';
+  }
+
+  String _validationMessage(List<dynamic> detail) {
+    final fields = detail
+        .whereType<Map<String, dynamic>>()
+        .map((item) {
+          final loc = item['loc'];
+          if (loc is List && loc.isNotEmpty) {
+            return loc.last.toString();
+          }
+          return '';
+        })
+        .where((field) => field.isNotEmpty)
+        .toSet();
+
+    if (fields.contains('email')) {
+      return '이메일 형식을 다시 확인해주세요.';
+    }
+    if (fields.contains('password')) {
+      return '비밀번호는 8자 이상 입력해주세요.';
+    }
+    if (fields.contains('nickname')) {
+      return '이름을 입력해주세요.';
+    }
+    if (fields.contains('birth_date')) {
+      return '생년월일을 다시 확인해주세요.';
+    }
+    return '입력값을 다시 확인해주세요.';
   }
 }
