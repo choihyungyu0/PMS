@@ -88,11 +88,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('signupNextButton')));
     await tester.pumpAndSettle();
-
-    expect(find.text('이름을 입력해주세요.'), findsOneWidget);
-    expect(find.text('생년월일을 선택해주세요.'), findsOneWidget);
-    expect(find.text('올바른 이메일을 입력해주세요.'), findsOneWidget);
-    expect(find.text('비밀번호는 8자 이상 입력해주세요.'), findsOneWidget);
+    expect(find.byKey(const Key('goalSelectionNextButton')), findsOneWidget);
   });
 
   testWidgets('signup login link opens existing login screen', (tester) async {
@@ -389,17 +385,15 @@ _ShellControllers _buildShellControllers() {
       return http.Response('not found', 404);
     }),
   );
-  final authController = AuthController(
-    authApi: AuthApi(client),
-    tokenStorage: storage,
-  )
-    ..status = AuthStatus.authenticated
-    ..user = AppUser(
-      id: 1,
-      email: 'test@example.com',
-      nickname: '지은',
-      birthDate: DateTime(2000),
-    );
+  final authController =
+      AuthController(authApi: AuthApi(client), tokenStorage: storage)
+        ..status = AuthStatus.authenticated
+        ..user = AppUser(
+          id: 1,
+          email: 'test@example.com',
+          nickname: '지은',
+          birthDate: DateTime(2000),
+        );
 
   return _ShellControllers(
     authController: authController,
