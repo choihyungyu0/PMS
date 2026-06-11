@@ -489,6 +489,9 @@ class _CycleStatusPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleFontSize = summary.isPlaceholder ? 30.0 : 31.0;
+    final subtitleMaxLines = summary.isPlaceholder ? 2 : 1;
+
     return Container(
       width: double.infinity,
       height: 194,
@@ -524,18 +527,18 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           const Positioned(
-            right: 24,
-            top: 43,
+            right: 18,
+            top: 48,
             child: SizedBox(
-              width: 106,
-              height: 106,
+              width: 102,
+              height: 102,
               child: CustomPaint(painter: _CycleRingPainter()),
             ),
           ),
           Positioned(
             left: 0,
             top: 6,
-            right: 118,
+            right: 122,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -554,13 +557,13 @@ class _CycleStatusPanel extends StatelessWidget {
                   summary.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF5524B7),
-                    fontSize: 31,
+                  style: TextStyle(
+                    color: const Color(0xFF5524B7),
+                    fontSize: titleFontSize,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0,
                     height: 1,
-                    shadows: [
+                    shadows: const [
                       Shadow(
                         color: Color(0x339C63F2),
                         blurRadius: 12,
@@ -572,7 +575,7 @@ class _CycleStatusPanel extends StatelessWidget {
                 const SizedBox(height: 22),
                 Text(
                   summary.subtitle,
-                  maxLines: 1,
+                  maxLines: subtitleMaxLines,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF15151D),
@@ -688,6 +691,9 @@ class _MiniHealthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPlaceholderValue = value.contains('전') || value.contains('없음');
+    final valueFontSize = isPlaceholderValue ? 29.0 : 31.0;
+
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(20),
@@ -726,45 +732,49 @@ class _MiniHealthCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: labelColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                    height: 1,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 50,
+                top: 56,
+                child: FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    value,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: labelColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
+                      color: valueColor,
+                      fontSize: valueFontSize,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 0,
                       height: 1,
+                      shadows: [
+                        Shadow(
+                          color: valueColor.withValues(alpha: 0.18),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  FittedBox(
-                    alignment: Alignment.centerLeft,
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      value,
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: valueColor,
-                        fontSize: 31,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0,
-                        height: 1,
-                        shadows: [
-                          Shadow(
-                            color: valueColor.withValues(alpha: 0.18),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               Positioned(
                 right: 4,
@@ -886,7 +896,7 @@ class _MissionTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Ink(
-          height: 134,
+          height: 140,
           padding: const EdgeInsets.fromLTRB(16, 18, 12, 18),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
@@ -900,11 +910,11 @@ class _MissionTile extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: 2,
-                bottom: 8,
+                left: -2,
+                bottom: 10,
                 child: SizedBox(
-                  width: 132,
-                  height: 92,
+                  width: 158,
+                  height: 102,
                   child: Image.asset(
                     AppAssets.homeMissionTea,
                     fit: BoxFit.contain,
@@ -913,22 +923,19 @@ class _MissionTile extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 156,
-                top: 28,
-                right: 48,
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    mission,
-                    maxLines: 2,
-                    style: const TextStyle(
-                      color: Color(0xFF3A2721),
-                      fontSize: 21,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                      height: 1.42,
-                    ),
+                left: 172,
+                top: 32,
+                right: 54,
+                child: Text(
+                  mission,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF3A2721),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0,
+                    height: 1.35,
                   ),
                 ),
               ),
@@ -965,17 +972,23 @@ class _MissionTile extends StatelessWidget {
 }
 
 class _CycleSummary {
-  const _CycleSummary({required this.title, required this.subtitle});
+  const _CycleSummary({
+    required this.title,
+    required this.subtitle,
+    this.isPlaceholder = false,
+  });
 
   final String title;
   final String subtitle;
+  final bool isPlaceholder;
 }
 
 _CycleSummary _cycleSummary(CycleLog? cycle) {
   if (cycle == null) {
     return const _CycleSummary(
-      title: '기록이 필요해요',
+      title: '기록 전',
       subtitle: '생리 시작일을 기록하면 주기 요약을 볼 수 있어요.',
+      isPlaceholder: true,
     );
   }
 
@@ -1025,7 +1038,7 @@ String _riskLabel(String? riskLevel) {
 
 String _sleepLabel(SleepLog? sleep) {
   if (sleep == null || sleep.sleepHours <= 0) {
-    return '기록 없음';
+    return '기록 전';
   }
   final totalMinutes = (sleep.sleepHours * 60).round();
   final hours = totalMinutes ~/ 60;

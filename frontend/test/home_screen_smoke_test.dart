@@ -71,6 +71,37 @@ void main() {
     expect(_asset(AppAssets.bottomNavAnalysis), findsOneWidget);
     expect(_asset(AppAssets.bottomNavMy), findsOneWidget);
   });
+
+  testWidgets('home empty state keeps card text readable', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(393, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final controllers = _buildControllers(hasRecords: false);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: MainShell(
+          authController: controllers.authController,
+          recordController: controllers.recordController,
+          reportController: controllers.reportController,
+          analysisController: controllers.analysisController,
+          institutionController: controllers.institutionController,
+        ),
+      ),
+    );
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+
+    expect(find.text('안녕하세요, 지은님 👋'), findsOneWidget);
+    expect(find.text('기록 전'), findsNWidgets(2));
+    expect(find.text('분석 전'), findsOneWidget);
+    expect(find.text('기록이 필요해요'), findsNothing);
+    expect(find.text('기록 없음'), findsNothing);
+  });
 }
 
 Finder _asset(String assetPath) {
@@ -82,7 +113,7 @@ Finder _asset(String assetPath) {
   });
 }
 
-_Controllers _buildControllers() {
+_Controllers _buildControllers({bool hasRecords = true}) {
   final today = DateTime.now();
   final cycleStart = today.subtract(const Duration(days: 4));
   final sleepStart = DateTime(
@@ -98,6 +129,9 @@ _Controllers _buildControllers() {
     httpClient: MockClient((request) async {
       switch (request.url.path) {
         case '/api/cycles/latest':
+          if (!hasRecords) {
+            return http.Response('', 200);
+          }
           return _jsonResponse({
             'id': 1,
             'start_date': _date(cycleStart),
@@ -107,6 +141,9 @@ _Controllers _buildControllers() {
             'created_at': today.toIso8601String(),
           });
         case '/api/sleep':
+          if (!hasRecords) {
+            return _jsonResponse([]);
+          }
           return _jsonResponse([
             {
               'id': 1,
@@ -118,6 +155,9 @@ _Controllers _buildControllers() {
             },
           ]);
         case '/api/reports/latest':
+          if (!hasRecords) {
+            return http.Response('', 200);
+          }
           return _jsonResponse({
             'id': 1,
             'pms_score': 48,
@@ -131,6 +171,8 @@ _Controllers _buildControllers() {
             'disclaimer': AppText.medicalDisclaimer,
             'created_at': today.toIso8601String(),
           });
+        case '/api/reports/history':
+          return _jsonResponse([]);
       }
       return http.Response('not found', 404);
     }),
