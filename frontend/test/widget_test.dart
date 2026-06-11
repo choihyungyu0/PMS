@@ -10,7 +10,9 @@ import 'package:more_cycle/core/storage/token_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('app starts at onboarding when token is missing', (tester) async {
+  testWidgets('app shows welcome screen after splash when token is missing', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
 
     await tester.pumpWidget(const MoreCycleApp());
@@ -19,8 +21,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1600));
     await tester.pumpAndSettle();
 
-    expect(find.text('내 몸을 더 이해하는 가장 쉬운 방법'), findsOneWidget);
+    expect(find.text('나만을 위한\n여성 건강 관리 시작하기'), findsOneWidget);
     expect(find.text('시작하기'), findsOneWidget);
+    expect(find.text('로그인'), findsOneWidget);
   });
 
   testWidgets('login screen renders required fields', (tester) async {
@@ -37,7 +40,7 @@ void main() {
         home: AuthScreen(
           controller: controller,
           initialSignupMode: false,
-          onBackToOnboarding: () {},
+          onBackToWelcome: () {},
         ),
       ),
     );

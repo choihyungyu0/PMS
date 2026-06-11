@@ -11,12 +11,12 @@ class AuthScreen extends StatefulWidget {
     super.key,
     required this.controller,
     required this.initialSignupMode,
-    required this.onBackToOnboarding,
+    required this.onBackToWelcome,
   });
 
   final AuthController controller;
   final bool initialSignupMode;
-  final VoidCallback onBackToOnboarding;
+  final VoidCallback onBackToWelcome;
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: widget.onBackToOnboarding,
+          onPressed: widget.onBackToWelcome,
         ),
         title: Text(_signupMode ? '회원가입' : '로그인'),
       ),

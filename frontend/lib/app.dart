@@ -5,7 +5,7 @@ import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/auth_screen.dart';
 import 'screens/home/main_shell.dart';
-import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/onboarding/welcome_screen.dart';
 import 'screens/splash/splash_screen.dart';
 import 'services/auth_api.dart';
 import 'services/institution_api.dart';
@@ -88,7 +88,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
           }
           if (_authController.status == AuthStatus.unauthenticated) {
             if (!_showAuthForm) {
-              return OnboardingScreen(
+              return WelcomeScreen(
                 onStart: () => setState(() {
                   _showSignup = true;
                   _showAuthForm = true;
@@ -102,7 +102,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
             return AuthScreen(
               controller: _authController,
               initialSignupMode: _showSignup,
-              onBackToOnboarding: () => setState(() => _showAuthForm = false),
+              onBackToWelcome: () => setState(() => _showAuthForm = false),
             );
           }
           return MainShell(
