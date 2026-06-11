@@ -43,4 +43,10 @@ class AppAssets {
   static const aiCareFood = 'assets/images/ai_care/ai_care_food.png';
   static const aiCareHabit = 'assets/images/ai_care/ai_care_habit.png';
   static const aiCareExercise = 'assets/images/ai_care/ai_care_exercise.png';
+
+  static const calendarConditionDone =
+      'assets/images/calendar/calendar_condition_done.png';
+  static const calendarPmsBell = 'assets/images/calendar/calendar_pms_bell.png';
+  static const calendarFertileCycle =
+      'assets/images/calendar/calendar_fertile_cycle.png';
 }

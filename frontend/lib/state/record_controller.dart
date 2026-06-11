@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/api/api_exception.dart';
 import '../models/cycle.dart';
+import '../models/emotion_log.dart';
+import '../models/pain_log.dart';
 import '../models/sleep_log.dart';
 import '../services/record_api.dart';
 
@@ -18,6 +20,12 @@ class RecordController extends ChangeNotifier {
   String? successMessage;
   CycleLog? latestCycle;
   SleepLog? latestSleep;
+  bool calendarLoading = false;
+  String? calendarErrorMessage;
+  List<CycleLog> cycles = const [];
+  List<PainLog> painLogs = const [];
+  List<EmotionLog> emotionLogs = const [];
+  List<SleepLog> sleepLogs = const [];
 
   static const unsupportedBodySymptomsKey = 'more_cycle_body_symptoms';
 
@@ -43,6 +51,49 @@ class RecordController extends ChangeNotifier {
     } catch (_) {
       // Home can render without sleep data.
     }
+  }
+
+  Future<void> loadCalendarData() async {
+    calendarLoading = true;
+    calendarErrorMessage = null;
+    notifyListeners();
+
+    final errors = <String>[];
+
+    try {
+      cycles = await _recordApi.cycles();
+      latestCycle = cycles.isEmpty ? null : cycles.first;
+    } catch (_) {
+      errors.add('생리주기 정보를 불러오지 못했어요.');
+    }
+
+    try {
+      painLogs = await _recordApi.painLogs();
+    } catch (_) {
+      errors.add('통증 기록을 불러오지 못했어요.');
+    }
+
+    try {
+      emotionLogs = await _recordApi.emotionLogs();
+    } catch (_) {
+      errors.add('감정 기록을 불러오지 못했어요.');
+    }
+
+    try {
+      sleepLogs = await _recordApi.sleepLogs();
+      if (sleepLogs.isEmpty) {
+        latestSleep = null;
+      } else {
+        sleepLogs.sort((a, b) => b.sleepStart.compareTo(a.sleepStart));
+        latestSleep = sleepLogs.first;
+      }
+    } catch (_) {
+      errors.add('수면 기록을 불러오지 못했어요.');
+    }
+
+    calendarErrorMessage = errors.isEmpty ? null : errors.join('\n');
+    calendarLoading = false;
+    notifyListeners();
   }
 
   Future<bool> createCycle(String startDate, String? endDate, String? memo) {

@@ -24,8 +24,10 @@ class RecordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConditionRecordScreen(
       recordController: recordController,
+      reportController: reportController,
       onClose: onClose,
       onComplete: onComplete,
+      onOpenReport: onOpenReport,
     );
   }
 }

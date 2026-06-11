@@ -65,6 +65,7 @@ flutter:
     - assets/images/analysis/
     - assets/images/ai_report/
     - assets/images/ai_care/
+    - assets/images/calendar/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

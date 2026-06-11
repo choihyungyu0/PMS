@@ -3,19 +3,24 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
 import '../../state/record_controller.dart';
-import 'record_complete_screen.dart';
+import '../../state/report_controller.dart';
+import 'calendar_screen.dart';
 
 class ConditionRecordScreen extends StatefulWidget {
   const ConditionRecordScreen({
     super.key,
     required this.recordController,
+    required this.reportController,
     this.onClose,
     this.onComplete,
+    this.onOpenReport,
   });
 
   final RecordController recordController;
+  final ReportController reportController;
   final VoidCallback? onClose;
   final VoidCallback? onComplete;
+  final VoidCallback? onOpenReport;
 
   @override
   State<ConditionRecordScreen> createState() => _ConditionRecordScreenState();
@@ -328,7 +333,11 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
       return;
     }
     if (ok) {
-      _openCompleteScreen();
+      await widget.reportController.generate();
+      if (!mounted) {
+        return;
+      }
+      _openCalendarScreen();
       return;
     }
     _showSnackBar(
@@ -345,18 +354,21 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
     );
   }
 
-  void _openCompleteScreen() {
+  void _openCalendarScreen() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => RecordCompleteScreen(
-          onGoHome: () {
-            widget.recordController.loadLatestCycle();
-            widget.recordController.loadLatestSleep();
-            widget.onComplete?.call();
-          },
+        builder: (_) => CalendarScreen(
+          recordController: widget.recordController,
+          reportController: widget.reportController,
+          initialSelectedDate: _selectedDate,
+          completedRecordDate: _selectedDate,
+          onOpenReport: widget.onOpenReport,
+          onComplete: widget.onComplete,
         ),
       ),
     );
+    widget.recordController.loadLatestCycle();
+    widget.recordController.loadLatestSleep();
   }
 
   String _formatKoreanDate(DateTime date) {
