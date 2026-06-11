@@ -4,6 +4,7 @@ import 'core/api/api_client.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/auth_screen.dart';
+import 'screens/auth/signup_basic_info_screen.dart';
 import 'screens/home/main_shell.dart';
 import 'screens/onboarding/welcome_screen.dart';
 import 'screens/splash/splash_screen.dart';
@@ -34,8 +35,8 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
   late final InstitutionController _institutionController;
 
   bool _minimumSplashElapsed = false;
-  bool _showAuthForm = false;
-  bool _showSignup = false;
+  _UnauthenticatedScreen _unauthenticatedScreen =
+      _UnauthenticatedScreen.welcome;
 
   @override
   void initState() {
@@ -87,23 +88,45 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
             return const SplashScreen();
           }
           if (_authController.status == AuthStatus.unauthenticated) {
-            if (!_showAuthForm) {
-              return WelcomeScreen(
-                onStart: () => setState(() {
-                  _showSignup = true;
-                  _showAuthForm = true;
-                }),
-                onLogin: () => setState(() {
-                  _showSignup = false;
-                  _showAuthForm = true;
-                }),
-              );
+            switch (_unauthenticatedScreen) {
+              case _UnauthenticatedScreen.welcome:
+                return WelcomeScreen(
+                  onStart: () => setState(
+                    () =>
+                        _unauthenticatedScreen = _UnauthenticatedScreen.signup,
+                  ),
+                  onLogin: () => setState(
+                    () => _unauthenticatedScreen = _UnauthenticatedScreen.login,
+                  ),
+                );
+              case _UnauthenticatedScreen.signup:
+                return SignupBasicInfoScreen(
+                  controller: _authController,
+                  onBackToWelcome: () => setState(
+                    () =>
+                        _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
+                  ),
+                  onCloseToWelcome: () => setState(
+                    () =>
+                        _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
+                  ),
+                  onLogin: () => setState(
+                    () => _unauthenticatedScreen = _UnauthenticatedScreen.login,
+                  ),
+                );
+              case _UnauthenticatedScreen.login:
+                return AuthScreen(
+                  controller: _authController,
+                  onBackToWelcome: () => setState(
+                    () =>
+                        _unauthenticatedScreen = _UnauthenticatedScreen.welcome,
+                  ),
+                  onSignupRequested: () => setState(
+                    () =>
+                        _unauthenticatedScreen = _UnauthenticatedScreen.signup,
+                  ),
+                );
             }
-            return AuthScreen(
-              controller: _authController,
-              initialSignupMode: _showSignup,
-              onBackToWelcome: () => setState(() => _showAuthForm = false),
-            );
           }
           return MainShell(
             authController: _authController,
@@ -116,3 +139,5 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
     );
   }
 }
+
+enum _UnauthenticatedScreen { welcome, signup, login }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../core/utils/date_utils.dart';
 import '../../state/auth_controller.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/primary_button.dart';
@@ -10,13 +9,13 @@ class AuthScreen extends StatefulWidget {
   const AuthScreen({
     super.key,
     required this.controller,
-    required this.initialSignupMode,
     required this.onBackToWelcome,
+    required this.onSignupRequested,
   });
 
   final AuthController controller;
-  final bool initialSignupMode;
   final VoidCallback onBackToWelcome;
+  final VoidCallback onSignupRequested;
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -26,21 +25,11 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _nicknameController = TextEditingController();
-  DateTime? _birthDate;
-  late bool _signupMode;
-
-  @override
-  void initState() {
-    super.initState();
-    _signupMode = widget.initialSignupMode;
-  }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _nicknameController.dispose();
     super.dispose();
   }
 
@@ -52,7 +41,7 @@ class _AuthScreenState extends State<AuthScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: widget.onBackToWelcome,
         ),
-        title: Text(_signupMode ? '회원가입' : '로그인'),
+        title: const Text('로그인'),
       ),
       body: SafeArea(
         child: AnimatedBuilder(
@@ -68,7 +57,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _signupMode ? '모어 사이클 시작하기' : '다시 만나서 반가워요',
+                          '다시 만나서 반가워요',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 18),
@@ -92,33 +81,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             if (value == null || value.isEmpty) {
                               return '비밀번호를 입력해주세요.';
                             }
-                            if (_signupMode && value.length < 8) {
-                              return '비밀번호는 8자 이상이어야 해요.';
-                            }
                             return null;
                           },
                         ),
-                        if (_signupMode) ...[
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            key: const Key('nicknameField'),
-                            controller: _nicknameController,
-                            decoration: const InputDecoration(labelText: '닉네임'),
-                            validator: (value) => value == null || value.isEmpty
-                                ? '닉네임을 입력해주세요.'
-                                : null,
-                          ),
-                          const SizedBox(height: 12),
-                          OutlinedButton.icon(
-                            onPressed: _pickBirthDate,
-                            icon: const Icon(Icons.cake_outlined),
-                            label: Text(
-                              _birthDate == null
-                                  ? '생년월일 선택'
-                                  : AppDateUtils.date(_birthDate!),
-                            ),
-                          ),
-                        ],
                         if (widget.controller.errorMessage != null) ...[
                           const SizedBox(height: 12),
                           Text(
@@ -128,16 +93,13 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                         const SizedBox(height: 18),
                         PrimaryButton(
-                          label: _signupMode ? '회원가입' : '로그인',
+                          label: '로그인',
                           loading: widget.controller.loading,
                           onPressed: _submit,
                         ),
                         TextButton(
-                          onPressed: () =>
-                              setState(() => _signupMode = !_signupMode),
-                          child: Text(
-                            _signupMode ? '이미 계정이 있어요' : '처음이라면 회원가입하기',
-                          ),
+                          onPressed: widget.onSignupRequested,
+                          child: const Text('처음이라면 회원가입하기'),
                         ),
                       ],
                     ),
@@ -151,39 +113,19 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  Future<void> _pickBirthDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(now.year - 25),
-      firstDate: DateTime(1900),
-      lastDate: now,
-    );
-    if (picked != null) {
-      setState(() => _birthDate = picked);
-    }
-  }
-
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     FocusScope.of(context).unfocus();
-    final success = _signupMode
-        ? await widget.controller.signup(
-            _emailController.text.trim(),
-            _passwordController.text,
-            _nicknameController.text.trim(),
-            _birthDate == null ? null : AppDateUtils.date(_birthDate!),
-          )
-        : await widget.controller.login(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+    final success = await widget.controller.login(
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_signupMode ? '회원가입이 완료되었어요.' : '로그인되었어요.'),
+        const SnackBar(
+          content: Text('로그인되었어요.'),
           backgroundColor: AppColors.primaryPurple,
         ),
       );

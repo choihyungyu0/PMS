@@ -39,13 +39,60 @@ void main() {
       MaterialApp(
         home: AuthScreen(
           controller: controller,
-          initialSignupMode: false,
           onBackToWelcome: () {},
+          onSignupRequested: () {},
         ),
       ),
     );
 
     expect(find.text('로그인'), findsWidgets);
+    expect(find.byKey(const Key('emailField')), findsOneWidget);
+    expect(find.byKey(const Key('passwordField')), findsOneWidget);
+  });
+
+  testWidgets('start button opens signup basic info screen', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const MoreCycleApp());
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('시작하기'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('회원가입'), findsOneWidget);
+    expect(find.text('더 정확한 맞춤 케어를 위해\n기본 정보를 입력해주세요.'), findsOneWidget);
+    expect(find.byKey(const Key('signupNameField')), findsOneWidget);
+    expect(find.byKey(const Key('signupBirthDateField')), findsOneWidget);
+    expect(find.byKey(const Key('signupEmailField')), findsOneWidget);
+    expect(find.byKey(const Key('signupPasswordField')), findsOneWidget);
+    expect(find.byKey(const Key('signupNextButton')), findsOneWidget);
+
+    await tester.ensureVisible(find.byKey(const Key('signupNextButton')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('signupNextButton')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('이름을 입력해주세요.'), findsOneWidget);
+    expect(find.text('생년월일을 선택해주세요.'), findsOneWidget);
+    expect(find.text('올바른 이메일을 입력해주세요.'), findsOneWidget);
+    expect(find.text('비밀번호는 8자 이상 입력해주세요.'), findsOneWidget);
+  });
+
+  testWidgets('signup login link opens existing login screen', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+
+    await tester.pumpWidget(const MoreCycleApp());
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('시작하기'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('signupLoginLink')));
+    await tester.tap(find.byKey(const Key('signupLoginLink')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('다시 만나서 반가워요'), findsOneWidget);
     expect(find.byKey(const Key('emailField')), findsOneWidget);
     expect(find.byKey(const Key('passwordField')), findsOneWidget);
   });
