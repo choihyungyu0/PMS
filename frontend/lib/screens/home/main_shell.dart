@@ -5,7 +5,7 @@ import '../../state/analysis_controller.dart';
 import '../../state/institution_controller.dart';
 import '../../state/record_controller.dart';
 import '../../state/report_controller.dart';
-import '../analysis/analysis_screen.dart';
+import '../analysis/ai_report_screen.dart';
 import '../community/community_screen.dart';
 import '../mypage/mypage_screen.dart';
 import '../record/record_screen.dart';
@@ -60,7 +60,10 @@ class _MainShellState extends State<MainShell> {
         onClose: () => setState(() => _index = 0),
         onComplete: () => setState(() => _index = 0),
       ),
-      AnalysisScreen(controller: widget.analysisController),
+      AiReportScreen(
+        reportController: widget.reportController,
+        analysisController: widget.analysisController,
+      ),
       const CommunityScreen(),
       MyPageScreen(authController: widget.authController),
     ];

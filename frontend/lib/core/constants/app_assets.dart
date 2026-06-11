@@ -25,4 +25,19 @@ class AppAssets {
       'assets/images/analysis/analysis_stress_calm.png';
   static const analysisReportDownload =
       'assets/images/analysis/analysis_report_download.png';
+
+  static const aiReportAvatar = 'assets/images/ai_report/ai_report_avatar.png';
+  static const aiReportBellHeart =
+      'assets/images/ai_report/ai_report_bell_heart.png';
+  static const aiReportChangeIcon =
+      'assets/images/ai_report/ai_report_change_icon.png';
+  static const aiReportGrowthGraph =
+      'assets/images/ai_report/ai_report_growth_graph.png';
+  static const aiReportCareHeart =
+      'assets/images/ai_report/ai_report_care_heart.png';
+  static const aiReportCheck = 'assets/images/ai_report/ai_report_check.png';
+  static const aiReportDocument =
+      'assets/images/ai_report/ai_report_document.png';
+  static const aiReportSparkle =
+      'assets/images/ai_report/ai_report_sparkle.png';
 }

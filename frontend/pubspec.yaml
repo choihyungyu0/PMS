@@ -63,6 +63,7 @@ flutter:
     - assets/images/more_cycle_logo.png
     - assets/images/record/
     - assets/images/analysis/
+    - assets/images/ai_report/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
