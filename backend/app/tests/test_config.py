@@ -1,6 +1,7 @@
 import pytest
+import re
 
-from app.core.config import _normalize_database_url
+from app.core.config import DEFAULT_LOCAL_CORS_ORIGIN_REGEX, _normalize_database_url
 
 
 def test_placeholder_database_password_is_rejected():
@@ -30,3 +31,10 @@ def test_existing_sslmode_is_preserved():
     )
 
     assert url.count("sslmode=require") == 1
+
+
+def test_default_local_cors_regex_allows_flutter_web_ports():
+    pattern = re.compile(DEFAULT_LOCAL_CORS_ORIGIN_REGEX)
+
+    assert pattern.match("http://localhost:60057")
+    assert pattern.match("http://127.0.0.1:60057")

@@ -12,6 +12,7 @@ PASSWORD_PLACEHOLDERS = (
     "[YOUR-PASSWORD]",
     "<YOUR_DB_PASSWORD>",
 )
+DEFAULT_LOCAL_CORS_ORIGIN_REGEX = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
 
 
 def _normalize_database_url(database_url: str) -> str:
@@ -73,6 +74,10 @@ class Settings:
         ).split(",")
         if origin.strip()
     ]
+    cors_origin_regex = os.getenv(
+        "MORE_CYCLE_CORS_ORIGIN_REGEX",
+        DEFAULT_LOCAL_CORS_ORIGIN_REGEX,
+    ).strip() or None
 
 
 settings = Settings()
