@@ -3,15 +3,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:more_cycle/app.dart';
+import 'package:more_cycle/core/constants/app_text.dart';
 import 'package:more_cycle/core/storage/health_goal_storage.dart';
 import 'package:more_cycle/models/health_report.dart';
+import 'package:more_cycle/models/user.dart';
 import 'package:more_cycle/screens/auth/auth_screen.dart';
 import 'package:more_cycle/screens/auth/signup_basic_info_screen.dart';
 import 'package:more_cycle/screens/auth/signup_goal_selection_screen.dart';
+import 'package:more_cycle/screens/home/main_shell.dart';
 import 'package:more_cycle/services/auth_api.dart';
+import 'package:more_cycle/services/institution_api.dart';
+import 'package:more_cycle/services/record_api.dart';
+import 'package:more_cycle/services/report_api.dart';
 import 'package:more_cycle/state/auth_controller.dart';
 import 'package:more_cycle/core/api/api_client.dart';
 import 'package:more_cycle/core/storage/token_storage.dart';
+import 'package:more_cycle/state/institution_controller.dart';
+import 'package:more_cycle/state/record_controller.dart';
+import 'package:more_cycle/state/report_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -262,4 +271,162 @@ void main() {
     expect(report.mainFactors.first, '수면 부족');
     expect(report.recommendedCategory, 'WOMEN_HEALTH');
   });
+
+  testWidgets('main shell keeps MVP hospital tab in bottom navigation', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final controllers = _buildShellControllers();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MainShell(
+          authController: controllers.authController,
+          recordController: controllers.recordController,
+          reportController: controllers.reportController,
+          institutionController: controllers.institutionController,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('홈'), findsOneWidget);
+    expect(find.text('기록'), findsOneWidget);
+    expect(find.text('분석'), findsOneWidget);
+    expect(find.text('병원'), findsOneWidget);
+    expect(find.text('마이'), findsOneWidget);
+    expect(find.text('커뮤니티'), findsNothing);
+  });
+
+  testWidgets('hospital screen shows safety and availability notices', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final controllers = _buildShellControllers();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MainShell(
+          authController: controllers.authController,
+          recordController: controllers.recordController,
+          reportController: controllers.reportController,
+          institutionController: controllers.institutionController,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('병원'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('인천 공공데이터 기반 의료기관 정보를 확인해요.'), findsOneWidget);
+    expect(find.text(AppText.hospitalDisclaimer), findsOneWidget);
+    expect(find.text(AppText.availabilityNotice), findsWidgets);
+    expect(find.text('인천여성의원'), findsOneWidget);
+  });
+}
+
+_ShellControllers _buildShellControllers() {
+  final storage = TokenStorage();
+  final client = ApiClient(
+    tokenStorage: storage,
+    httpClient: MockClient((request) async {
+      final path = request.url.path;
+      if (path == '/api/cycles/latest') {
+        return http.Response('', 200);
+      }
+      if (path == '/api/reports/latest') {
+        return _jsonResponse({
+          'id': 1,
+          'pms_score': 48,
+          'health_score': 74,
+          'risk_level': 'medium',
+          'confidence': 'medium',
+          'summary': '최근 기록을 바탕으로 PMS 위험도가 보통 수준으로 계산되었어요.',
+          'main_factors': ['수면 부족'],
+          'care_tips': ['충분한 휴식과 수분 섭취를 챙겨보세요.'],
+          'recommended_category': 'WOMEN_HEALTH',
+          'disclaimer': AppText.medicalDisclaimer,
+          'created_at': '2026-06-11T01:00:00',
+        });
+      }
+      if (path == '/api/reports/history') {
+        return _jsonResponse([]);
+      }
+      if (path == '/api/institutions/categories') {
+        return _jsonResponse({
+          'items': [
+            'WOMEN_HEALTH',
+            'MENTAL_HEALTH',
+            'PUBLIC_HEALTH',
+            'PAIN_NEURO',
+          ],
+        });
+      }
+      if (path == '/api/institutions/recommend') {
+        return _jsonResponse({
+          'category': 'WOMEN_HEALTH',
+          'reason': '선택한 진료/지원 카테고리에 맞는 인천 의료기관 정보를 조회했어요.',
+          'disclaimer': AppText.medicalDisclaimer,
+          'availability_notice': AppText.availabilityNotice,
+          'items': [
+            {
+              'id': 1,
+              'institution_name': '인천여성의원',
+              'institution_type': '의원',
+              'department': '산부인과',
+              'service_category': 'WOMEN_HEALTH',
+              'address': '인천광역시 미추홀구 예시로 1',
+              'sigungu': '미추홀구',
+              'phone': '032-000-0000',
+              'latitude': 37.45,
+              'longitude': 126.7,
+              'distance_km': null,
+            },
+          ],
+        });
+      }
+      return http.Response('not found', 404);
+    }),
+  );
+  final authController = AuthController(
+    authApi: AuthApi(client),
+    tokenStorage: storage,
+  )
+    ..status = AuthStatus.authenticated
+    ..user = AppUser(
+      id: 1,
+      email: 'test@example.com',
+      nickname: '지은',
+      birthDate: DateTime(2000),
+    );
+
+  return _ShellControllers(
+    authController: authController,
+    recordController: RecordController(RecordApi(client)),
+    reportController: ReportController(ReportApi(client)),
+    institutionController: InstitutionController(InstitutionApi(client)),
+  );
+}
+
+http.Response _jsonResponse(Object body) {
+  return http.Response(
+    jsonEncode(body),
+    200,
+    headers: {'content-type': 'application/json'},
+  );
+}
+
+class _ShellControllers {
+  const _ShellControllers({
+    required this.authController,
+    required this.recordController,
+    required this.reportController,
+    required this.institutionController,
+  });
+
+  final AuthController authController;
+  final RecordController recordController;
+  final ReportController reportController;
+  final InstitutionController institutionController;
 }
