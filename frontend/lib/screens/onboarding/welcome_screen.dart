@@ -34,10 +34,12 @@ class WelcomeScreen extends StatelessWidget {
               final horizontalPadding = (width * 0.085)
                   .clamp(28.0, 44.0)
                   .toDouble();
-              final logoSize = (width * 0.39).clamp(138.0, 180.0).toDouble();
-              final topGap = (height * 0.18).clamp(96.0, 170.0).toDouble();
-              final titleToHeadlineGap = (height * 0.13)
-                  .clamp(72.0, 128.0)
+              final logoSize = (width * 0.41).clamp(150.0, 184.0).toDouble();
+              final titleSize = (width * 0.10).clamp(40.0, 46.0).toDouble();
+              final headlineSize = (width * 0.057).clamp(23.0, 26.0).toDouble();
+              final topGap = (height * 0.15).clamp(106.0, 145.0).toDouble();
+              final titleToHeadlineGap = (height * 0.16)
+                  .clamp(112.0, 150.0)
                   .toDouble();
               final buttonHeight = (height * 0.078)
                   .clamp(60.0, 72.0)
@@ -62,22 +64,22 @@ class WelcomeScreen extends StatelessWidget {
                             fit: BoxFit.contain,
                           ),
                           SizedBox(height: (height * 0.028).clamp(18.0, 26.0)),
-                          const _GradientText(
+                          _GradientText(
                             text: AppText.appName,
                             style: TextStyle(
-                              fontSize: 44,
+                              fontSize: titleSize,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0,
                               height: 1,
                             ),
                           ),
                           SizedBox(height: titleToHeadlineGap),
-                          const Text(
+                          Text(
                             '나만을 위한\n여성 건강 관리 시작하기',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: AppColors.textPrimary,
-                              fontSize: 27,
+                              fontSize: headlineSize,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0,
                               height: 1.45,
@@ -193,7 +195,7 @@ class _PrimaryGradientButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 25,
+                  fontSize: 23,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                 ),
@@ -241,7 +243,7 @@ class _OutlineButton extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.textPrimary,
-                  fontSize: 25,
+                  fontSize: 23,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0,
                 ),
