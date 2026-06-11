@@ -16,4 +16,13 @@ class AppAssets {
   static const emotionSensitive = 'assets/images/record/emotion_sensitive.png';
   static const emotionCalm = 'assets/images/record/emotion_calm.png';
   static const emotionIrritated = 'assets/images/record/emotion_irritated.png';
+
+  static const analysisChartIcon =
+      'assets/images/analysis/analysis_chart_icon.png';
+  static const analysisSleepMoon =
+      'assets/images/analysis/analysis_sleep_moon.png';
+  static const analysisStressCalm =
+      'assets/images/analysis/analysis_stress_calm.png';
+  static const analysisReportDownload =
+      'assets/images/analysis/analysis_report_download.png';
 }

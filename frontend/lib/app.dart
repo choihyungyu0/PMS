@@ -13,6 +13,7 @@ import 'services/auth_api.dart';
 import 'services/institution_api.dart';
 import 'services/record_api.dart';
 import 'services/report_api.dart';
+import 'state/analysis_controller.dart';
 import 'state/auth_controller.dart';
 import 'state/institution_controller.dart';
 import 'state/record_controller.dart';
@@ -33,6 +34,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
   late final AuthController _authController;
   late final RecordController _recordController;
   late final ReportController _reportController;
+  late final AnalysisController _analysisController;
   late final InstitutionController _institutionController;
 
   bool _minimumSplashElapsed = false;
@@ -54,6 +56,10 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
     );
     _recordController = RecordController(RecordApi(_apiClient));
     _reportController = ReportController(ReportApi(_apiClient));
+    _analysisController = AnalysisController(
+      reportApi: ReportApi(_apiClient),
+      recordApi: RecordApi(_apiClient),
+    );
     _institutionController = InstitutionController(InstitutionApi(_apiClient));
     _authController.bootstrap();
     _holdSplashForBrandMoment();
@@ -72,6 +78,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
     _authController.dispose();
     _recordController.dispose();
     _reportController.dispose();
+    _analysisController.dispose();
     _institutionController.dispose();
     super.dispose();
   }
@@ -180,6 +187,7 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
             authController: _authController,
             recordController: _recordController,
             reportController: _reportController,
+            analysisController: _analysisController,
             institutionController: _institutionController,
           );
         },

@@ -15,6 +15,7 @@ import 'package:more_cycle/services/auth_api.dart';
 import 'package:more_cycle/services/institution_api.dart';
 import 'package:more_cycle/services/record_api.dart';
 import 'package:more_cycle/services/report_api.dart';
+import 'package:more_cycle/state/analysis_controller.dart';
 import 'package:more_cycle/state/auth_controller.dart';
 import 'package:more_cycle/core/api/api_client.dart';
 import 'package:more_cycle/core/storage/token_storage.dart';
@@ -268,7 +269,7 @@ void main() {
     expect(report.recommendedCategory, 'WOMEN_HEALTH');
   });
 
-  testWidgets('main shell keeps MVP hospital tab in bottom navigation', (
+  testWidgets('main shell shows reference bottom navigation tabs', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -280,6 +281,7 @@ void main() {
           authController: controllers.authController,
           recordController: controllers.recordController,
           reportController: controllers.reportController,
+          analysisController: controllers.analysisController,
           institutionController: controllers.institutionController,
         ),
       ),
@@ -289,14 +291,12 @@ void main() {
     expect(find.text('홈'), findsOneWidget);
     expect(find.text('기록'), findsOneWidget);
     expect(find.text('분석'), findsOneWidget);
-    expect(find.text('병원'), findsOneWidget);
+    expect(find.text('커뮤니티'), findsOneWidget);
     expect(find.text('마이'), findsOneWidget);
-    expect(find.text('커뮤니티'), findsNothing);
+    expect(find.text('병원'), findsNothing);
   });
 
-  testWidgets('hospital screen shows safety and availability notices', (
-    tester,
-  ) async {
+  testWidgets('community tab shows safe placeholder screen', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final controllers = _buildShellControllers();
 
@@ -306,19 +306,17 @@ void main() {
           authController: controllers.authController,
           recordController: controllers.recordController,
           reportController: controllers.reportController,
+          analysisController: controllers.analysisController,
           institutionController: controllers.institutionController,
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('병원'));
+    await tester.tap(find.text('커뮤니티'));
     await tester.pumpAndSettle();
 
-    expect(find.text('인천 공공데이터 기반 의료기관 정보를 확인해요.'), findsOneWidget);
-    expect(find.text(AppText.hospitalDisclaimer), findsOneWidget);
-    expect(find.text(AppText.availabilityNotice), findsWidgets);
-    expect(find.text('인천여성의원'), findsOneWidget);
+    expect(find.text('준비 중인 기능입니다.'), findsOneWidget);
   });
 }
 
@@ -347,6 +345,15 @@ _ShellControllers _buildShellControllers() {
         });
       }
       if (path == '/api/reports/history') {
+        return _jsonResponse([]);
+      }
+      if (path == '/api/sleep') {
+        return _jsonResponse([]);
+      }
+      if (path == '/api/emotions') {
+        return _jsonResponse([]);
+      }
+      if (path == '/api/pain') {
         return _jsonResponse([]);
       }
       if (path == '/api/institutions/categories') {
@@ -399,6 +406,10 @@ _ShellControllers _buildShellControllers() {
     authController: authController,
     recordController: RecordController(RecordApi(client)),
     reportController: ReportController(ReportApi(client)),
+    analysisController: AnalysisController(
+      reportApi: ReportApi(client),
+      recordApi: RecordApi(client),
+    ),
     institutionController: InstitutionController(InstitutionApi(client)),
   );
 }
@@ -416,11 +427,13 @@ class _ShellControllers {
     required this.authController,
     required this.recordController,
     required this.reportController,
+    required this.analysisController,
     required this.institutionController,
   });
 
   final AuthController authController;
   final RecordController recordController;
   final ReportController reportController;
+  final AnalysisController analysisController;
   final InstitutionController institutionController;
 }

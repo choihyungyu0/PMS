@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../state/auth_controller.dart';
+import '../../state/analysis_controller.dart';
 import '../../state/institution_controller.dart';
 import '../../state/record_controller.dart';
 import '../../state/report_controller.dart';
@@ -16,12 +17,14 @@ class MainShell extends StatefulWidget {
     required this.authController,
     required this.recordController,
     required this.reportController,
+    required this.analysisController,
     required this.institutionController,
   });
 
   final AuthController authController;
   final RecordController recordController;
   final ReportController reportController;
+  final AnalysisController analysisController;
   final InstitutionController institutionController;
 
   @override
@@ -57,19 +60,17 @@ class _MainShellState extends State<MainShell> {
         onClose: () => setState(() => _index = 0),
         onComplete: () => setState(() => _index = 0),
       ),
-      AnalysisScreen(reportController: widget.reportController),
+      AnalysisScreen(controller: widget.analysisController),
       const CommunityScreen(),
       MyPageScreen(authController: widget.authController),
     ];
 
     return Scaffold(
       body: screens[_index],
-      bottomNavigationBar: _index == 1
-          ? null
-          : _DashboardBottomNav(
-              selectedIndex: _index,
-              onTap: (value) => setState(() => _index = value),
-            ),
+      bottomNavigationBar: _DashboardBottomNav(
+        selectedIndex: _index,
+        onTap: (value) => setState(() => _index = value),
+      ),
     );
   }
 }

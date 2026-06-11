@@ -54,6 +54,14 @@ class RecordApi {
     return EmotionLog.fromJson(json);
   }
 
+  Future<List<EmotionLog>> emotionLogs() async {
+    final json = await _client.get('/api/emotions') as List<dynamic>;
+    return json
+        .whereType<Map<String, dynamic>>()
+        .map(EmotionLog.fromJson)
+        .toList();
+  }
+
   Future<SleepLog> createSleep({
     required DateTime sleepStart,
     required DateTime sleepEnd,
@@ -98,5 +106,13 @@ class RecordApi {
             )
             as Map<String, dynamic>;
     return PainLog.fromJson(json);
+  }
+
+  Future<List<PainLog>> painLogs() async {
+    final json = await _client.get('/api/pain') as List<dynamic>;
+    return json
+        .whereType<Map<String, dynamic>>()
+        .map(PainLog.fromJson)
+        .toList();
   }
 }

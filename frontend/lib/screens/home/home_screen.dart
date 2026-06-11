@@ -68,8 +68,8 @@ class HomeScreen extends StatelessWidget {
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final horizontalPadding = (constraints.maxWidth * 0.075)
-                      .clamp(22.0, 34.0);
+                  final horizontalPadding = (constraints.maxWidth * 0.045)
+                      .clamp(16.0, 22.0);
                   return SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics(),
@@ -607,7 +607,7 @@ class _MissionTile extends StatelessWidget {
         onTap: onTap,
         child: Ink(
           height: 116,
-          padding: const EdgeInsets.fromLTRB(24, 20, 18, 20),
+          padding: const EdgeInsets.fromLTRB(18, 20, 10, 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(22),
             gradient: const LinearGradient(
@@ -619,11 +619,11 @@ class _MissionTile extends StatelessWidget {
           child: Row(
             children: [
               const SizedBox(
-                width: 82,
-                height: 82,
+                width: 72,
+                height: 72,
                 child: CustomPaint(painter: _MissionIllustrationPainter()),
               ),
-              const SizedBox(width: 18),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   mission,
@@ -631,7 +631,7 @@ class _MissionTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xFF3A3A3D),
-                    fontSize: 21,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                     height: 1.45,
@@ -641,7 +641,7 @@ class _MissionTile extends StatelessWidget {
               const Icon(
                 Icons.chevron_right_rounded,
                 color: Color(0xFFF08B91),
-                size: 42,
+                size: 36,
               ),
             ],
           ),
