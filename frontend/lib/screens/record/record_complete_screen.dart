@@ -39,9 +39,6 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
         backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, constraints) {
-            final cardRadius = (constraints.maxWidth * 0.071)
-                .clamp(28.0, 58.0)
-                .toDouble();
             final horizontalPadding = (constraints.maxWidth * 0.071)
                 .clamp(28.0, 62.0)
                 .toDouble();
@@ -109,87 +106,80 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
                     .clamp(22.0, 80.0)
                     .toDouble();
 
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(cardRadius),
-              child: Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(cardRadius),
-                  border: Border.all(
-                    color: const Color(0xFFD8C4FB),
-                    width: 1.4,
-                  ),
-                ),
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        top: closeTopPadding,
-                        right: closeRightPadding,
-                        child: _CloseButton(
-                          size: closeBoxSize,
-                          iconSize: closeIconSize,
-                          onTap: _goHome,
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xFFD8C4FB), width: 1.4),
+              ),
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: closeTopPadding,
+                      right: closeRightPadding,
+                      child: _CloseButton(
+                        size: closeBoxSize,
+                        iconSize: closeIconSize,
+                        onTap: _goHome,
+                      ),
+                    ),
+                    Positioned(
+                      top: checkTop,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Image.asset(
+                          AppAssets.recordCompleteCheck,
+                          width: checkSize,
+                          height: checkSize,
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      Positioned(
-                        top: checkTop,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Image.asset(
-                            AppAssets.recordCompleteCheck,
-                            width: checkSize,
-                            height: checkSize,
-                            fit: BoxFit.contain,
+                    ),
+                    Positioned(
+                      top: textTop,
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      child: Column(
+                        children: [
+                          Text(
+                            '기록이 완료되었습니다!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: titleFontSize,
+                              fontWeight: FontWeight.w900,
+                              height: 1.18,
+                            ),
                           ),
-                        ),
-                      ),
-                      Positioned(
-                        top: textTop,
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        child: Column(
-                          children: [
-                            Text(
-                              '기록이 완료되었습니다!',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: titleFontSize,
-                                fontWeight: FontWeight.w900,
-                                height: 1.18,
-                              ),
+                          SizedBox(height: titleDescriptionGap),
+                          Text(
+                            'AI 분석을 통해 더 정확한\n건강 케어를 제공할게요.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF2E2E32),
+                              fontSize: descriptionFontSize,
+                              fontWeight: FontWeight.w500,
+                              height: 1.54,
                             ),
-                            SizedBox(height: titleDescriptionGap),
-                            Text(
-                              'AI 분석을 통해 더 정확한\n건강 케어를 제공할게요.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Color(0xFF2E2E32),
-                                fontSize: descriptionFontSize,
-                                fontWeight: FontWeight.w500,
-                                height: 1.54,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        bottom: buttonBottomPadding,
-                        child: _GradientHomeButton(
-                          height: buttonHeight,
-                          borderRadius: buttonRadius,
-                          fontSize: buttonTextSize,
-                          onTap: _goHome,
-                        ),
+                    ),
+                    Positioned(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: buttonBottomPadding,
+                      child: _GradientHomeButton(
+                        height: buttonHeight,
+                        borderRadius: buttonRadius,
+                        fontSize: buttonTextSize,
+                        onTap: _goHome,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );

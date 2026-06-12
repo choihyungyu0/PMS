@@ -130,7 +130,6 @@ class _DashboardBottomNav extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.96),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         border: Border.all(color: const Color(0xFFE8DDF8), width: 1.0),
         boxShadow: [
           BoxShadow(

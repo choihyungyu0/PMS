@@ -121,159 +121,155 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
 
         return Scaffold(
           backgroundColor: AppColors.lavenderBackground,
-          body: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: const Color(0xFFE2D8F4), width: 2),
-              ),
-              child: SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final width = constraints.maxWidth;
-                    final height = constraints.maxHeight;
-                    final horizontalPadding = (width * 0.075)
-                        .clamp(28.0, 42.0)
-                        .toDouble();
-                    final titleSize = (width * 0.095)
-                        .clamp(34.0, 44.0)
-                        .toDouble();
-                    final sectionTitleSize = (width * 0.068)
-                        .clamp(25.0, 32.0)
-                        .toDouble();
-                    final dateTextSize = (width * 0.055)
-                        .clamp(20.0, 26.0)
-                        .toDouble();
-                    final symptomCircleSize = (width * 0.235)
-                        .clamp(82.0, 110.0)
-                        .toDouble();
-                    final emotionCircleSize = (width * 0.185)
-                        .clamp(66.0, 88.0)
-                        .toDouble();
-                    final buttonHeight = (height * 0.075)
-                        .clamp(58.0, 72.0)
-                        .toDouble();
+          body: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: const Color(0xFFE2D8F4), width: 2),
+            ),
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final width = constraints.maxWidth;
+                  final height = constraints.maxHeight;
+                  final horizontalPadding = (width * 0.075)
+                      .clamp(28.0, 42.0)
+                      .toDouble();
+                  final titleSize = (width * 0.095)
+                      .clamp(34.0, 44.0)
+                      .toDouble();
+                  final sectionTitleSize = (width * 0.068)
+                      .clamp(25.0, 32.0)
+                      .toDouble();
+                  final dateTextSize = (width * 0.055)
+                      .clamp(20.0, 26.0)
+                      .toDouble();
+                  final symptomCircleSize = (width * 0.235)
+                      .clamp(82.0, 110.0)
+                      .toDouble();
+                  final emotionCircleSize = (width * 0.185)
+                      .clamp(66.0, 88.0)
+                      .toDouble();
+                  final buttonHeight = (height * 0.075)
+                      .clamp(58.0, 72.0)
+                      .toDouble();
 
-                    return SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight,
+                  return SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: height * 0.010),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: _CloseButton(onTap: _handleClose),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: height * 0.010),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: _CloseButton(onTap: _handleClose),
+                            ),
+                            SizedBox(height: height * 0.010),
+                            Text(
+                              '오늘의 컨디션은\n어떤가요?',
+                              style: TextStyle(
+                                color: const Color(0xFF111111),
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0,
+                                height: 1.24,
                               ),
-                              SizedBox(height: height * 0.010),
-                              Text(
-                                '오늘의 컨디션은\n어떤가요?',
-                                style: TextStyle(
-                                  color: const Color(0xFF111111),
-                                  fontSize: titleSize,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 0,
-                                  height: 1.24,
-                                ),
-                              ),
-                              SizedBox(height: height * 0.025),
-                              _DateRow(
-                                value: _formatKoreanDate(_selectedDate),
-                                fontSize: dateTextSize,
-                                onTap: _pickDate,
-                              ),
-                              SizedBox(height: height * 0.030),
-                              _SectionTitle(
-                                title: '생리 기록',
-                                fontSize: sectionTitleSize,
-                              ),
-                              const SizedBox(height: 12),
-                              _CycleStartToggle(
-                                selected: _cycleStartSelected,
+                            ),
+                            SizedBox(height: height * 0.025),
+                            _DateRow(
+                              value: _formatKoreanDate(_selectedDate),
+                              fontSize: dateTextSize,
+                              onTap: _pickDate,
+                            ),
+                            SizedBox(height: height * 0.030),
+                            _SectionTitle(
+                              title: '생리 기록',
+                              fontSize: sectionTitleSize,
+                            ),
+                            const SizedBox(height: 12),
+                            _CycleStartToggle(
+                              selected: _cycleStartSelected,
+                              onChanged: (value) {
+                                setState(() => _cycleStartSelected = value);
+                              },
+                            ),
+                            SizedBox(height: height * 0.022),
+                            _SectionTitle(
+                              title: '수면 기록',
+                              fontSize: sectionTitleSize,
+                            ),
+                            const SizedBox(height: 12),
+                            _SleepRecordPanel(
+                              sleepHours: _sleepHours,
+                              qualityScore: _sleepQuality,
+                              onSleepHoursChanged: (value) {
+                                setState(() => _sleepHours = value);
+                              },
+                              onQualityChanged: (value) {
+                                setState(() => _sleepQuality = value);
+                              },
+                            ),
+                            SizedBox(height: height * 0.025),
+                            _SectionTitle(
+                              title: '신체 증상',
+                              fontSize: sectionTitleSize,
+                            ),
+                            const SizedBox(height: 12),
+                            _ConditionGrid(
+                              options: _symptomOptions,
+                              selectedIds: _selectedSymptomIds,
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 18,
+                              mainAxisSpacing: 22,
+                              circleSize: symptomCircleSize,
+                              labelFontSize: 19,
+                              onTap: _toggleSymptom,
+                            ),
+                            if (_selectedSymptomIds.isNotEmpty) ...[
+                              const SizedBox(height: 16),
+                              _PainScorePanel(
+                                painScore: _painScore,
                                 onChanged: (value) {
-                                  setState(() => _cycleStartSelected = value);
+                                  setState(() => _painScore = value);
                                 },
                               ),
-                              SizedBox(height: height * 0.022),
-                              _SectionTitle(
-                                title: '수면 기록',
-                                fontSize: sectionTitleSize,
-                              ),
-                              const SizedBox(height: 12),
-                              _SleepRecordPanel(
-                                sleepHours: _sleepHours,
-                                qualityScore: _sleepQuality,
-                                onSleepHoursChanged: (value) {
-                                  setState(() => _sleepHours = value);
-                                },
-                                onQualityChanged: (value) {
-                                  setState(() => _sleepQuality = value);
-                                },
-                              ),
-                              SizedBox(height: height * 0.025),
-                              _SectionTitle(
-                                title: '신체 증상',
-                                fontSize: sectionTitleSize,
-                              ),
-                              const SizedBox(height: 12),
-                              _ConditionGrid(
-                                options: _symptomOptions,
-                                selectedIds: _selectedSymptomIds,
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 18,
-                                mainAxisSpacing: 22,
-                                circleSize: symptomCircleSize,
-                                labelFontSize: 19,
-                                onTap: _toggleSymptom,
-                              ),
-                              if (_selectedSymptomIds.isNotEmpty) ...[
-                                const SizedBox(height: 16),
-                                _PainScorePanel(
-                                  painScore: _painScore,
-                                  onChanged: (value) {
-                                    setState(() => _painScore = value);
-                                  },
-                                ),
-                              ],
-                              SizedBox(height: height * 0.015),
-                              _SectionTitle(
-                                title: '감정 상태',
-                                fontSize: sectionTitleSize,
-                              ),
-                              const SizedBox(height: 12),
-                              _ConditionGrid(
-                                options: _emotionOptions,
-                                selectedIds: _selectedEmotionIds,
-                                crossAxisCount: 4,
-                                crossAxisSpacing: 14,
-                                mainAxisSpacing: 14,
-                                circleSize: emotionCircleSize,
-                                labelFontSize: 18,
-                                onTap: _toggleEmotion,
-                              ),
-                              SizedBox(height: height * 0.022),
-                              _GradientSaveButton(
-                                height: buttonHeight,
-                                loading: loading,
-                                onTap: loading ? null : _save,
-                              ),
-                              SizedBox(height: height * 0.024),
                             ],
-                          ),
+                            SizedBox(height: height * 0.015),
+                            _SectionTitle(
+                              title: '감정 상태',
+                              fontSize: sectionTitleSize,
+                            ),
+                            const SizedBox(height: 12),
+                            _ConditionGrid(
+                              options: _emotionOptions,
+                              selectedIds: _selectedEmotionIds,
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 14,
+                              mainAxisSpacing: 14,
+                              circleSize: emotionCircleSize,
+                              labelFontSize: 18,
+                              onTap: _toggleEmotion,
+                            ),
+                            SizedBox(height: height * 0.022),
+                            _GradientSaveButton(
+                              height: buttonHeight,
+                              loading: loading,
+                              onTap: loading ? null : _save,
+                            ),
+                            SizedBox(height: height * 0.024),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
