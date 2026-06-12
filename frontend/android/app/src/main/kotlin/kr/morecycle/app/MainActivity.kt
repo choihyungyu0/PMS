@@ -1,4 +1,4 @@
-package com.example.more_cycle
+package kr.morecycle.app
 
 import io.flutter.embedding.android.FlutterActivity
 

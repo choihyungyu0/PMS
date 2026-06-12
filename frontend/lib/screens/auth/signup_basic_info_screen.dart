@@ -410,6 +410,14 @@ class _SignupInputField extends StatelessWidget {
           textInputAction: textInputAction,
           obscureText: obscureText,
           readOnly: readOnly,
+          textCapitalization: keyboardType == TextInputType.emailAddress
+              ? TextCapitalization.none
+              : TextCapitalization.sentences,
+          autocorrect: keyboardType != TextInputType.emailAddress,
+          enableSuggestions: keyboardType != TextInputType.emailAddress,
+          autofillHints: keyboardType == TextInputType.emailAddress
+              ? const [AutofillHints.email]
+              : null,
           onTap: onTap,
           cursorColor: AppColors.primaryPurple,
           style: const TextStyle(

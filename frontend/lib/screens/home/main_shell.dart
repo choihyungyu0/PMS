@@ -8,6 +8,7 @@ import '../../state/institution_controller.dart';
 import '../../state/record_controller.dart';
 import '../../state/report_controller.dart';
 import '../analysis/ai_report_screen.dart';
+import '../community/community_screen.dart';
 import '../hospital/hospital_screen.dart';
 import '../mypage/mypage_screen.dart';
 import '../record/record_screen.dart';
@@ -53,7 +54,7 @@ class _MainShellState extends State<MainShell> {
         reportController: widget.reportController,
         onOpenRecord: () => setState(() => _index = 1),
         onOpenReport: () => setState(() => _index = 2),
-        onOpenMyPage: () => setState(() => _index = 4),
+        onOpenCommunity: () => setState(() => _index = 5),
       ),
       RecordScreen(
         recordController: widget.recordController,
@@ -78,6 +79,7 @@ class _MainShellState extends State<MainShell> {
         onOpenReport: () => setState(() => _index = 2),
         onOpenRecord: () => setState(() => _index = 1),
       ),
+      const CommunityScreen(),
     ];
 
     return Scaffold(

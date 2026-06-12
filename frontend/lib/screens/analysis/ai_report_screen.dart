@@ -427,63 +427,75 @@ class _MainChangeCard extends StatelessWidget {
     final rows = _changeRows(summary, report);
     return _GlassCard(
       padding: EdgeInsets.zero,
-      child: SizedBox(
-        height: 298,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned(
-              left: 24,
-              top: 24,
-              child: Image.asset(
-                AppAssets.aiReportChangeIcon,
-                width: 82,
-                height: 82,
-                fit: BoxFit.contain,
-              ),
-            ),
-            const Positioned(
-              left: 126,
-              top: 50,
-              right: 18,
-              child: Text(
-                '주요 변화',
-                style: TextStyle(
-                  color: Color(0xFF121033),
-                  fontSize: 29,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0,
-                  height: 1,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 380;
+          final graphWidth = compact ? 154.0 : 174.0;
+          final graphHeight = compact ? 168.0 : 188.0;
+          final rowsRight = compact ? 118.0 : 140.0;
+
+          return SizedBox(
+            height: compact ? 314 : 300,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  left: 24,
+                  top: 24,
+                  child: Image.asset(
+                    AppAssets.aiReportChangeIcon,
+                    width: 82,
+                    height: 82,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
+                const Positioned(
+                  left: 126,
+                  top: 50,
+                  right: 18,
+                  child: Text(
+                    '주요 변화',
+                    style: TextStyle(
+                      color: Color(0xFF121033),
+                      fontSize: 29,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 26,
+                  top: compact ? 118 : 126,
+                  right: rowsRight,
+                  child: Column(
+                    children: rows
+                        .map(
+                          (row) => Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _ChangeMetricRow(
+                              icon: row.icon,
+                              text: row.text,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                Positioned(
+                  right: compact ? -2 : 0,
+                  bottom: 12,
+                  child: Image.asset(
+                    AppAssets.aiReportGrowthGraph,
+                    width: graphWidth,
+                    height: graphHeight,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ],
             ),
-            Positioned(
-              left: 26,
-              top: 126,
-              right: 150,
-              child: Column(
-                children: rows
-                    .map(
-                      (row) => Padding(
-                        padding: const EdgeInsets.only(bottom: 18),
-                        child: _ChangeMetricRow(icon: row.icon, text: row.text),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-            Positioned(
-              right: 0,
-              bottom: 12,
-              child: Image.asset(
-                AppAssets.aiReportGrowthGraph,
-                width: 178,
-                height: 190,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -498,10 +510,12 @@ class _ChangeMetricRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 35,
           height: 35,
+          margin: const EdgeInsets.only(top: 1),
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
@@ -516,14 +530,15 @@ class _ChangeMetricRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            maxLines: 2,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
+            softWrap: true,
             style: const TextStyle(
               color: Color(0xFF2E2E35),
-              fontSize: 15,
+              fontSize: 14.5,
               fontWeight: FontWeight.w700,
               letterSpacing: 0,
-              height: 1.25,
+              height: 1.24,
             ),
           ),
         ),
@@ -549,73 +564,88 @@ class _AiCareCard extends StatelessWidget {
         onTap: onTap,
         child: _GlassCard(
           padding: EdgeInsets.zero,
-          child: SizedBox(
-            height: 180,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  left: 18,
-                  top: 20,
-                  child: Image.asset(
-                    AppAssets.aiReportCareHeart,
-                    width: 150,
-                    height: 135,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                Positioned(
-                  left: 166,
-                  top: 28,
-                  child: _Sparkle(size: 12, color: const Color(0xFFE3D5FF)),
-                ),
-                const Positioned(
-                  left: 184,
-                  top: 36,
-                  right: 18,
-                  child: Text(
-                    'AI 추천 케어',
-                    style: TextStyle(
-                      color: Color(0xFF121033),
-                      fontSize: 27,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0,
-                      height: 1,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxWidth < 380;
+              final artWidth = compact ? 132.0 : 150.0;
+              final artHeight = compact ? 126.0 : 135.0;
+              final contentLeft = compact ? 160.0 : 184.0;
+
+              return SizedBox(
+                height: compact ? 188 : 180,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: 18,
+                      top: compact ? 24 : 20,
+                      child: Image.asset(
+                        AppAssets.aiReportCareHeart,
+                        width: artWidth,
+                        height: artHeight,
+                        fit: BoxFit.contain,
+                      ),
                     ),
-                  ),
-                ),
-                Positioned(
-                  left: 184,
-                  top: 84,
-                  right: 18,
-                  child: Column(
-                    children: tips
-                        .take(2)
-                        .map(
-                          (tip) => Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: _CareCheckRow(text: tip),
+                    Positioned(
+                      left: contentLeft - 18,
+                      top: 28,
+                      child: _Sparkle(size: 12, color: const Color(0xFFE3D5FF)),
+                    ),
+                    Positioned(
+                      left: contentLeft,
+                      top: compact ? 34 : 36,
+                      right: 54,
+                      child: const FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'AI 추천 케어',
+                          maxLines: 1,
+                          softWrap: false,
+                          style: TextStyle(
+                            color: Color(0xFF121033),
+                            fontSize: 27,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0,
+                            height: 1,
                           ),
-                        )
-                        .toList(),
-                  ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: contentLeft,
+                      top: 84,
+                      right: 18,
+                      child: Column(
+                        children: tips
+                            .take(2)
+                            .map(
+                              (tip) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _CareCheckRow(text: tip),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    const Positioned(
+                      right: 18,
+                      top: 34,
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        color: AppColors.primaryPurple,
+                        size: 30,
+                      ),
+                    ),
+                    Positioned(
+                      left: 24,
+                      top: 22,
+                      child: _Sparkle(size: 19, color: const Color(0xFFA17AF8)),
+                    ),
+                  ],
                 ),
-                const Positioned(
-                  right: 18,
-                  top: 34,
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColors.primaryPurple,
-                    size: 30,
-                  ),
-                ),
-                Positioned(
-                  left: 24,
-                  top: 22,
-                  child: _Sparkle(size: 19, color: const Color(0xFFA17AF8)),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -631,6 +661,7 @@ class _CareCheckRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Image.asset(
           AppAssets.aiReportCheck,
@@ -642,14 +673,14 @@ class _CareCheckRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Color(0xFF2D2D32),
               fontSize: 16,
               fontWeight: FontWeight.w700,
               letterSpacing: 0,
-              height: 1,
+              height: 1.15,
             ),
           ),
         ),

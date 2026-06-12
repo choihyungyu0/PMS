@@ -28,7 +28,31 @@ flutter run
 
 ## Base URL Configuration
 
-Edit:
+APK builds can inject a backend URL without editing source code:
+
+```powershell
+flutter build apk --release --dart-define=API_BASE_URL=http://YOUR_PC_IP:8000
+```
+
+The helper script detects a local IPv4 address and builds the APK:
+
+```powershell
+.\scripts\build-release-apk.ps1
+```
+
+If the detected IP is not the one your phone can reach, pass it manually:
+
+```powershell
+.\scripts\build-release-apk.ps1 -BackendHost 192.168.0.12
+```
+
+Output APK:
+
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
+For normal development, edit:
 
 ```text
 lib/core/api/api_config.dart
@@ -38,6 +62,8 @@ The app selects a local backend URL automatically:
 
 - Android emulator: `http://10.0.2.2:8000`
 - iOS simulator, desktop, and web: `http://127.0.0.1:8000`
+
+Physical Android phones must use the PC's LAN IP address, not `127.0.0.1` or `10.0.2.2`.
 
 For iOS simulator, desktop, and web local development:
 
@@ -52,6 +78,43 @@ return androidEmulatorBaseUrl; // http://10.0.2.2:8000
 ```
 
 Android debug builds allow local cleartext HTTP for MVP development. Do not use this setting as-is for production.
+
+## Direct APK Distribution
+
+This project is configured for direct APK sharing, not Play Store release:
+
+- Android package ID: `kr.morecycle.app`
+- Launcher label: `MORE Cycle`
+- Local HTTP is allowed for the FastAPI demo backend.
+- Release APKs are signed with a local keystore stored under `android/app/more-cycle-release.jks`.
+- Signing files are ignored by Git through `android/.gitignore`.
+
+Keep `android/key.properties` and `android/app/more-cycle-release.jks` backed up locally. Android treats a differently signed APK as a different update path, so losing the keystore means users may need to uninstall before installing a future APK.
+
+## Public Tester APK
+
+For testers outside your current Wi-Fi network, build an APK with a temporary Cloudflare Tunnel URL:
+
+```powershell
+cd frontend
+.\scripts\build-public-release-apk.ps1
+```
+
+The script:
+
+- starts the local FastAPI backend on `127.0.0.1:8000` if needed,
+- downloads `cloudflared.exe` into the repo-local `.tools` folder if needed,
+- opens a temporary `https://*.trycloudflare.com` tunnel,
+- builds `build/app/outputs/flutter-apk/app-release.apk` with that public URL.
+
+Keep the PC, backend process, and tunnel process running while external testers use the APK. To stop the public backend/tunnel:
+
+```powershell
+cd frontend
+.\scripts\stop-public-backend.ps1
+```
+
+The temporary tunnel URL can change after stopping or restarting the tunnel. If it changes, rebuild and resend the APK.
 
 ## Analyze And Test
 

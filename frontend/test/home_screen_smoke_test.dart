@@ -23,7 +23,7 @@ import 'package:more_cycle/state/report_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('home screen renders reference layout with local assets', (
+  testWidgets('home screen renders real cycle layout with local assets', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -52,20 +52,30 @@ void main() {
     expect(find.text('안녕하세요, 지은님 👋'), findsOneWidget);
     expect(find.text('오늘의 건강 요약'), findsOneWidget);
     expect(find.text('오늘의 미션'), findsOneWidget);
-    expect(find.text('가임기 5일차'), findsOneWidget);
+    expect(find.text('생리 1일차'), findsOneWidget);
+    expect(find.text(_expectedNextPeriodText(28)), findsOneWidget);
     expect(find.text('PMS 예측'), findsOneWidget);
     expect(find.text('보통'), findsOneWidget);
     expect(find.text('수면 시간'), findsOneWidget);
     expect(find.text('6h 30m'), findsOneWidget);
+    expect(find.byTooltip('커뮤니티'), findsOneWidget);
+    expect(find.byIcon(Icons.forum_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.notifications_none_rounded), findsNothing);
+    expect(find.byIcon(Icons.calendar_month_outlined), findsNothing);
     expect(find.text('홈'), findsOneWidget);
     expect(find.text('기록'), findsOneWidget);
     expect(find.text('분석'), findsOneWidget);
     expect(find.text('병원'), findsOneWidget);
     expect(find.text('마이'), findsOneWidget);
 
-    expect(_asset(AppAssets.homeCycleCardBg), findsOneWidget);
-    expect(_asset(AppAssets.homePmsCardBg), findsOneWidget);
-    expect(_asset(AppAssets.homeSleepCardBg), findsOneWidget);
+    final cycleCardAsset = _asset(
+      AppAssets.homeCycleCardBg,
+      fit: BoxFit.cover,
+      alignment: Alignment.center,
+    );
+    expect(cycleCardAsset, findsOneWidget);
+    expect(_asset(AppAssets.homePmsCardBg), findsNothing);
+    expect(_asset(AppAssets.homeSleepCardBg), findsNothing);
     expect(_asset(AppAssets.homeMissionTea), findsOneWidget);
     expect(_asset(AppAssets.bottomNavHome), findsOneWidget);
     expect(_asset(AppAssets.bottomNavRecord), findsOneWidget);
@@ -73,17 +83,44 @@ void main() {
     expect(_asset(AppAssets.bottomNavHospital), findsOneWidget);
     expect(_asset(AppAssets.bottomNavMy), findsOneWidget);
 
-    final cycleCardRect = tester.getRect(_asset(AppAssets.homeCycleCardBg));
-    final pmsCardRect = tester.getRect(_asset(AppAssets.homePmsCardBg));
-    final sleepCardRect = tester.getRect(_asset(AppAssets.homeSleepCardBg));
+    final cycleCardRect = tester.getRect(cycleCardAsset);
 
     expect(cycleCardRect.width / cycleCardRect.height, greaterThan(1.95));
     expect(cycleCardRect.width / cycleCardRect.height, lessThan(2.18));
-    expect(pmsCardRect.width / pmsCardRect.height, greaterThan(1.22));
-    expect(sleepCardRect.width / sleepCardRect.height, greaterThan(1.22));
   });
 
-  testWidgets('home initial state keeps reference card layout', (tester) async {
+  testWidgets('home community action opens community screen', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(393, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final controllers = _buildControllers();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: MainShell(
+          authController: controllers.authController,
+          recordController: controllers.recordController,
+          reportController: controllers.reportController,
+          analysisController: controllers.analysisController,
+          institutionController: controllers.institutionController,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('커뮤니티'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('추천'), findsOneWidget);
+    expect(find.text('최신'), findsOneWidget);
+    expect(find.text('인기'), findsOneWidget);
+    expect(find.textContaining('PMS 심할 때'), findsOneWidget);
+  });
+
+  testWidgets('home initial state shows empty service copy', (tester) async {
     SharedPreferences.setMockInitialValues({});
     await tester.binding.setSurfaceSize(const Size(393, 852));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -108,62 +145,77 @@ void main() {
     }
 
     expect(find.text('안녕하세요, 지은님 👋'), findsOneWidget);
-    expect(find.text('가임기 5일차'), findsOneWidget);
-    expect(find.text('다음 생리 예정 6.24 (D-3)'), findsOneWidget);
-    expect(find.text('보통'), findsOneWidget);
-    expect(find.text('6h 30m'), findsOneWidget);
-    expect(find.text('기록 전'), findsNothing);
-    expect(find.text('분석 전'), findsNothing);
+    expect(find.text('생리 시작일을 기록하면 주기 요약을 볼 수 있어요.'), findsOneWidget);
+    expect(find.text('분석 전'), findsOneWidget);
+    expect(find.text('기록 전'), findsNWidgets(2));
+    expect(find.text('가임기 5일차'), findsNothing);
+    expect(find.text('다음 생리 예정 6.24 (D-3)'), findsNothing);
+    expect(find.text('보통'), findsNothing);
+    expect(find.text('6h 30m'), findsNothing);
     expect(find.text('기록이 필요해요'), findsNothing);
     expect(find.text('기록 없음'), findsNothing);
   });
 
-  testWidgets(
-    'home cycle card keeps reference copy when only cycle is missing',
-    (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      await tester.binding.setSurfaceSize(const Size(393, 852));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets('home cycle card shows empty copy when only cycle is missing', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(393, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      final controllers = _buildControllers(hasCycle: false);
+    final controllers = _buildControllers(hasCycle: false);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          home: MainShell(
-            authController: controllers.authController,
-            recordController: controllers.recordController,
-            reportController: controllers.reportController,
-            analysisController: controllers.analysisController,
-            institutionController: controllers.institutionController,
-          ),
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: MainShell(
+          authController: controllers.authController,
+          recordController: controllers.recordController,
+          reportController: controllers.reportController,
+          analysisController: controllers.analysisController,
+          institutionController: controllers.institutionController,
         ),
-      );
-      for (var i = 0; i < 8; i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
+      ),
+    );
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
 
-      expect(find.text('가임기 5일차'), findsOneWidget);
-      expect(find.text('다음 생리 예정 6.24 (D-3)'), findsOneWidget);
-      expect(find.text('기록 전'), findsNothing);
-    },
-  );
+    expect(find.text('생리 시작일을 기록하면 주기 요약을 볼 수 있어요.'), findsOneWidget);
+    expect(find.text('보통'), findsOneWidget);
+    expect(find.text('6h 30m'), findsOneWidget);
+    expect(find.text('가임기 5일차'), findsNothing);
+  });
 }
 
-Finder _asset(String assetPath) {
+Finder _asset(String assetPath, {BoxFit? fit, AlignmentGeometry? alignment}) {
   return find.byWidgetPredicate((widget) {
     if (widget is! Image || widget.image is! AssetImage) {
       return false;
     }
-    return (widget.image as AssetImage).assetName == assetPath;
+    if ((widget.image as AssetImage).assetName != assetPath) {
+      return false;
+    }
+    if (fit != null && widget.fit != fit) {
+      return false;
+    }
+    if (alignment != null && widget.alignment != alignment) {
+      return false;
+    }
+    return true;
   });
 }
 
-_Controllers _buildControllers({bool hasRecords = true, bool? hasCycle}) {
+_Controllers _buildControllers({
+  bool hasRecords = true,
+  bool? hasCycle,
+  int cycleStartDaysAgo = 0,
+  int cycleLength = 28,
+}) {
   hasCycle ??= hasRecords;
   final today = DateTime.now();
-  final cycleStart = today.subtract(const Duration(days: 14));
+  final cycleStart = today.subtract(Duration(days: cycleStartDaysAgo));
   final sleepStart = DateTime(
     today.year,
     today.month,
@@ -184,7 +236,7 @@ _Controllers _buildControllers({bool hasRecords = true, bool? hasCycle}) {
             'id': 1,
             'start_date': _date(cycleStart),
             'end_date': null,
-            'cycle_length': 17,
+            'cycle_length': cycleLength,
             'memo': null,
             'created_at': today.toIso8601String(),
           });
@@ -252,6 +304,12 @@ String _date(DateTime value) {
   return '${value.year.toString().padLeft(4, '0')}-'
       '${value.month.toString().padLeft(2, '0')}-'
       '${value.day.toString().padLeft(2, '0')}';
+}
+
+String _expectedNextPeriodText(int cycleLength) {
+  final today = DateTime.now();
+  final next = today.add(Duration(days: cycleLength));
+  return '다음 생리 예정 ${next.month}.${next.day} (D-$cycleLength)';
 }
 
 http.Response _jsonResponse(Object body) {

@@ -83,6 +83,49 @@ void main() {
     expect(find.byKey(const Key('passwordField')), findsOneWidget);
   });
 
+  testWidgets('login screen validates full email format before request', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    var requestCount = 0;
+    final storage = TokenStorage();
+    final client = ApiClient(
+      tokenStorage: storage,
+      httpClient: MockClient((request) async {
+        requestCount++;
+        return http.Response('unexpected request', 500);
+      }),
+    );
+    final controller = AuthController(
+      authApi: AuthApi(client),
+      tokenStorage: storage,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AuthScreen(
+          controller: controller,
+          onBackToWelcome: () {},
+          onSignupRequested: () {},
+        ),
+      ),
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('emailField')),
+      '1234@gmail,com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('passwordField')),
+      'password123',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, '로그인'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('올바른 이메일을 입력해주세요.'), findsOneWidget);
+    expect(requestCount, 0);
+  });
+
   testWidgets('start button opens signup basic info screen', (tester) async {
     SharedPreferences.setMockInitialValues({});
 

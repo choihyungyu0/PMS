@@ -65,11 +65,24 @@ class _AuthScreenState extends State<AuthScreen> {
                           key: const Key('emailField'),
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
+                          textCapitalization: TextCapitalization.none,
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          autofillHints: const [AutofillHints.email],
                           decoration: const InputDecoration(labelText: '이메일'),
-                          validator: (value) =>
-                              value != null && value.contains('@')
-                              ? null
-                              : '이메일을 입력해주세요.',
+                          validator: (value) {
+                            final email = value?.trim() ?? '';
+                            if (email.isEmpty) {
+                              return '이메일을 입력해주세요.';
+                            }
+                            final valid = RegExp(
+                              r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                            ).hasMatch(email);
+                            if (!valid) {
+                              return '올바른 이메일을 입력해주세요.';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 12),
                         TextFormField(

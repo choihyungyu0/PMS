@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
     required this.reportController,
     required this.onOpenRecord,
     required this.onOpenReport,
-    required this.onOpenMyPage,
+    required this.onOpenCommunity,
   });
 
   final AuthController authController;
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
   final ReportController reportController;
   final VoidCallback onOpenRecord;
   final VoidCallback onOpenReport;
-  final VoidCallback onOpenMyPage;
+  final VoidCallback onOpenCommunity;
 
   @override
   Widget build(BuildContext context) {
@@ -98,22 +98,7 @@ class HomeScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _TopBar(
-                              onBack: () {
-                                if (Navigator.of(context).canPop()) {
-                                  Navigator.of(context).maybePop();
-                                }
-                              },
-                              onSetting: onOpenMyPage,
-                              onNotification: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('알림 기능은 준비 중이에요.'),
-                                  ),
-                                );
-                              },
-                              onCalendar: onOpenRecord,
-                            ),
+                            _TopBar(onCommunity: onOpenCommunity),
                             const SizedBox(height: 44),
                             Text(
                               '안녕하세요, $displayName님 👋',
@@ -197,87 +182,20 @@ class _SoftBackgroundOrb extends StatelessWidget {
 }
 
 class _TopBar extends StatelessWidget {
-  const _TopBar({
-    required this.onBack,
-    required this.onSetting,
-    required this.onNotification,
-    required this.onCalendar,
-  });
+  const _TopBar({required this.onCommunity});
 
-  final VoidCallback onBack;
-  final VoidCallback onSetting;
-  final VoidCallback onNotification;
-  final VoidCallback onCalendar;
+  final VoidCallback onCommunity;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Tooltip(
-          message: '뒤로가기',
-          child: _CircleBackButton(onTap: onBack),
-        ),
         const Spacer(),
         Tooltip(
-          message: '마이페이지',
-          child: _HexagonIconButton(onTap: onSetting),
-        ),
-        const SizedBox(width: 12),
-        Tooltip(
-          message: '알림',
-          child: _TopIconButton(
-            icon: Icons.notifications_none_rounded,
-            onTap: onNotification,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Tooltip(
-          message: '기록',
-          child: _TopIconButton(
-            icon: Icons.calendar_month_outlined,
-            onTap: onCalendar,
-          ),
+          message: '커뮤니티',
+          child: _TopIconButton(icon: Icons.forum_rounded, onTap: onCommunity),
         ),
       ],
-    );
-  }
-}
-
-class _CircleBackButton extends StatelessWidget {
-  const _CircleBackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFFF8F5FF),
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 58,
-          height: 58,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: const Color(0xFFE2D8F3), width: 1.2),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFFB992E9).withValues(alpha: 0.14),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            color: Color(0xFF1F1730),
-            size: 28,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -395,15 +313,9 @@ class _HealthSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final useReferenceSnapshot =
-        cycle == null && report == null && sleep == null;
-    final cycleSummary = cycle == null
-        ? const _CycleSummary(title: '가임기 5일차', subtitle: '다음 생리 예정 6.24 (D-3)')
-        : _cycleSummary(cycle);
-    final pmsLabel = useReferenceSnapshot
-        ? '보통'
-        : _riskLabel(report?.riskLevel);
-    final sleepLabel = useReferenceSnapshot ? '6h 30m' : _sleepLabel(sleep);
+    final cycleSummary = _cycleSummary(cycle);
+    final pmsLabel = _riskLabel(report?.riskLevel);
+    final sleepLabel = _sleepLabel(sleep);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -564,7 +476,9 @@ class _CycleStatusPanel extends StatelessWidget {
             child: SizedBox(
               width: ringSize,
               height: ringSize,
-              child: const CustomPaint(painter: _CycleRingPainter()),
+              child: CustomPaint(
+                painter: _CycleRingPainter(progress: summary.progress),
+              ),
             ),
           ),
           Positioned(
@@ -642,10 +556,13 @@ class _CycleStatusPanel extends StatelessWidget {
 }
 
 class _CycleRingPainter extends CustomPainter {
-  const _CycleRingPainter();
+  const _CycleRingPainter({required this.progress});
+
+  final double progress;
 
   @override
   void paint(Canvas canvas, Size size) {
+    final clampedProgress = progress.clamp(0.0, 1.0).toDouble();
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.36;
     final strokeWidth = size.width * 0.205;
@@ -682,7 +599,15 @@ class _CycleRingPainter extends CustomPainter {
         ],
         stops: [0.0, 0.28, 0.72, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: radius));
-    canvas.drawArc(ringRect, -math.pi / 2, math.pi * 1.38, false, arcPaint);
+    if (clampedProgress > 0) {
+      canvas.drawArc(
+        ringRect,
+        -math.pi / 2,
+        math.pi * 2 * clampedProgress,
+        false,
+        arcPaint,
+      );
+    }
 
     final innerFillPaint = Paint()
       ..style = PaintingStyle.fill
@@ -705,7 +630,7 @@ class _CycleRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CycleRingPainter oldDelegate) {
-    return false;
+    return oldDelegate.progress != progress;
   }
 }
 
@@ -779,17 +704,6 @@ class _MiniHealthCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(
-                    decoration.assetPath,
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                    filterQuality: FilterQuality.high,
-                  ),
-                ),
-              ),
               Positioned(
                 left: 0,
                 right: 0,
@@ -837,27 +751,41 @@ class _MiniHealthCard extends StatelessWidget {
               Positioned(
                 right: 4,
                 top: arrowTop,
-                child: Container(
+                child: SizedBox(
                   width: arrowSize,
                   height: arrowSize,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.72),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.85),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: arrowColor.withValues(alpha: 0.14),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: arrowColor.withValues(alpha: 0.14),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                    child: ClipOval(
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withValues(alpha: 0.70),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.86),
+                              ),
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: arrowColor,
+                            size: 32,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.chevron_right_rounded,
-                    color: arrowColor,
-                    size: 32,
+                    ),
                   ),
                 ),
               ),
@@ -870,12 +798,8 @@ class _MiniHealthCard extends StatelessWidget {
 }
 
 enum _MiniDecoration {
-  pms(AppAssets.homePmsCardBg),
-  sleep(AppAssets.homeSleepCardBg);
-
-  const _MiniDecoration(this.assetPath);
-
-  final String assetPath;
+  pms,
+  sleep;
 }
 
 class _TodayMissionCard extends StatelessWidget {
@@ -1033,11 +957,13 @@ class _CycleSummary {
   const _CycleSummary({
     required this.title,
     required this.subtitle,
+    required this.progress,
     this.isPlaceholder = false,
   });
 
   final String title;
   final String subtitle;
+  final double progress;
   final bool isPlaceholder;
 }
 
@@ -1046,6 +972,7 @@ _CycleSummary _cycleSummary(CycleLog? cycle) {
     return const _CycleSummary(
       title: '기록 전',
       subtitle: '생리 시작일을 기록하면 주기 요약을 볼 수 있어요.',
+      progress: 0,
       isPlaceholder: true,
     );
   }
@@ -1057,32 +984,63 @@ _CycleSummary _cycleSummary(CycleLog? cycle) {
     cycle.startDate.month,
     cycle.startDate.day,
   );
-  final end = cycle.endDate == null
-      ? null
-      : DateTime(cycle.endDate!.year, cycle.endDate!.month, cycle.endDate!.day);
   final daysSinceStart = currentDay.difference(start).inDays;
+  final cycleLength = (cycle.cycleLength ?? 28).clamp(15, 60).toInt();
+  final periodLength = _periodLength(cycle);
+  final actualPeriodEnd = start.add(Duration(days: periodLength - 1));
 
-  final inPeriod =
-      daysSinceStart >= 0 &&
-      (end == null ? daysSinceStart <= 6 : !currentDay.isAfter(end));
-  final title = inPeriod
-      ? '생리 ${daysSinceStart + 1}일차'
-      : daysSinceStart >= 10 && daysSinceStart <= 16
-      ? '가임기 ${daysSinceStart - 9}일차'
-      : '주기 ${math.max(daysSinceStart + 1, 1)}일차';
-
-  final cycleLength = cycle.cycleLength ?? 28;
   var nextPeriod = start.add(Duration(days: cycleLength));
-  while (!nextPeriod.isAfter(currentDay)) {
+  while (nextPeriod.isBefore(currentDay)) {
     nextPeriod = nextPeriod.add(Duration(days: cycleLength));
   }
   final daysUntil = nextPeriod.difference(currentDay).inDays;
   final dday = daysUntil == 0 ? 'D-day' : 'D-$daysUntil';
+  final currentCycleIndex = daysSinceStart < 0
+      ? 0
+      : daysSinceStart % cycleLength;
+  final cycleDay = currentCycleIndex + 1;
+  final progress = cycleDay / cycleLength;
+
+  final inPeriod = daysSinceStart >= 0 && !currentDay.isAfter(actualPeriodEnd);
+  final ovulationDay = nextPeriod.subtract(const Duration(days: 14));
+  final fertileStart = ovulationDay.subtract(const Duration(days: 5));
+  final inFertileWindow =
+      !currentDay.isBefore(fertileStart) && !currentDay.isAfter(ovulationDay);
+
+  final title = inPeriod
+      ? '생리 ${daysSinceStart + 1}일차'
+      : _isSameDay(currentDay, ovulationDay)
+      ? '배란일 예상'
+      : inFertileWindow
+      ? '가임기 ${currentDay.difference(fertileStart).inDays + 1}일차'
+      : daysUntil == 0
+      ? '생리 예정일'
+      : '주기 $cycleDay일차';
 
   return _CycleSummary(
     title: title,
     subtitle: '다음 생리 예정 ${nextPeriod.month}.${nextPeriod.day} ($dday)',
+    progress: progress,
   );
+}
+
+int _periodLength(CycleLog cycle) {
+  final start = DateTime(
+    cycle.startDate.year,
+    cycle.startDate.month,
+    cycle.startDate.day,
+  );
+  final end = cycle.endDate == null
+      ? null
+      : DateTime(cycle.endDate!.year, cycle.endDate!.month, cycle.endDate!.day);
+  if (end == null || end.isBefore(start)) {
+    return 5;
+  }
+  return (end.difference(start).inDays + 1).clamp(1, 10).toInt();
+}
+
+bool _isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
 String _riskLabel(String? riskLevel) {
