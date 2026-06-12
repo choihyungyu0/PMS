@@ -405,106 +405,126 @@ class _HealthSummaryCard extends StatelessWidget {
         : _riskLabel(report?.riskLevel);
     final sleepLabel = useReferenceSnapshot ? '6h 30m' : _sleepLabel(sleep);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 26, 16, 18),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.88),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF835AD9).withValues(alpha: 0.10),
-            blurRadius: 30,
-            offset: const Offset(0, 14),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Row(
-              children: [
-                Text(
-                  '오늘의 건강 요약',
-                  style: TextStyle(
-                    color: Color(0xFF121324),
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0,
-                    height: 1,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Text(
-                  '✦',
-                  style: TextStyle(
-                    color: Color(0xFFC698F5),
-                    fontSize: 21,
-                    fontWeight: FontWeight.w700,
-                    height: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          _CycleStatusPanel(summary: cycleSummary),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _MiniHealthCard(
-                  height: 148,
-                  label: 'PMS 예측',
-                  value: pmsLabel,
-                  labelColor: const Color(0xFF17151C),
-                  valueColor: const Color(0xFFFF8A1F),
-                  arrowColor: const Color(0xFFFF9A27),
-                  borderColor: const Color(0xFFF5D8C8),
-                  decoration: _MiniDecoration.pms,
-                  gradientColors: const [Color(0xFFFFFCF8), Color(0xFFFFF0E4)],
-                  onTap: onOpenReport,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _MiniHealthCard(
-                  height: 148,
-                  label: '수면 시간',
-                  value: sleepLabel,
-                  labelColor: const Color(0xFF2D6EBE),
-                  valueColor: const Color(0xFF2E79DF),
-                  arrowColor: const Color(0xFF74A7EE),
-                  borderColor: const Color(0xFFD2DDF4),
-                  decoration: _MiniDecoration.sleep,
-                  gradientColors: const [Color(0xFFFBFDFF), Color(0xFFEAF4FF)],
-                  onTap: onOpenRecord,
-                ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final innerWidth = (constraints.maxWidth - 32).clamp(
+          0.0,
+          double.infinity,
+        );
+        final cycleCardHeight = (innerWidth / 2.06).clamp(156.0, 190.0);
+        final miniCardWidth = (innerWidth - 12) / 2;
+        final miniCardHeight = (miniCardWidth / 1.30).clamp(122.0, 148.0);
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.88),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: const Color(0xFFE4DDF0), width: 1.2),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF835AD9).withValues(alpha: 0.10),
+                blurRadius: 30,
+                offset: const Offset(0, 14),
               ),
             ],
           ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Row(
+                  children: [
+                    Text(
+                      '오늘의 건강 요약',
+                      style: TextStyle(
+                        color: Color(0xFF121324),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0,
+                        height: 1,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      '✦',
+                      style: TextStyle(
+                        color: Color(0xFFC698F5),
+                        fontSize: 21,
+                        fontWeight: FontWeight.w700,
+                        height: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 22),
+              _CycleStatusPanel(summary: cycleSummary, height: cycleCardHeight),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: _MiniHealthCard(
+                      height: miniCardHeight,
+                      label: 'PMS 예측',
+                      value: pmsLabel,
+                      labelColor: const Color(0xFF17151C),
+                      valueColor: const Color(0xFFFF8A1F),
+                      arrowColor: const Color(0xFFFF9A27),
+                      borderColor: const Color(0xFFF5D8C8),
+                      decoration: _MiniDecoration.pms,
+                      gradientColors: const [
+                        Color(0xFFFFFCF8),
+                        Color(0xFFFFF0E4),
+                      ],
+                      onTap: onOpenReport,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _MiniHealthCard(
+                      height: miniCardHeight,
+                      label: '수면 시간',
+                      value: sleepLabel,
+                      labelColor: const Color(0xFF2D6EBE),
+                      valueColor: const Color(0xFF2E79DF),
+                      arrowColor: const Color(0xFF74A7EE),
+                      borderColor: const Color(0xFFD2DDF4),
+                      decoration: _MiniDecoration.sleep,
+                      gradientColors: const [
+                        Color(0xFFFBFDFF),
+                        Color(0xFFEAF4FF),
+                      ],
+                      onTap: onOpenRecord,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
 class _CycleStatusPanel extends StatelessWidget {
-  const _CycleStatusPanel({required this.summary});
+  const _CycleStatusPanel({required this.summary, required this.height});
 
   final _CycleSummary summary;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     final titleFontSize = summary.isPlaceholder ? 31.0 : 34.0;
-    final subtitleMaxLines = summary.isPlaceholder ? 2 : 1;
+    final ringSize = (height * 0.62).clamp(96.0, 112.0);
+    final textRightInset = ringSize + 24;
 
     return Container(
       width: double.infinity,
-      height: 194,
+      height: height,
       padding: const EdgeInsets.fromLTRB(24, 24, 20, 22),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -536,19 +556,19 @@ class _CycleStatusPanel extends StatelessWidget {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             right: 22,
-            top: 42,
+            top: height * 0.23,
             child: SizedBox(
-              width: 112,
-              height: 112,
-              child: CustomPaint(painter: _CycleRingPainter()),
+              width: ringSize,
+              height: ringSize,
+              child: const CustomPaint(painter: _CycleRingPainter()),
             ),
           ),
           Positioned(
             left: 0,
             top: 6,
-            right: 138,
+            right: textRightInset,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -562,37 +582,43 @@ class _CycleStatusPanel extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-                const SizedBox(height: 25),
-                Text(
-                  summary.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: const Color(0xFF5524B7),
-                    fontSize: titleFontSize,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0,
-                    height: 1,
-                    shadows: const [
-                      Shadow(
-                        color: Color(0x339C63F2),
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
+                SizedBox(height: height * 0.11),
+                FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    summary.title,
+                    maxLines: 1,
+                    style: TextStyle(
+                      color: const Color(0xFF5524B7),
+                      fontSize: titleFontSize,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0,
+                      height: 1,
+                      shadows: const [
+                        Shadow(
+                          color: Color(0x339C63F2),
+                          blurRadius: 12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 22),
-                Text(
-                  summary.subtitle,
-                  maxLines: subtitleMaxLines,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF15151D),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                    height: 1.2,
+                SizedBox(height: height * 0.13),
+                FittedBox(
+                  alignment: Alignment.centerLeft,
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    summary.subtitle,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Color(0xFF15151D),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0,
+                      height: 1.2,
+                    ),
                   ),
                 ),
               ],
@@ -604,7 +630,7 @@ class _CycleStatusPanel extends StatelessWidget {
             child: Icon(
               Icons.close_rounded,
               color: const Color(0xFF7E56DD).withValues(alpha: 0.9),
-              size: 34,
+              size: 32,
             ),
           ),
         ],
@@ -702,7 +728,10 @@ class _MiniHealthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPlaceholderValue = value.contains('전') || value.contains('없음');
-    final valueFontSize = isPlaceholderValue ? 29.0 : 31.0;
+    final valueFontSize = isPlaceholderValue ? 27.0 : 31.0;
+    final valueTop = (height * 0.43).clamp(48.0, 56.0);
+    final arrowSize = (height * 0.29).clamp(34.0, 38.0);
+    final arrowTop = (height * 0.39).clamp(46.0, 52.0);
 
     return Material(
       color: Colors.transparent,
@@ -762,7 +791,7 @@ class _MiniHealthCard extends StatelessWidget {
               Positioned(
                 left: 0,
                 right: 50,
-                top: 56,
+                top: valueTop,
                 child: FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -788,10 +817,10 @@ class _MiniHealthCard extends StatelessWidget {
               ),
               Positioned(
                 right: 4,
-                top: 52,
+                top: arrowTop,
                 child: Container(
-                  width: 36,
-                  height: 36,
+                  width: arrowSize,
+                  height: arrowSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white.withValues(alpha: 0.72),

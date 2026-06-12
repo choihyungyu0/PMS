@@ -71,6 +71,14 @@ void main() {
     expect(_asset(AppAssets.bottomNavRecord), findsOneWidget);
     expect(_asset(AppAssets.bottomNavAnalysis), findsOneWidget);
     expect(_asset(AppAssets.bottomNavMy), findsOneWidget);
+
+    final cycleCardRect = tester.getRect(_asset(AppAssets.homeCycleCardBg));
+    final pmsCardRect = tester.getRect(_asset(AppAssets.homePmsCardBg));
+    final sleepCardRect = tester.getRect(_asset(AppAssets.homeSleepCardBg));
+
+    expect(cycleCardRect.width / cycleCardRect.height, greaterThan(1.95));
+    expect(pmsCardRect.width / pmsCardRect.height, greaterThan(1.22));
+    expect(sleepCardRect.width / sleepCardRect.height, greaterThan(1.22));
   });
 
   testWidgets('home initial state keeps reference card layout', (tester) async {
