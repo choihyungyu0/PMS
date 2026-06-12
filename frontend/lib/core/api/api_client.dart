@@ -21,19 +21,88 @@ class ApiClient {
   final http.Client _httpClient;
 
   Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
-    final uri = _uri(path, query);
-    final response = await _httpClient.get(uri, headers: await _headers());
-    return _handle(response, path: path);
+    return _send('GET', path, query: query);
   }
 
   Future<dynamic> post(String path, {Map<String, dynamic>? body}) async {
-    final uri = _uri(path);
-    final response = await _httpClient.post(
-      uri,
-      headers: await _headers(),
-      body: jsonEncode(body ?? <String, dynamic>{}),
+    return _send('POST', path, body: body);
+  }
+
+  Future<dynamic> _send(
+    String method,
+    String path, {
+    Map<String, dynamic>? query,
+    Map<String, dynamic>? body,
+    bool allowRefresh = true,
+  }) async {
+    final uri = _uri(path, query);
+    final response = await _request(method, uri, body);
+    return _handle(
+      response,
+      path: path,
+      retry: allowRefresh
+          ? () => _send(
+              method,
+              path,
+              query: query,
+              body: body,
+              allowRefresh: false,
+            )
+          : null,
     );
-    return _handle(response, path: path);
+  }
+
+  Future<http.Response> _request(
+    String method,
+    Uri uri,
+    Map<String, dynamic>? body,
+  ) async {
+    if (method == 'GET') {
+      return _httpClient.get(uri, headers: await _headers());
+    }
+    if (method == 'POST') {
+      return _httpClient.post(
+        uri,
+        headers: await _headers(),
+        body: jsonEncode(body ?? <String, dynamic>{}),
+      );
+    }
+    throw UnsupportedError('Unsupported API method: $method');
+  }
+
+  Future<bool> _refreshAccessToken() async {
+    final refreshToken = await tokenStorage.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return false;
+    }
+
+    try {
+      final response = await _httpClient.post(
+        _uri('/api/auth/refresh'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'refresh_token': refreshToken}),
+      );
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        return false;
+      }
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+      if (decoded is! Map<String, dynamic>) {
+        return false;
+      }
+      final accessToken = decoded['access_token']?.toString() ?? '';
+      final nextRefreshToken =
+          decoded['refresh_token']?.toString() ?? refreshToken;
+      if (accessToken.isEmpty) {
+        return false;
+      }
+      await tokenStorage.saveTokens(
+        accessToken: accessToken,
+        refreshToken: nextRefreshToken,
+      );
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   Uri _uri(String path, [Map<String, dynamic>? query]) {
@@ -59,6 +128,7 @@ class ApiClient {
   Future<dynamic> _handle(
     http.Response response, {
     required String path,
+    Future<dynamic> Function()? retry,
   }) async {
     dynamic decoded;
     if (response.body.isNotEmpty) {
@@ -70,10 +140,14 @@ class ApiClient {
     }
 
     if (response.statusCode == 401) {
-      if (path == '/api/auth/login') {
+      if (_isAuthRequest(path)) {
         throw ApiException(_errorMessage(decoded), statusCode: 401);
       }
-      await tokenStorage.clearToken();
+      final refreshed = retry != null && await _refreshAccessToken();
+      if (refreshed) {
+        return retry();
+      }
+      await tokenStorage.clearTokens();
       await onUnauthorized?.call();
       throw ApiException('로그인이 만료되었어요. 다시 로그인해주세요.', statusCode: 401);
     }
@@ -86,6 +160,12 @@ class ApiClient {
     }
 
     return decoded;
+  }
+
+  bool _isAuthRequest(String path) {
+    return path == '/api/auth/login' ||
+        path == '/api/auth/signup' ||
+        path == '/api/auth/refresh';
   }
 
   String _errorMessage(dynamic decoded) {

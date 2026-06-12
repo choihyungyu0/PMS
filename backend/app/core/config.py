@@ -55,6 +55,9 @@ class Settings:
     access_token_expire_minutes = int(
         os.getenv("MORE_CYCLE_ACCESS_TOKEN_EXPIRE_MINUTES", "1440")
     )
+    refresh_token_expire_days = int(
+        os.getenv("MORE_CYCLE_REFRESH_TOKEN_EXPIRE_DAYS", "30")
+    )
     cors_origins = [
         origin.strip()
         for origin in os.getenv(

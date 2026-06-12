@@ -54,13 +54,37 @@ def get_password_hash(password: str) -> str:
     )
 
 
-def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
+def _create_token(
+    subject: str,
+    token_use: str,
+    expires_delta: timedelta,
+) -> str:
     expire = datetime.now(timezone.utc) + (
-        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
+        expires_delta
     )
-    payload: dict[str, Any] = {"sub": subject, "exp": expire}
+    payload: dict[str, Any] = {"sub": subject, "exp": expire, "token_use": token_use}
     return jwt.encode(payload, settings.secret_key, algorithm=settings.algorithm)
 
 
-def decode_access_token(token: str) -> dict[str, Any]:
+def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
+    return _create_token(
+        subject,
+        "access",
+        expires_delta or timedelta(minutes=settings.access_token_expire_minutes),
+    )
+
+
+def create_refresh_token(subject: str, expires_delta: timedelta | None = None) -> str:
+    return _create_token(
+        subject,
+        "refresh",
+        expires_delta or timedelta(days=settings.refresh_token_expire_days),
+    )
+
+
+def decode_token(token: str) -> dict[str, Any]:
     return jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+
+
+def decode_access_token(token: str) -> dict[str, Any]:
+    return decode_token(token)

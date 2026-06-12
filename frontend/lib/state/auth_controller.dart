@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../core/api/api_exception.dart';
 import '../core/storage/token_storage.dart';
+import '../models/auth.dart';
 import '../models/user.dart';
 import '../services/auth_api.dart';
 
@@ -24,7 +25,9 @@ class AuthController extends ChangeNotifier {
     status = AuthStatus.checking;
     notifyListeners();
     final token = await _tokenStorage.readToken();
-    if (token == null || token.isEmpty) {
+    final refreshToken = await _tokenStorage.readRefreshToken();
+    if ((token == null || token.isEmpty) &&
+        (refreshToken == null || refreshToken.isEmpty)) {
       status = AuthStatus.unauthenticated;
       notifyListeners();
       return;
@@ -72,13 +75,16 @@ class AuthController extends ChangeNotifier {
     await logout();
   }
 
-  Future<bool> _authenticate(Future<dynamic> Function() action) async {
+  Future<bool> _authenticate(Future<AuthToken> Function() action) async {
     loading = true;
     errorMessage = null;
     notifyListeners();
     try {
       final token = await action();
-      await _tokenStorage.saveToken(token.accessToken);
+      await _tokenStorage.saveTokens(
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      );
       user = await _authApi.me();
       status = AuthStatus.authenticated;
       loading = false;

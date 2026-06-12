@@ -2,8 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.database import get_db
-from app.schemas.auth import LoginRequest, SignupRequest, Token
-from app.services.auth_service import authenticate_user, create_user, issue_token_for_user
+from app.schemas.auth import LoginRequest, RefreshTokenRequest, SignupRequest, Token
+from app.services.auth_service import (
+    authenticate_user,
+    create_user,
+    issue_token_for_user,
+    issue_token_from_refresh,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -25,3 +30,11 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> dict[str, str
             headers={"WWW-Authenticate": "Bearer"},
         )
     return issue_token_for_user(user)
+
+
+@router.post("/refresh", response_model=Token)
+def refresh_token(
+    payload: RefreshTokenRequest,
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    return issue_token_from_refresh(db, payload.refresh_token)

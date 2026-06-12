@@ -95,6 +95,7 @@ python -m pytest
 - `GET /api/health`
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
+- `POST /api/auth/refresh`
 - `GET /api/users/me`
 - `GET /api/cycles`
 - `POST /api/cycles`

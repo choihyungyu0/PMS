@@ -175,6 +175,68 @@ void main() {
     expect(unauthorizedCallbackCalled, isFalse);
   });
 
+  test('api client refreshes token and retries protected request', () async {
+    SharedPreferences.setMockInitialValues({
+      'more_cycle_access_token': 'expired-token',
+      'more_cycle_refresh_token': 'refresh-token',
+    });
+    var unauthorizedCallbackCalled = false;
+    final paths = <String>[];
+    final storage = TokenStorage();
+    final client = ApiClient(
+      tokenStorage: storage,
+      onUnauthorized: () async => unauthorizedCallbackCalled = true,
+      httpClient: MockClient((request) async {
+        paths.add(request.url.path);
+        if (request.url.path == '/api/users/me' &&
+            request.headers['authorization'] == 'Bearer expired-token') {
+          return http.Response(
+            jsonEncode({'detail': 'Could not validate credentials.'}),
+            401,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        if (request.url.path == '/api/auth/refresh') {
+          expect(request.headers['authorization'], isNull);
+          expect(jsonDecode(request.body), {'refresh_token': 'refresh-token'});
+          return http.Response(
+            jsonEncode({
+              'access_token': 'fresh-token',
+              'refresh_token': 'next-refresh-token',
+              'token_type': 'bearer',
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        if (request.url.path == '/api/users/me' &&
+            request.headers['authorization'] == 'Bearer fresh-token') {
+          return http.Response(
+            jsonEncode({
+              'id': 1,
+              'email': 'test@example.com',
+              'nickname': '테스터',
+              'birth_date': '2000-01-01',
+              'created_at': '2026-06-11T00:00:00',
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        return http.Response('not found', 404);
+      }),
+    );
+
+    final result = await client.get('/api/users/me') as Map<String, dynamic>;
+    final prefs = await SharedPreferences.getInstance();
+
+    expect(result['email'], 'test@example.com');
+    expect(paths, ['/api/users/me', '/api/auth/refresh', '/api/users/me']);
+    expect(prefs.getString('more_cycle_access_token'), 'fresh-token');
+    expect(prefs.getString('more_cycle_refresh_token'), 'next-refresh-token');
+    expect(unauthorizedCallbackCalled, isFalse);
+  });
+
   testWidgets('start button opens signup basic info screen', (tester) async {
     SharedPreferences.setMockInitialValues({});
 
