@@ -397,7 +397,7 @@ class _HealthSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final useReferenceSnapshot =
         cycle == null && report == null && sleep == null;
-    final cycleSummary = useReferenceSnapshot
+    final cycleSummary = cycle == null
         ? const _CycleSummary(title: '가임기 5일차', subtitle: '다음 생리 예정 6.24 (D-3)')
         : _cycleSummary(cycle);
     final pmsLabel = useReferenceSnapshot
@@ -411,7 +411,7 @@ class _HealthSummaryCard extends StatelessWidget {
           0.0,
           double.infinity,
         );
-        final cycleCardHeight = (innerWidth / 2.06).clamp(156.0, 190.0);
+        final cycleCardHeight = (innerWidth / 2.34).clamp(138.0, 172.0);
         final miniCardWidth = (innerWidth - 12) / 2;
         final miniCardHeight = (miniCardWidth / 1.30).clamp(122.0, 148.0);
 
@@ -519,8 +519,8 @@ class _CycleStatusPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleFontSize = summary.isPlaceholder ? 31.0 : 34.0;
-    final ringSize = (height * 0.62).clamp(96.0, 112.0);
-    final textRightInset = ringSize + 24;
+    final ringSize = (height * 0.70).clamp(96.0, 116.0);
+    final textRightInset = ringSize + 18;
 
     return Container(
       width: double.infinity,
@@ -557,8 +557,8 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 22,
-            top: height * 0.23,
+            right: 20,
+            top: height * 0.18,
             child: SizedBox(
               width: ringSize,
               height: ringSize,
@@ -582,7 +582,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-                SizedBox(height: height * 0.11),
+                SizedBox(height: height * 0.10),
                 FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -605,7 +605,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.13),
+                SizedBox(height: height * 0.12),
                 FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,

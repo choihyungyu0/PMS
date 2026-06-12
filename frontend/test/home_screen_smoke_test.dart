@@ -76,7 +76,7 @@ void main() {
     final pmsCardRect = tester.getRect(_asset(AppAssets.homePmsCardBg));
     final sleepCardRect = tester.getRect(_asset(AppAssets.homeSleepCardBg));
 
-    expect(cycleCardRect.width / cycleCardRect.height, greaterThan(1.95));
+    expect(cycleCardRect.width / cycleCardRect.height, greaterThan(2.25));
     expect(pmsCardRect.width / pmsCardRect.height, greaterThan(1.22));
     expect(sleepCardRect.width / sleepCardRect.height, greaterThan(1.22));
   });
@@ -115,6 +115,38 @@ void main() {
     expect(find.text('기록이 필요해요'), findsNothing);
     expect(find.text('기록 없음'), findsNothing);
   });
+
+  testWidgets(
+    'home cycle card keeps reference copy when only cycle is missing',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      await tester.binding.setSurfaceSize(const Size(393, 852));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      final controllers = _buildControllers(hasCycle: false);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          home: MainShell(
+            authController: controllers.authController,
+            recordController: controllers.recordController,
+            reportController: controllers.reportController,
+            analysisController: controllers.analysisController,
+            institutionController: controllers.institutionController,
+          ),
+        ),
+      );
+      for (var i = 0; i < 8; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      expect(find.text('가임기 5일차'), findsOneWidget);
+      expect(find.text('다음 생리 예정 6.24 (D-3)'), findsOneWidget);
+      expect(find.text('기록 전'), findsNothing);
+    },
+  );
 }
 
 Finder _asset(String assetPath) {
@@ -126,7 +158,8 @@ Finder _asset(String assetPath) {
   });
 }
 
-_Controllers _buildControllers({bool hasRecords = true}) {
+_Controllers _buildControllers({bool hasRecords = true, bool? hasCycle}) {
+  hasCycle ??= hasRecords;
   final today = DateTime.now();
   final cycleStart = today.subtract(const Duration(days: 14));
   final sleepStart = DateTime(
@@ -142,7 +175,7 @@ _Controllers _buildControllers({bool hasRecords = true}) {
     httpClient: MockClient((request) async {
       switch (request.url.path) {
         case '/api/cycles/latest':
-          if (!hasRecords) {
+          if (!hasCycle!) {
             return http.Response('', 200);
           }
           return _jsonResponse({
