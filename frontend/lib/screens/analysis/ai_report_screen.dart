@@ -16,11 +16,13 @@ class AiReportScreen extends StatefulWidget {
     required this.authController,
     required this.reportController,
     required this.analysisController,
+    this.onGoHome,
   });
 
   final AuthController authController;
   final ReportController reportController;
   final AnalysisController analysisController;
+  final VoidCallback? onGoHome;
 
   @override
   State<AiReportScreen> createState() => _AiReportScreenState();
@@ -87,6 +89,7 @@ class _AiReportScreenState extends State<AiReportScreen> {
           authController: widget.authController,
           reportController: widget.reportController,
           analysisController: widget.analysisController,
+          onGoHome: () => widget.onGoHome?.call(),
         ),
       ),
     );

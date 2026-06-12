@@ -66,6 +66,7 @@ class _MainShellState extends State<MainShell> {
         authController: widget.authController,
         reportController: widget.reportController,
         analysisController: widget.analysisController,
+        onGoHome: () => setState(() => _index = 0),
       ),
       HospitalScreen(
         institutionController: widget.institutionController,

@@ -17,12 +17,14 @@ class AiCareRecommendationScreen extends StatefulWidget {
     required this.authController,
     required this.reportController,
     required this.analysisController,
+    required this.onGoHome,
     HealthGoalStorage? goalStorage,
   }) : goalStorage = goalStorage ?? const HealthGoalStorage();
 
   final AuthController authController;
   final ReportController reportController;
   final AnalysisController analysisController;
+  final VoidCallback onGoHome;
   final HealthGoalStorage goalStorage;
 
   @override
@@ -51,6 +53,14 @@ class _AiCareRecommendationScreenState
       return;
     }
     setState(() => _goalIds = goalIds);
+  }
+
+  void _goHome() {
+    final navigator = Navigator.of(context);
+    if (navigator.canPop()) {
+      navigator.popUntil((route) => route.isFirst);
+    }
+    widget.onGoHome();
   }
 
   @override
@@ -176,6 +186,13 @@ class _AiCareRecommendationScreenState
                     ),
                   ),
                 ),
+                Positioned(
+                  top: 14,
+                  right: 18,
+                  child: SafeArea(
+                    child: _HomeIconButton(onTap: _goHome),
+                  ),
+                ),
               ],
             ),
           );
@@ -223,6 +240,49 @@ class _Header extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _HomeIconButton extends StatelessWidget {
+  const _HomeIconButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: '홈으로 이동',
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: Ink(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.96),
+              border: Border.all(color: const Color(0xFFE0D2FF), width: 1.3),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primaryPurple.withValues(alpha: 0.18),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.home_rounded,
+              color: AppColors.primaryPurple,
+              size: 27,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
