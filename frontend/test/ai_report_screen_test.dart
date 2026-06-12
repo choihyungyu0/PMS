@@ -5,11 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:more_cycle/core/api/api_client.dart';
+import 'package:more_cycle/core/constants/app_colors.dart';
 import 'package:more_cycle/core/constants/app_text.dart';
 import 'package:more_cycle/core/storage/token_storage.dart';
 import 'package:more_cycle/core/theme/app_theme.dart';
 import 'package:more_cycle/models/user.dart';
 import 'package:more_cycle/screens/analysis/ai_report_screen.dart';
+import 'package:more_cycle/screens/analysis/analysis_screen.dart';
 import 'package:more_cycle/services/auth_api.dart';
 import 'package:more_cycle/services/record_api.dart';
 import 'package:more_cycle/services/report_api.dart';
@@ -45,6 +47,46 @@ void main() {
     expect(find.text('AI 추천 케어'), findsOneWidget);
     expect(find.text('충분한 휴식'), findsOneWidget);
     expect(find.text('수분 섭취'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('analysis detail route paints a full lavender background', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(393, 852));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final controllers = _buildControllers();
+
+    await tester.pumpWidget(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        home: Scaffold(
+          body: AiReportScreen(
+            authController: controllers.authController,
+            reportController: controllers.reportController,
+            analysisController: controllers.analysisController,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('상세 리포트 보기'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('상세 리포트 보기'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AnalysisScreen), findsOneWidget);
+    final scaffold = tester.widget<Scaffold>(
+      find.descendant(
+        of: find.byType(AnalysisScreen),
+        matching: find.byType(Scaffold),
+      ),
+    );
+    expect(scaffold.backgroundColor, AppColors.lavenderBackground);
     expect(tester.takeException(), isNull);
   });
 }

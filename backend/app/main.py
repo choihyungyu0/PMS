@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
 from app.db.database import Base, SessionLocal, engine
@@ -49,3 +50,10 @@ app.include_router(sleep.router, prefix="/api")
 app.include_router(pain.router, prefix="/api")
 app.include_router(reports.router, prefix="/api")
 app.include_router(institutions.router, prefix="/api")
+
+if settings.web_static_dir.exists():
+    app.mount(
+        "/",
+        StaticFiles(directory=settings.web_static_dir, html=True),
+        name="web",
+    )

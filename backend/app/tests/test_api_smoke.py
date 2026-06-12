@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from fastapi.testclient import TestClient
 
+from app.core.config import settings
 from app.db.database import Base, get_db
 from app.main import app
 
@@ -79,3 +80,14 @@ def test_health_auth_and_protected_route(tmp_path):
         assert me_with_refreshed_token.json()["email"] == "demo@example.com"
     finally:
         app.dependency_overrides.clear()
+
+
+def test_web_static_mount_serves_index_when_built():
+    if not settings.web_static_dir.exists():
+        return
+
+    client = TestClient(app)
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "MORE Cycle" in response.text

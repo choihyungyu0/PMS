@@ -26,81 +26,88 @@ class _AnalysisScreenState extends State<AnalysisScreen> {
   @override
   void initState() {
     super.initState();
-    widget.controller.load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        widget.controller.load();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: AnimatedBuilder(
-        animation: widget.controller,
-        builder: (context, _) {
-          return RefreshIndicator(
-            color: AppColors.primaryPurple,
-            onRefresh: widget.controller.refresh,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final horizontalPadding = (constraints.maxWidth * 0.045)
-                    .clamp(16.0, 24.0)
-                    .toDouble();
-                return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  padding: EdgeInsets.fromLTRB(
-                    horizontalPadding,
-                    14,
-                    horizontalPadding,
-                    24,
-                  ),
-                  child: _OuterPanel(
-                    child: Column(
-                      children: [
-                        _PeriodTabBar(
-                          selectedMode: widget.controller.mode,
-                          onChanged: widget.controller.setMode,
-                        ),
-                        const SizedBox(height: 26),
-                        _DateNavigationRow(
-                          title: widget.controller.periodLabel,
-                          canGoNext: widget.controller.canGoNext,
-                          onPrevious: widget.controller.previousPeriod,
-                          onNext: widget.controller.nextPeriod,
-                        ),
-                        const SizedBox(height: 28),
-                        if (widget.controller.loading)
-                          const LinearProgressIndicator(
-                            minHeight: 3,
-                            color: AppColors.primaryPurple,
-                            backgroundColor: Color(0xFFEDE5FF),
-                          ),
-                        if (widget.controller.errorMessage != null) ...[
-                          const SizedBox(height: 12),
-                          _SoftMessage(text: widget.controller.errorMessage!),
-                        ],
-                        const SizedBox(height: 18),
-                        _SymptomTrendCard(
-                          summary: widget.controller.summary,
-                          loading: widget.controller.loading,
-                        ),
-                        const SizedBox(height: 18),
-                        _MetricCards(summary: widget.controller.summary),
-                        const SizedBox(height: 22),
-                        _DownloadReportButton(onTap: _showDownloadNotice),
-                        const SizedBox(height: 12),
-                        _CareRecommendationButton(
-                          onTap: _openCareRecommendations,
-                        ),
-                        const SizedBox(height: 14),
-                        const _DisclaimerText(),
-                      ],
+    return Scaffold(
+      backgroundColor: AppColors.lavenderBackground,
+      body: SafeArea(
+        child: AnimatedBuilder(
+          animation: widget.controller,
+          builder: (context, _) {
+            return RefreshIndicator(
+              color: AppColors.primaryPurple,
+              onRefresh: widget.controller.refresh,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final horizontalPadding = (constraints.maxWidth * 0.045)
+                      .clamp(16.0, 24.0)
+                      .toDouble();
+                  return SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      14,
+                      horizontalPadding,
+                      24,
+                    ),
+                    child: _OuterPanel(
+                      child: Column(
+                        children: [
+                          _PeriodTabBar(
+                            selectedMode: widget.controller.mode,
+                            onChanged: widget.controller.setMode,
+                          ),
+                          const SizedBox(height: 26),
+                          _DateNavigationRow(
+                            title: widget.controller.periodLabel,
+                            canGoNext: widget.controller.canGoNext,
+                            onPrevious: widget.controller.previousPeriod,
+                            onNext: widget.controller.nextPeriod,
+                          ),
+                          const SizedBox(height: 28),
+                          if (widget.controller.loading)
+                            const LinearProgressIndicator(
+                              minHeight: 3,
+                              color: AppColors.primaryPurple,
+                              backgroundColor: Color(0xFFEDE5FF),
+                            ),
+                          if (widget.controller.errorMessage != null) ...[
+                            const SizedBox(height: 12),
+                            _SoftMessage(text: widget.controller.errorMessage!),
+                          ],
+                          const SizedBox(height: 18),
+                          _SymptomTrendCard(
+                            summary: widget.controller.summary,
+                            loading: widget.controller.loading,
+                          ),
+                          const SizedBox(height: 18),
+                          _MetricCards(summary: widget.controller.summary),
+                          const SizedBox(height: 22),
+                          _DownloadReportButton(onTap: _showDownloadNotice),
+                          const SizedBox(height: 12),
+                          _CareRecommendationButton(
+                            onTap: _openCareRecommendations,
+                          ),
+                          const SizedBox(height: 14),
+                          const _DisclaimerText(),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

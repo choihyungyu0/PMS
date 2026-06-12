@@ -43,6 +43,7 @@ class Settings:
     backend_dir = BACKEND_DIR
     data_dir = backend_dir / "data"
     medical_csv_path = data_dir / "mc_incheon_medical.csv"
+    web_static_dir = backend_dir / "static_web"
 
     database_url = _normalize_database_url(
         os.getenv(
