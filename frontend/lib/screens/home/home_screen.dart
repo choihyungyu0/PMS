@@ -547,11 +547,14 @@ class _CycleStatusPanel extends StatelessWidget {
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                AppAssets.homeCycleCardBg,
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
-                filterQuality: FilterQuality.high,
+              child: Transform.scale(
+                scale: 1.035,
+                child: Image.asset(
+                  AppAssets.homeCycleCardBg,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.center,
+                  filterQuality: FilterQuality.high,
+                ),
               ),
             ),
           ),
@@ -645,49 +648,56 @@ class _CycleRingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.36;
+    final strokeWidth = size.width * 0.205;
+    final ringRect = Rect.fromCircle(center: center, radius: radius);
+
     final shadowPaint = Paint()
       ..color = const Color(0xFF7B35E8).withValues(alpha: 0.22)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-    canvas.drawCircle(center.translate(0, 7), radius, shadowPaint);
+    canvas.drawCircle(
+      center.translate(0, 7),
+      radius + strokeWidth * 0.35,
+      shadowPaint,
+    );
 
     final basePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.22
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
-      ..color = const Color(0xFFFBF7FF);
+      ..color = const Color(0xFFFBF7FF).withValues(alpha: 0.92);
     canvas.drawCircle(center, radius, basePaint);
 
     final arcPaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.22
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..shader = const SweepGradient(
         startAngle: -math.pi / 2,
         endAngle: math.pi * 1.5,
         colors: [
-          Color(0xFFEBCBFF),
-          Color(0xFFBC6FFF),
-          Color(0xFF7C35F1),
-          Color(0xFFEBCBFF),
+          Color(0xFFE7C5FF),
+          Color(0xFFB96AFF),
+          Color(0xFF7B35F1),
+          Color(0xFFA455F8),
         ],
+        stops: [0.0, 0.28, 0.72, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: radius));
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      math.pi * 1.42,
-      false,
-      arcPaint,
-    );
+    canvas.drawArc(ringRect, -math.pi / 2, math.pi * 1.38, false, arcPaint);
+
+    final innerFillPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = const Color(0xFFE2CFF7).withValues(alpha: 0.56);
+    canvas.drawCircle(center, radius - strokeWidth * 0.55, innerFillPaint);
 
     final shinePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.035
+      ..strokeWidth = size.width * 0.028
       ..strokeCap = StrokeCap.round
-      ..color = Colors.white.withValues(alpha: 0.72);
+      ..color = Colors.white.withValues(alpha: 0.58);
     canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius + size.width * 0.09),
-      -math.pi * 0.65,
-      math.pi * 0.48,
+      Rect.fromCircle(center: center, radius: radius + strokeWidth * 0.03),
+      -math.pi * 0.52,
+      math.pi * 0.28,
       false,
       shinePaint,
     );
