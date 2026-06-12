@@ -43,6 +43,21 @@ void main() {
     expect(find.text('로그인'), findsOneWidget);
   });
 
+  testWidgets('compact welcome viewport does not overflow', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await tester.binding.setSurfaceSize(const Size(400, 642));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const MoreCycleApp());
+    await tester.pump(const Duration(milliseconds: 1600));
+    await tester.pumpAndSettle();
+
+    expect(find.text('나만을 위한\n여성 건강 관리 시작하기'), findsOneWidget);
+    expect(find.text('시작하기'), findsOneWidget);
+    expect(find.text('로그인'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('login screen renders required fields', (tester) async {
     SharedPreferences.setMockInitialValues({});
     final storage = TokenStorage();

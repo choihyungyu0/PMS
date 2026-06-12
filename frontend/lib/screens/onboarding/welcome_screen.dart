@@ -31,20 +31,53 @@ class WelcomeScreen extends StatelessWidget {
             builder: (context, constraints) {
               final width = constraints.maxWidth;
               final height = constraints.maxHeight;
+              final compactHeight = height < 700;
               final horizontalPadding = (width * 0.085)
                   .clamp(28.0, 44.0)
                   .toDouble();
-              final logoSize = (width * 0.41).clamp(150.0, 184.0).toDouble();
-              final titleSize = (width * 0.10).clamp(40.0, 46.0).toDouble();
-              final headlineSize = (width * 0.057).clamp(23.0, 26.0).toDouble();
-              final topGap = (height * 0.15).clamp(106.0, 145.0).toDouble();
-              final titleToHeadlineGap = (height * 0.16)
-                  .clamp(112.0, 150.0)
+              final logoSize = (width * (compactHeight ? 0.35 : 0.41))
+                  .clamp(compactHeight ? 132.0 : 150.0, 184.0)
                   .toDouble();
+              final titleSize = (width * (compactHeight ? 0.087 : 0.10))
+                  .clamp(compactHeight ? 34.0 : 40.0, 46.0)
+                  .toDouble();
+              final headlineSize = (width * 0.057)
+                  .clamp(compactHeight ? 21.0 : 23.0, 26.0)
+                  .toDouble();
+              final topGap = (height * (compactHeight ? 0.075 : 0.15))
+                  .clamp(compactHeight ? 44.0 : 106.0, 145.0)
+                  .toDouble();
+              final logoToTitleGap = (height * 0.028)
+                  .clamp(compactHeight ? 12.0 : 18.0, 26.0)
+                  .toDouble();
+              final titleToHeadlineGap =
+                  (height * (compactHeight ? 0.09 : 0.16))
+                      .clamp(compactHeight ? 54.0 : 112.0, 150.0)
+                      .toDouble();
               final buttonHeight = (height * 0.078)
-                  .clamp(60.0, 72.0)
+                  .clamp(compactHeight ? 56.0 : 60.0, 72.0)
                   .toDouble();
-              final bottomGap = (height * 0.05).clamp(28.0, 54.0).toDouble();
+              final buttonGap = compactHeight ? 18.0 : 24.0;
+              final bottomGap = (height * 0.05)
+                  .clamp(compactHeight ? 20.0 : 28.0, 54.0)
+                  .toDouble();
+              final usedHeight =
+                  topGap +
+                  logoSize +
+                  logoToTitleGap +
+                  titleSize +
+                  titleToHeadlineGap +
+                  (headlineSize * 1.45 * 2) +
+                  buttonHeight +
+                  buttonGap +
+                  buttonHeight +
+                  bottomGap;
+              final actionGap = (height - usedHeight)
+                  .clamp(
+                    compactHeight ? 20.0 : 28.0,
+                    compactHeight ? 36.0 : 120.0,
+                  )
+                  .toDouble();
 
               return SingleChildScrollView(
                 child: ConstrainedBox(
@@ -63,7 +96,7 @@ class WelcomeScreen extends StatelessWidget {
                             height: logoSize,
                             fit: BoxFit.contain,
                           ),
-                          SizedBox(height: (height * 0.028).clamp(18.0, 26.0)),
+                          SizedBox(height: logoToTitleGap),
                           _GradientText(
                             text: AppText.appName,
                             style: TextStyle(
@@ -85,13 +118,13 @@ class WelcomeScreen extends StatelessWidget {
                               height: 1.45,
                             ),
                           ),
-                          const Spacer(),
+                          SizedBox(height: actionGap),
                           _PrimaryGradientButton(
                             height: buttonHeight,
                             label: '시작하기',
                             onPressed: onStart,
                           ),
-                          const SizedBox(height: 24),
+                          SizedBox(height: buttonGap),
                           _OutlineButton(
                             height: buttonHeight,
                             label: '로그인',
