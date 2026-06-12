@@ -727,10 +727,20 @@ class _MiniHealthCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPlaceholderValue = value.contains('전') || value.contains('없음');
-    final valueFontSize = isPlaceholderValue ? 27.0 : 36.0;
-    final valueTop = (height * 0.38).clamp(44.0, 50.0);
+    final isSleepCard = decoration == _MiniDecoration.sleep;
+    final labelFontSize = isSleepCard ? 19.0 : 20.0;
+    final valueFontSize = isPlaceholderValue
+        ? 27.0
+        : isSleepCard
+        ? 28.0
+        : 36.0;
+    final valueTop = isSleepCard
+        ? (height * 0.46).clamp(54.0, 60.0)
+        : (height * 0.38).clamp(44.0, 50.0);
     final arrowSize = (height * 0.34).clamp(42.0, 46.0);
-    final arrowTop = (height * 0.36).clamp(42.0, 48.0);
+    final arrowTop = isSleepCard
+        ? (height * 0.44).clamp(52.0, 58.0)
+        : (height * 0.36).clamp(42.0, 48.0);
 
     return Material(
       color: Colors.transparent,
@@ -780,7 +790,7 @@ class _MiniHealthCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: labelColor,
-                    fontSize: 20,
+                    fontSize: labelFontSize,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0,
                     height: 1,
