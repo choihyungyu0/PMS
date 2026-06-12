@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/api/api_client.dart';
+import 'core/constants/app_fonts.dart';
 import 'core/storage/token_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/auth/auth_screen.dart';
@@ -89,6 +90,16 @@ class _MoreCycleAppState extends State<MoreCycleApp> {
       title: 'MORE Cycle',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      builder: (context, child) {
+        return DefaultTextStyle.merge(
+          style: const TextStyle(
+            fontFamily: AppFonts.body,
+            fontFamilyFallback: AppFonts.fallback,
+            letterSpacing: 0,
+          ),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       home: AnimatedBuilder(
         animation: _authController,
         builder: (context, _) {

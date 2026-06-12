@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
@@ -174,6 +175,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 const Text(
                   '커뮤니티 글쓰기 기능은 준비 중이에요.',
                   style: TextStyle(
+                    fontFamily: AppFonts.title,
                     color: AppColors.textPrimary,
                     fontSize: 19,
                     fontWeight: FontWeight.w900,
@@ -184,6 +186,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                 const Text(
                   '건강 정보는 진단이나 치료 목적이 아닌 경험 공유로만 작성해주세요.',
                   style: TextStyle(
+                    fontFamily: AppFonts.body,
                     color: AppColors.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -206,6 +209,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                     child: const Text(
                       '확인',
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                       ),
@@ -327,6 +331,7 @@ class _CommunityTabBar extends StatelessWidget {
                               duration: const Duration(milliseconds: 160),
                               curve: Curves.easeOut,
                               style: TextStyle(
+                                fontFamily: AppFonts.action,
                                 color: isSelected
                                     ? AppColors.primaryPurple
                                     : const Color(0xFF56566A),
@@ -538,6 +543,7 @@ class _HeroPostContent extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
+                fontFamily: AppFonts.title,
                 color: titleColor,
                 fontSize: titleSize,
                 fontWeight: FontWeight.w900,
@@ -606,6 +612,7 @@ class _CompactPostContent extends StatelessWidget {
                 post.title,
                 maxLines: 2,
                 style: TextStyle(
+                  fontFamily: AppFonts.title,
                   color: titleColor,
                   fontSize: titleSize,
                   fontWeight: FontWeight.w900,
@@ -797,6 +804,7 @@ class _StatButton extends StatelessWidget {
               Text(
                 '$value',
                 style: const TextStyle(
+                  fontFamily: AppFonts.action,
                   color: Color(0xFF77719C),
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -881,6 +889,7 @@ class _CommunitySafetyNotice extends StatelessWidget {
         '커뮤니티 내용은 개인 경험 공유이며 진단이나 치료를 제공하지 않습니다.',
         textAlign: TextAlign.center,
         style: TextStyle(
+          fontFamily: AppFonts.body,
           color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -1000,6 +1009,7 @@ class _CommunitySheetTile extends StatelessWidget {
       title: Text(
         label,
         style: const TextStyle(
+          fontFamily: AppFonts.action,
           color: AppColors.textPrimary,
           fontSize: 16,
           fontWeight: FontWeight.w800,

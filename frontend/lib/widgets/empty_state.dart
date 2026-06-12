@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/constants/app_fonts.dart';
 import 'app_card.dart';
 
 class EmptyState extends StatelessWidget {
@@ -19,7 +20,11 @@ class EmptyState extends StatelessWidget {
         children: [
           Icon(icon, size: 34, color: Theme.of(context).colorScheme.primary),
           const SizedBox(height: 10),
-          Text(message, textAlign: TextAlign.center),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontFamily: AppFonts.body),
+          ),
         ],
       ),
     );

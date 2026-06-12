@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../state/auth_controller.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/primary_button.dart';
@@ -101,7 +102,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           const SizedBox(height: 12),
                           Text(
                             widget.controller.errorMessage!,
-                            style: const TextStyle(color: Color(0xFFC44949)),
+                            style: const TextStyle(
+                              fontFamily: AppFonts.body,
+                              color: Color(0xFFC44949),
+                            ),
                           ),
                         ],
                         const SizedBox(height: 18),

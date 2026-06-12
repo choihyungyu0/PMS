@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_assets.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../models/cycle.dart';
 import '../../models/health_report.dart';
 import '../../models/sleep_log.dart';
@@ -40,10 +41,7 @@ class HomeScreen extends StatelessWidget {
         reportController,
       ]),
       builder: (context, _) {
-        final nickname = authController.user?.nickname.trim();
-        final displayName = nickname == null || nickname.isEmpty
-            ? '사용자'
-            : nickname;
+        final displayName = _displayNickname(authController.user?.nickname);
         final report = reportController.latestReport;
         final hasPartialError = reportController.errorMessage != null;
 
@@ -103,6 +101,7 @@ class HomeScreen extends StatelessWidget {
                             Text(
                               '안녕하세요, $displayName님 👋',
                               style: const TextStyle(
+                                fontFamily: AppFonts.brand,
                                 color: Color(0xFF190B2C),
                                 fontSize: 30,
                                 fontWeight: FontWeight.w900,
@@ -122,6 +121,7 @@ class HomeScreen extends StatelessWidget {
                               const Text(
                                 '일부 정보를 불러오지 못했어요. 잠시 후 다시 시도해주세요.',
                                 style: TextStyle(
+                                  fontFamily: AppFonts.body,
                                   color: AppColors.textSecondary,
                                   fontSize: 13,
                                   height: 1.35,
@@ -155,6 +155,19 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
+}
+
+String _displayNickname(String? value) {
+  final nickname = value?.trim();
+  if (nickname == null || nickname.isEmpty) {
+    return '사용자';
+  }
+  final looksBroken =
+      RegExp(r'^\?+$').hasMatch(nickname) || nickname.contains('�');
+  if (looksBroken) {
+    return '사용자';
+  }
+  return nickname;
 }
 
 class _SoftBackgroundOrb extends StatelessWidget {
@@ -352,6 +365,7 @@ class _HealthSummaryCard extends StatelessWidget {
                     Text(
                       '오늘의 건강 요약',
                       style: TextStyle(
+                        fontFamily: AppFonts.title,
                         color: Color(0xFF121324),
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
@@ -491,6 +505,7 @@ class _CycleStatusPanel extends StatelessWidget {
                 const Text(
                   '생리 주기',
                   style: TextStyle(
+                    fontFamily: AppFonts.title,
                     color: Color(0xFF843CF0),
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
@@ -506,6 +521,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     summary.title,
                     maxLines: 1,
                     style: TextStyle(
+                      fontFamily: AppFonts.title,
                       color: const Color(0xFF5524B7),
                       fontSize: titleFontSize,
                       fontWeight: FontWeight.w900,
@@ -529,6 +545,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     summary.subtitle,
                     maxLines: 1,
                     style: const TextStyle(
+                      fontFamily: AppFonts.body,
                       color: Color(0xFF15151D),
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -676,12 +693,6 @@ class _MiniHealthCard extends StatelessWidget {
     final arrowTop = isSleepCard
         ? (height * 0.44).clamp(52.0, 58.0)
         : (height * 0.36).clamp(42.0, 48.0);
-    final decorationAssetPath = switch (decoration) {
-      _MiniDecoration.pms => AppAssets.homePmsCardBg,
-      _MiniDecoration.sleep => AppAssets.homeSleepCardBg,
-    };
-    final arrowBackgroundScale = isSleepCard ? 1.85 : 1.35;
-
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(20),
@@ -718,6 +729,7 @@ class _MiniHealthCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
+                    fontFamily: AppFonts.action,
                     color: labelColor,
                     fontSize: labelFontSize,
                     fontWeight: FontWeight.w700,
@@ -737,6 +749,7 @@ class _MiniHealthCard extends StatelessWidget {
                     value,
                     maxLines: 1,
                     style: TextStyle(
+                      fontFamily: AppFonts.title,
                       color: valueColor,
                       fontSize: valueFontSize,
                       fontWeight: FontWeight.w900,
@@ -770,39 +783,18 @@ class _MiniHealthCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: ClipOval(
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Transform.scale(
-                            scale: arrowBackgroundScale,
-                            alignment: Alignment.bottomRight,
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(decorationAssetPath),
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.bottomRight,
-                                  filterQuality: FilterQuality.high,
-                                ),
-                              ),
-                            ),
-                          ),
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withValues(alpha: 0.04),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.86),
-                              ),
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: arrowColor,
-                            size: 32,
-                          ),
-                        ],
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.42),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.86),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.chevron_right_rounded,
+                        color: arrowColor,
+                        size: 32,
                       ),
                     ),
                   ),
@@ -851,6 +843,7 @@ class _TodayMissionCard extends StatelessWidget {
                 Text(
                   '오늘의 미션',
                   style: TextStyle(
+                    fontFamily: AppFonts.title,
                     color: Color(0xFF121324),
                     fontSize: 24,
                     fontWeight: FontWeight.w900,
@@ -929,6 +922,7 @@ class _MissionTile extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
+                    fontFamily: AppFonts.body,
                     color: Color(0xFF3A2721),
                     fontSize: 19,
                     fontWeight: FontWeight.w800,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/storage/health_goal_storage.dart';
 import '../../models/health_report.dart';
 import '../../state/analysis_controller.dart';
@@ -189,9 +190,7 @@ class _AiCareRecommendationScreenState
                 Positioned(
                   top: 14,
                   right: 18,
-                  child: SafeArea(
-                    child: _HomeIconButton(onTap: _goHome),
-                  ),
+                  child: SafeArea(child: _HomeIconButton(onTap: _goHome)),
                 ),
               ],
             ),
@@ -221,6 +220,7 @@ class _Header extends StatelessWidget {
         Text(
           'AI 맞춤 케어 추천',
           style: TextStyle(
+            fontFamily: AppFonts.title,
             color: const Color(0xFF080A2F),
             fontSize: titleSize,
             fontWeight: FontWeight.w900,
@@ -232,6 +232,7 @@ class _Header extends StatelessWidget {
         Text(
           '$nickname에게 추천하는 케어예요.',
           style: TextStyle(
+            fontFamily: AppFonts.body,
             color: const Color(0xFF555A76),
             fontSize: subtitleSize,
             fontWeight: FontWeight.w600,
@@ -361,6 +362,7 @@ class _CareSegmentedControl extends StatelessWidget {
                       Text(
                         category.label,
                         style: TextStyle(
+                          fontFamily: AppFonts.action,
                           color: selected
                               ? AppColors.primaryPurple
                               : const Color(0xFF303241),
@@ -446,6 +448,7 @@ class _CareRecommendationCard extends StatelessWidget {
                           recommendation.title,
                           maxLines: 1,
                           style: const TextStyle(
+                            fontFamily: AppFonts.title,
                             color: Color(0xFF080A2F),
                             fontSize: 28,
                             fontWeight: FontWeight.w900,
@@ -467,6 +470,7 @@ class _CareRecommendationCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
+                    fontFamily: AppFonts.body,
                     color: Color(0xFF2F3347),
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -535,6 +539,7 @@ class _SoftNotice extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(
+          fontFamily: AppFonts.body,
           color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -554,6 +559,7 @@ class _CareDisclaimerText extends StatelessWidget {
       '이 추천은 진단이나 치료가 아닌 건강관리 참고 정보입니다.',
       textAlign: TextAlign.center,
       style: TextStyle(
+        fontFamily: AppFonts.body,
         color: AppColors.textSecondary,
         fontSize: 12,
         fontWeight: FontWeight.w600,

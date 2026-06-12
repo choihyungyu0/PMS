@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../state/analysis_controller.dart';
 
 class AnalysisScreen extends StatefulWidget {
@@ -242,6 +243,7 @@ class _PeriodTabBar extends StatelessWidget {
                           item.label,
                           maxLines: 1,
                           style: TextStyle(
+                            fontFamily: AppFonts.action,
                             color: selected
                                 ? AppColors.deepPurple
                                 : const Color(0xFF4A4A4F),
@@ -296,6 +298,7 @@ class _DateNavigationRow extends StatelessWidget {
               child: Text(
                 title,
                 style: const TextStyle(
+                  fontFamily: AppFonts.title,
                   color: Colors.black,
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
@@ -405,6 +408,7 @@ class _SymptomTrendCard extends StatelessWidget {
               child: Text(
                 '증상 변화 추이',
                 style: TextStyle(
+                  fontFamily: AppFonts.title,
                   color: Color(0xFF111033),
                   fontSize: 28,
                   fontWeight: FontWeight.w900,
@@ -545,6 +549,7 @@ class _TrendChartPainter extends CustomPainter {
         '$yValue',
         Offset(chartLeft - 24, y),
         const TextStyle(
+          fontFamily: AppFonts.body,
           color: Color(0xFF626268),
           fontSize: 16,
           fontWeight: FontWeight.w500,
@@ -559,6 +564,7 @@ class _TrendChartPainter extends CustomPainter {
         xLabels[i],
         Offset(indexToDx(i), chartBottom + 31),
         const TextStyle(
+          fontFamily: AppFonts.action,
           color: Color(0xFF444448),
           fontSize: 17,
           fontWeight: FontWeight.w700,
@@ -732,6 +738,7 @@ class _EmptyChartMessage extends StatelessWidget {
         '아직 분석할 기록이 부족해요.\n오늘의 컨디션을 기록하면 변화 추이를 확인할 수 있어요.',
         textAlign: TextAlign.center,
         style: TextStyle(
+          fontFamily: AppFonts.body,
           color: AppColors.textSecondary,
           fontSize: 14,
           fontWeight: FontWeight.w700,
@@ -839,6 +846,7 @@ class _StatCard extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               style: const TextStyle(
+                fontFamily: AppFonts.title,
                 color: Color(0xFF111111),
                 fontSize: 21,
                 fontWeight: FontWeight.w900,
@@ -861,6 +869,7 @@ class _StatCard extends StatelessWidget {
                 value,
                 textAlign: TextAlign.center,
                 style: TextStyle(
+                  fontFamily: AppFonts.title,
                   color: valueColor,
                   fontSize: value == '기록 없음' ? 26 : 38,
                   fontWeight: FontWeight.w900,
@@ -932,6 +941,7 @@ class _DownloadReportButton extends StatelessWidget {
                       '리포트 다운로드',
                       textAlign: TextAlign.center,
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         color: Colors.white,
                         fontSize: 29,
                         fontWeight: FontWeight.w900,
@@ -999,6 +1009,7 @@ class _CareRecommendationButton extends StatelessWidget {
                     child: Text(
                       '맞춤 케어 추천',
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         color: AppColors.deepPurple,
                         fontSize: 26,
                         fontWeight: FontWeight.w900,
@@ -1041,6 +1052,7 @@ class _SoftMessage extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(
+          fontFamily: AppFonts.body,
           color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -1059,6 +1071,7 @@ class _DisclaimerText extends StatelessWidget {
       '이 분석은 진단이나 치료가 아닌 건강 관리 참고 정보입니다.',
       textAlign: TextAlign.center,
       style: TextStyle(
+        fontFamily: AppFonts.body,
         color: AppColors.textSecondary,
         fontSize: 12,
         fontWeight: FontWeight.w600,

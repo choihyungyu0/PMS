@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../core/constants/app_fonts.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
@@ -37,7 +38,17 @@ class PrimaryButton extends StatelessWidget {
                 Icon(icon, size: 18),
                 const SizedBox(width: 8),
               ],
-              Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.action,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
             ],
           );
 

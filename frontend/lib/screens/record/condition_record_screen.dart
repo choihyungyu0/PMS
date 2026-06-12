@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../state/record_controller.dart';
 import '../../state/report_controller.dart';
 import 'calendar_screen.dart';
@@ -175,6 +176,7 @@ class _ConditionRecordScreenState extends State<ConditionRecordScreen> {
                             Text(
                               '오늘의 컨디션은\n어떤가요?',
                               style: TextStyle(
+                                fontFamily: AppFonts.title,
                                 color: const Color(0xFF111111),
                                 fontSize: titleSize,
                                 fontWeight: FontWeight.w900,
@@ -494,6 +496,7 @@ class _DateRow extends StatelessWidget {
             Text(
               '날짜',
               style: TextStyle(
+                fontFamily: AppFonts.action,
                 color: const Color(0xFF3F3F43),
                 fontSize: fontSize,
                 fontWeight: FontWeight.w800,
@@ -503,6 +506,7 @@ class _DateRow extends StatelessWidget {
             Text(
               value,
               style: TextStyle(
+                fontFamily: AppFonts.body,
                 color: const Color(0xFF3F3F43),
                 fontSize: fontSize,
                 fontWeight: FontWeight.w700,
@@ -527,6 +531,7 @@ class _SectionTitle extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
+        fontFamily: AppFonts.title,
         color: const Color(0xFF111111),
         fontSize: fontSize,
         fontWeight: FontWeight.w900,
@@ -552,6 +557,7 @@ class _CycleStartToggle extends StatelessWidget {
         title: const Text(
           '선택한 날짜를 생리 시작일로 저장',
           style: TextStyle(
+            fontFamily: AppFonts.action,
             color: AppColors.textPrimary,
             fontSize: 17,
             fontWeight: FontWeight.w800,
@@ -561,6 +567,7 @@ class _CycleStartToggle extends StatelessWidget {
         subtitle: const Text(
           '주기 예측과 PMS 위험도 계산에 반영돼요.',
           style: TextStyle(
+            fontFamily: AppFonts.body,
             color: AppColors.textSecondary,
             fontSize: 13,
             fontWeight: FontWeight.w600,
@@ -671,6 +678,7 @@ class _SliderHeader extends StatelessWidget {
           child: Text(
             title,
             style: const TextStyle(
+              fontFamily: AppFonts.action,
               color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w800,
@@ -681,6 +689,7 @@ class _SliderHeader extends StatelessWidget {
         Text(
           value,
           style: const TextStyle(
+            fontFamily: AppFonts.title,
             color: AppColors.primaryPurple,
             fontSize: 15,
             fontWeight: FontWeight.w900,
@@ -842,6 +851,7 @@ class _ConditionOptionTile extends StatelessWidget {
               label,
               maxLines: 1,
               style: TextStyle(
+                fontFamily: AppFonts.action,
                 color: const Color(0xFF4B4B50),
                 fontSize: labelFontSize,
                 fontWeight: FontWeight.w800,
@@ -977,6 +987,7 @@ class _GradientSaveButton extends StatelessWidget {
                   : const Text(
                       '저장하기',
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.w800,

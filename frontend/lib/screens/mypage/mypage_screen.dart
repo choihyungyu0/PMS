@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../state/auth_controller.dart';
 
 class MyPageScreen extends StatelessWidget {
@@ -215,6 +216,7 @@ class MyPageScreen extends StatelessWidget {
           child: Text(
             message,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -329,6 +331,7 @@ class _ProfileCard extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
+                                  fontFamily: AppFonts.title,
                                   color: Color(0xFF12132C),
                                   fontSize: 32,
                                   fontWeight: FontWeight.w900,
@@ -343,6 +346,7 @@ class _ProfileCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
+                          fontFamily: AppFonts.body,
                           color: Color(0xFF625F80),
                           fontSize: 19,
                           fontWeight: FontWeight.w600,
@@ -395,6 +399,7 @@ class _Avatar extends StatelessWidget {
                 child: Text(
                   'MC',
                   style: TextStyle(
+                    fontFamily: AppFonts.brand,
                     color: AppColors.primaryPurple,
                     fontWeight: FontWeight.w900,
                     fontSize: 24,
@@ -478,6 +483,7 @@ class _MenuTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
+                    fontFamily: AppFonts.action,
                     color: Color(0xFF10122B),
                     fontSize: 23,
                     fontWeight: FontWeight.w900,
@@ -578,6 +584,7 @@ class _ProfileNotice extends StatelessWidget {
       child: const Text(
         '사용자 정보를 불러오지 못했어요.',
         style: TextStyle(
+          fontFamily: AppFonts.body,
           color: AppColors.textSecondary,
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -637,6 +644,7 @@ class _MyPageSheet extends StatelessWidget {
                   child: Text(
                     title,
                     style: const TextStyle(
+                      fontFamily: AppFonts.title,
                       color: AppColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
@@ -692,6 +700,7 @@ class _SettingsTile extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
+                        fontFamily: AppFonts.action,
                         color: AppColors.textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w900,
@@ -701,6 +710,7 @@ class _SettingsTile extends StatelessWidget {
                     Text(
                       subtitle,
                       style: const TextStyle(
+                        fontFamily: AppFonts.body,
                         color: AppColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -740,6 +750,7 @@ class _SettingsInfo extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
+              fontFamily: AppFonts.action,
               color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w900,
@@ -749,6 +760,7 @@ class _SettingsInfo extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 12,
               fontWeight: FontWeight.w600,

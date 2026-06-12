@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/utils/cycle_calendar_utils.dart';
 import '../../models/cycle.dart';
 import '../../models/health_report.dart';
@@ -339,6 +340,7 @@ class _Header extends StatelessWidget {
           Text(
             '${month.year}년 ${month.month}월',
             style: const TextStyle(
+              fontFamily: AppFonts.title,
               color: Color(0xFF161129),
               fontSize: 27,
               fontWeight: FontWeight.w900,
@@ -446,6 +448,7 @@ class _CalendarCard extends StatelessWidget {
                       child: Text(
                         day,
                         style: const TextStyle(
+                          fontFamily: AppFonts.action,
                           color: Color(0xFF656176),
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
@@ -536,6 +539,7 @@ class _DayCell extends StatelessWidget {
                 child: Text(
                   '${date.day}',
                   style: TextStyle(
+                    fontFamily: AppFonts.action,
                     color: style.textColor,
                     fontSize: 20,
                     fontWeight: selected || type != CycleDayType.normal
@@ -606,6 +610,7 @@ class _LegendChip extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
+              fontFamily: AppFonts.action,
               color: Color(0xFF242133),
               fontSize: 13,
               fontWeight: FontWeight.w800,
@@ -668,6 +673,7 @@ class _DetailPanel extends StatelessWidget {
                 child: Text(
                   _formatSelectedDate(selectedDate),
                   style: const TextStyle(
+                    fontFamily: AppFonts.title,
                     color: Color(0xFF151029),
                     fontSize: 26,
                     fontWeight: FontWeight.w900,
@@ -761,6 +767,7 @@ class _DetailRow extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
+                    fontFamily: AppFonts.action,
                     color: muted
                         ? AppColors.textSecondary
                         : const Color(0xFF171425),
@@ -802,6 +809,7 @@ class _SoftNotice extends StatelessWidget {
       child: Text(
         message,
         style: const TextStyle(
+          fontFamily: AppFonts.body,
           color: Color(0xFF6E5A3D),
           fontSize: 13,
           fontWeight: FontWeight.w700,
@@ -867,6 +875,7 @@ class _BottomCompleteBar extends StatelessWidget {
                     Text(
                       '완료하기',
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.w900,

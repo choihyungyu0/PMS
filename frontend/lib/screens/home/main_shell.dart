@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../state/auth_controller.dart';
 import '../../state/analysis_controller.dart';
 import '../../state/institution_controller.dart';
@@ -237,6 +238,7 @@ class _BottomNavItem extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
+                    fontFamily: AppFonts.action,
                     color: color,
                     fontSize: 13,
                     fontWeight: selected ? FontWeight.w900 : FontWeight.w800,

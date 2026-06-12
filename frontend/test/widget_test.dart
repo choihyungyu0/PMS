@@ -126,6 +126,55 @@ void main() {
     expect(requestCount, 0);
   });
 
+  testWidgets('login 401 shows credential error instead of expiry message', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    var unauthorizedCallbackCalled = false;
+    final storage = TokenStorage();
+    final client = ApiClient(
+      tokenStorage: storage,
+      onUnauthorized: () async => unauthorizedCallbackCalled = true,
+      httpClient: MockClient((request) async {
+        expect(request.url.path, '/api/auth/login');
+        return http.Response(
+          jsonEncode({'detail': 'Invalid email or password.'}),
+          401,
+          headers: {'content-type': 'application/json'},
+        );
+      }),
+    );
+    final controller = AuthController(
+      authApi: AuthApi(client),
+      tokenStorage: storage,
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AuthScreen(
+          controller: controller,
+          onBackToWelcome: () {},
+          onSignupRequested: () {},
+        ),
+      ),
+    );
+
+    await tester.enterText(
+      find.byKey(const Key('emailField')),
+      '1234@gmail.com',
+    );
+    await tester.enterText(
+      find.byKey(const Key('passwordField')),
+      'password123',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, '로그인'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('이메일 또는 비밀번호를 확인해주세요.'), findsOneWidget);
+    expect(find.text('로그인이 만료되었어요. 다시 로그인해주세요.'), findsNothing);
+    expect(unauthorizedCallbackCalled, isFalse);
+  });
+
   testWidgets('start button opens signup basic info screen', (tester) async {
     SharedPreferences.setMockInitialValues({});
 

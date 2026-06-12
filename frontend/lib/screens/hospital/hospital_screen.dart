@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/constants/app_text.dart';
 import '../../models/medical_institution.dart';
 import '../../state/institution_controller.dart';
@@ -231,6 +232,7 @@ class _HospitalHero extends StatelessWidget {
                   child: Text(
                     '인천 의료·보건 안내',
                     style: TextStyle(
+                      fontFamily: AppFonts.title,
                       color: Color(0xFF241064),
                       fontSize: 36,
                       fontWeight: FontWeight.w900,
@@ -243,6 +245,7 @@ class _HospitalHero extends StatelessWidget {
                 const Text(
                   '의료기관 · 보건기관 · 약국 · 응급기관',
                   style: TextStyle(
+                    fontFamily: AppFonts.body,
                     color: Color(0xFF4D3D74),
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -319,6 +322,7 @@ class _HospitalSearchField extends StatelessWidget {
         textInputAction: TextInputAction.search,
         onSubmitted: (_) => onSearch(),
         style: const TextStyle(
+          fontFamily: AppFonts.body,
           color: Color(0xFF241064),
           fontSize: 18,
           fontWeight: FontWeight.w700,
@@ -328,6 +332,7 @@ class _HospitalSearchField extends StatelessWidget {
           filled: false,
           hintText: '기관명 또는 지역 검색',
           hintStyle: const TextStyle(
+            fontFamily: AppFonts.body,
             color: Color(0xFF7B728B),
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -449,6 +454,7 @@ class _GuideFilterPill extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
+              fontFamily: AppFonts.action,
               color: selected ? Colors.white : const Color(0xFF28135E),
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -610,6 +616,7 @@ class _GuideCardCopy extends StatelessWidget {
             title,
             maxLines: 1,
             style: TextStyle(
+              fontFamily: AppFonts.title,
               color: palette.title,
               fontSize: 29,
               fontWeight: FontWeight.w900,
@@ -624,6 +631,7 @@ class _GuideCardCopy extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
+            fontFamily: AppFonts.body,
             color: Color(0xFF241064),
             fontSize: 15,
             fontWeight: FontWeight.w700,
@@ -673,6 +681,7 @@ class _GuideBadge extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
+              fontFamily: AppFonts.action,
               color: palette.badgeText,
               fontSize: 14,
               fontWeight: FontWeight.w900,
@@ -723,6 +732,7 @@ class _NearbyButton extends StatelessWidget {
               Text(
                 '내 주변 기관 찾기',
                 style: TextStyle(
+                  fontFamily: AppFonts.action,
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -757,6 +767,7 @@ class _HospitalSafetyNotice extends StatelessWidget {
           Text(
             AppText.medicalDisclaimer,
             style: TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -768,6 +779,7 @@ class _HospitalSafetyNotice extends StatelessWidget {
           Text(
             AppText.availabilityNotice,
             style: TextStyle(
+              fontFamily: AppFonts.body,
               color: Color(0xFF7B5D1E),
               fontSize: 12,
               fontWeight: FontWeight.w800,
@@ -823,6 +835,7 @@ class _ResultsSection extends StatelessWidget {
             const Text(
               'CSV 기반 검색 결과',
               style: TextStyle(
+                fontFamily: AppFonts.title,
                 color: Color(0xFF241064),
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
@@ -833,6 +846,7 @@ class _ResultsSection extends StatelessWidget {
             Text(
               '${items.length}곳',
               style: const TextStyle(
+                fontFamily: AppFonts.action,
                 color: AppColors.textSecondary,
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
@@ -846,6 +860,7 @@ class _ResultsSection extends StatelessWidget {
           Text(
             controller.recommendation!.reason,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -936,6 +951,7 @@ class _ResultMessageCard extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
+                    fontFamily: AppFonts.title,
                     color: Color(0xFF241064),
                     fontSize: 16,
                     fontWeight: FontWeight.w900,
@@ -946,6 +962,7 @@ class _ResultMessageCard extends StatelessWidget {
                 Text(
                   message,
                   style: const TextStyle(
+                    fontFamily: AppFonts.body,
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -1004,6 +1021,7 @@ class _InstitutionResultCard extends StatelessWidget {
           Text(
             item.institutionName,
             style: const TextStyle(
+              fontFamily: AppFonts.title,
               color: Color(0xFF241064),
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -1029,6 +1047,7 @@ class _InstitutionResultCard extends StatelessWidget {
           const Text(
             AppText.availabilityNotice,
             style: TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 12,
               fontWeight: FontWeight.w700,
@@ -1067,6 +1086,7 @@ class _SmallInfoChip extends StatelessWidget {
           Text(
             text,
             style: const TextStyle(
+              fontFamily: AppFonts.action,
               color: Color(0xFF4A2CB4),
               fontSize: 12,
               fontWeight: FontWeight.w900,
@@ -1098,6 +1118,7 @@ class _ResultLine extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
+                fontFamily: AppFonts.body,
                 color: AppColors.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

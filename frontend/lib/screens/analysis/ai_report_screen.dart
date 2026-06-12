@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../models/health_report.dart';
 import '../../state/analysis_controller.dart';
 import '../../state/auth_controller.dart';
@@ -226,6 +227,7 @@ class _ReportHeader extends StatelessWidget {
                     child: Text(
                       'AI 분석 리포트',
                       style: TextStyle(
+                        fontFamily: AppFonts.title,
                         color: Color(0xFF121033),
                         fontSize: 34,
                         fontWeight: FontWeight.w900,
@@ -239,6 +241,7 @@ class _ReportHeader extends StatelessWidget {
                     '이번 주 건강 패턴 분석 결과예요.',
                     maxLines: 2,
                     style: TextStyle(
+                      fontFamily: AppFonts.body,
                       color: Color(0xFF3D3D42),
                       fontSize: 17,
                       fontWeight: FontWeight.w600,
@@ -328,6 +331,7 @@ class _PmsPredictionCard extends StatelessWidget {
                   const Text(
                     'PMS 예측',
                     style: TextStyle(
+                      fontFamily: AppFonts.title,
                       color: Color(0xFF121033),
                       fontSize: 25,
                       fontWeight: FontWeight.w900,
@@ -342,6 +346,7 @@ class _PmsPredictionCard extends StatelessWidget {
                     child: Text(
                       '${risk.label} (${risk.score10}/10)',
                       style: TextStyle(
+                        fontFamily: AppFonts.title,
                         color: risk.color,
                         fontSize: 39,
                         fontWeight: FontWeight.w900,
@@ -362,6 +367,7 @@ class _PmsPredictionCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
+                  fontFamily: AppFonts.body,
                   color: Color(0xFF3F3F45),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -456,6 +462,7 @@ class _MainChangeCard extends StatelessWidget {
                   child: Text(
                     '주요 변화',
                     style: TextStyle(
+                      fontFamily: AppFonts.title,
                       color: Color(0xFF121033),
                       fontSize: 29,
                       fontWeight: FontWeight.w900,
@@ -534,6 +541,7 @@ class _ChangeMetricRow extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: true,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: Color(0xFF2E2E35),
               fontSize: 14.5,
               fontWeight: FontWeight.w700,
@@ -603,6 +611,7 @@ class _AiCareCard extends StatelessWidget {
                           maxLines: 1,
                           softWrap: false,
                           style: TextStyle(
+                            fontFamily: AppFonts.title,
                             color: Color(0xFF121033),
                             fontSize: 27,
                             fontWeight: FontWeight.w900,
@@ -676,6 +685,7 @@ class _CareCheckRow extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: Color(0xFF2D2D32),
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -748,6 +758,7 @@ class _DetailReportButton extends StatelessWidget {
                       '상세 리포트 보기',
                       textAlign: TextAlign.center,
                       style: TextStyle(
+                        fontFamily: AppFonts.action,
                         color: Colors.white,
                         fontSize: 27,
                         fontWeight: FontWeight.w900,
@@ -796,6 +807,7 @@ class _EmptyReportCard extends StatelessWidget {
             '아직 생성된 리포트가 없어요',
             textAlign: TextAlign.center,
             style: TextStyle(
+              fontFamily: AppFonts.title,
               color: Color(0xFF121033),
               fontSize: 24,
               fontWeight: FontWeight.w900,
@@ -807,6 +819,7 @@ class _EmptyReportCard extends StatelessWidget {
             '오늘의 컨디션을 기록하고 건강 리포트를 생성해보세요.',
             textAlign: TextAlign.center,
             style: TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -855,6 +868,7 @@ class _GenerateReportButton extends StatelessWidget {
             : const Text(
                 '건강 리포트 생성하기',
                 style: TextStyle(
+                  fontFamily: AppFonts.action,
                   color: Colors.white,
                   fontSize: 17,
                   fontWeight: FontWeight.w900,
@@ -881,6 +895,7 @@ class _SoftMessage extends StatelessWidget {
           const Text(
             '확인이 필요해요',
             style: TextStyle(
+              fontFamily: AppFonts.title,
               color: Color(0xFF121033),
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -890,6 +905,7 @@ class _SoftMessage extends StatelessWidget {
           Text(
             message,
             style: const TextStyle(
+              fontFamily: AppFonts.body,
               color: AppColors.textSecondary,
               fontSize: 14,
               height: 1.4,
@@ -918,6 +934,7 @@ class _DisclaimerText extends StatelessWidget {
       text,
       textAlign: TextAlign.center,
       style: const TextStyle(
+        fontFamily: AppFonts.body,
         color: AppColors.textSecondary,
         fontSize: 12,
         fontWeight: FontWeight.w600,
@@ -1026,7 +1043,10 @@ class _ReportDetailScreen extends StatelessWidget {
         foregroundColor: const Color(0xFF121033),
         title: const Text(
           '상세 리포트',
-          style: TextStyle(fontWeight: FontWeight.w900),
+          style: TextStyle(
+            fontFamily: AppFonts.title,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
       body: SafeArea(
@@ -1082,6 +1102,7 @@ class _DetailScoreCard extends StatelessWidget {
                 const Text(
                   'PMS 위험도 참고 점수',
                   style: TextStyle(
+                    fontFamily: AppFonts.title,
                     color: Color(0xFF121033),
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
@@ -1091,6 +1112,7 @@ class _DetailScoreCard extends StatelessWidget {
                 Text(
                   '${risk.label} ${report.pmsScore}/100',
                   style: TextStyle(
+                    fontFamily: AppFonts.title,
                     color: risk.color,
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
@@ -1100,6 +1122,7 @@ class _DetailScoreCard extends StatelessWidget {
                 Text(
                   '건강 점수 ${report.healthScore}/100 · 신뢰도 ${_confidenceLabel(report.confidence)}',
                   style: const TextStyle(
+                    fontFamily: AppFonts.body,
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -1131,6 +1154,7 @@ class _DetailSection extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
+              fontFamily: AppFonts.title,
               color: Color(0xFF121033),
               fontSize: 19,
               fontWeight: FontWeight.w900,
@@ -1141,6 +1165,7 @@ class _DetailSection extends StatelessWidget {
             const Text(
               '표시할 기록이 아직 부족해요.',
               style: TextStyle(
+                fontFamily: AppFonts.body,
                 color: AppColors.textSecondary,
                 fontSize: 14,
                 height: 1.4,
@@ -1163,6 +1188,7 @@ class _DetailSection extends StatelessWidget {
                       child: Text(
                         item,
                         style: const TextStyle(
+                          fontFamily: AppFonts.body,
                           color: Color(0xFF33333A),
                           fontSize: 14,
                           fontWeight: FontWeight.w600,

@@ -23,7 +23,7 @@ class ApiClient {
   Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
     final uri = _uri(path, query);
     final response = await _httpClient.get(uri, headers: await _headers());
-    return _handle(response);
+    return _handle(response, path: path);
   }
 
   Future<dynamic> post(String path, {Map<String, dynamic>? body}) async {
@@ -33,7 +33,7 @@ class ApiClient {
       headers: await _headers(),
       body: jsonEncode(body ?? <String, dynamic>{}),
     );
-    return _handle(response);
+    return _handle(response, path: path);
   }
 
   Uri _uri(String path, [Map<String, dynamic>? query]) {
@@ -56,7 +56,10 @@ class ApiClient {
     };
   }
 
-  Future<dynamic> _handle(http.Response response) async {
+  Future<dynamic> _handle(
+    http.Response response, {
+    required String path,
+  }) async {
     dynamic decoded;
     if (response.body.isNotEmpty) {
       try {
@@ -67,6 +70,9 @@ class ApiClient {
     }
 
     if (response.statusCode == 401) {
+      if (path == '/api/auth/login') {
+        throw ApiException(_errorMessage(decoded), statusCode: 401);
+      }
       await tokenStorage.clearToken();
       await onUnauthorized?.call();
       throw ApiException('로그인이 만료되었어요. 다시 로그인해주세요.', statusCode: 401);

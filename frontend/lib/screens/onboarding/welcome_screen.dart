@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/constants/app_text.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -100,6 +101,7 @@ class WelcomeScreen extends StatelessWidget {
                           _GradientText(
                             text: AppText.appName,
                             style: TextStyle(
+                              fontFamily: AppFonts.brand,
                               fontSize: titleSize,
                               fontWeight: FontWeight.w800,
                               letterSpacing: 0,
@@ -111,6 +113,7 @@ class WelcomeScreen extends StatelessWidget {
                             '나만을 위한\n여성 건강 관리 시작하기',
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: AppFonts.title,
                               color: AppColors.textPrimary,
                               fontSize: headlineSize,
                               fontWeight: FontWeight.w700,
@@ -227,6 +230,7 @@ class _PrimaryGradientButton extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
+                  fontFamily: AppFonts.action,
                   color: Colors.white,
                   fontSize: 23,
                   fontWeight: FontWeight.w800,
@@ -275,6 +279,7 @@ class _OutlineButton extends StatelessWidget {
                 label,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
+                  fontFamily: AppFonts.action,
                   color: AppColors.textPrimary,
                   fontSize: 23,
                   fontWeight: FontWeight.w800,

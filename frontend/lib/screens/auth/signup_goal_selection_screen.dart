@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/storage/health_goal_storage.dart';
 import '../../state/auth_controller.dart';
 import 'signup_basic_info_screen.dart';
@@ -166,6 +167,7 @@ class _HealthGoalSelectionScreenState extends State<HealthGoalSelectionScreen> {
                                     '나의 건강 목표를\n선택해주세요.',
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
+                                      fontFamily: AppFonts.title,
                                       color: _screenTextColor,
                                       fontSize: titleSize,
                                       fontWeight: FontWeight.w800,
@@ -206,6 +208,7 @@ class _HealthGoalSelectionScreenState extends State<HealthGoalSelectionScreen> {
                                         'goalSelectionErrorMessage',
                                       ),
                                       style: const TextStyle(
+                                        fontFamily: AppFonts.body,
                                         color: _errorColor,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
@@ -473,6 +476,7 @@ class _GoalOptionCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
+                      fontFamily: AppFonts.action,
                       color: _HealthGoalSelectionScreenState._screenTextColor,
                       fontSize: fontSize,
                       fontWeight: FontWeight.w700,
@@ -576,6 +580,7 @@ class _GradientNextButton extends StatelessWidget {
                       : Text(
                           '다음',
                           style: TextStyle(
+                            fontFamily: AppFonts.action,
                             color: Colors.white,
                             fontSize: (height * 0.41).clamp(24.0, 31.0),
                             fontWeight: FontWeight.w800,

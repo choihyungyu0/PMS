@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/utils/date_utils.dart';
 
 class SignupBasicInfoScreen extends StatefulWidget {
@@ -125,6 +126,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
                             '회원가입',
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: AppFonts.title,
                               color: Colors.black,
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
@@ -137,6 +139,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
                             '더 정확한 맞춤 케어를 위해\n기본 정보를 입력해주세요.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: AppFonts.body,
                               color: Color(0xFF46464D),
                               fontSize: 20,
                               fontWeight: FontWeight.w500,
@@ -225,6 +228,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
                               const Text(
                                 '이미 계정이 있으신가요? ',
                                 style: TextStyle(
+                                  fontFamily: AppFonts.body,
                                   color: Color(0xFF46464D),
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -237,6 +241,7 @@ class _SignupBasicInfoScreenState extends State<SignupBasicInfoScreen> {
                                 child: const Text(
                                   '로그인',
                                   style: TextStyle(
+                                    fontFamily: AppFonts.action,
                                     color: AppColors.primaryPurple,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
@@ -396,6 +401,7 @@ class _SignupInputField extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
+            fontFamily: AppFonts.action,
             color: _SignupBasicInfoScreenState._labelColor,
             fontSize: 19,
             fontWeight: FontWeight.w800,
@@ -421,6 +427,7 @@ class _SignupInputField extends StatelessWidget {
           onTap: onTap,
           cursorColor: AppColors.primaryPurple,
           style: const TextStyle(
+            fontFamily: AppFonts.body,
             color: AppColors.textPrimary,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -460,6 +467,7 @@ class _SignupInputField extends StatelessWidget {
               ),
             ),
             errorStyle: const TextStyle(
+              fontFamily: AppFonts.body,
               color: _SignupBasicInfoScreenState._errorColor,
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -532,6 +540,7 @@ class _GradientButton extends StatelessWidget {
                   : Text(
                       label,
                       style: const TextStyle(
+                        fontFamily: AppFonts.action,
                         color: Colors.white,
                         fontSize: 25,
                         fontWeight: FontWeight.w700,

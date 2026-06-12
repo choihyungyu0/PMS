@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../core/constants/app_fonts.dart';
 import 'app_card.dart';
 
 class ErrorView extends StatelessWidget {
@@ -20,7 +21,13 @@ class ErrorView extends StatelessWidget {
             children: [
               Icon(Icons.error_outline, color: Color(0xFFC44949)),
               SizedBox(width: 8),
-              Text('확인이 필요해요', style: TextStyle(fontWeight: FontWeight.w700)),
+              Text(
+                '확인이 필요해요',
+                style: TextStyle(
+                  fontFamily: AppFonts.title,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/constants/app_text.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -113,6 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   AppText.appName,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
+                                    fontFamily: AppFonts.brand,
                                     color: AppColors.primaryPurple,
                                     fontSize: 28,
                                     fontWeight: FontWeight.w800,
@@ -125,6 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
                                   'AI 여성 생애주기 케어 플랫폼',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
+                                    fontFamily: AppFonts.title,
                                     color: AppColors.textSecondary,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
@@ -151,6 +154,7 @@ class _SplashScreenState extends State<SplashScreen>
                                     '더 나은 오늘, 더 건강한 내일\n모어사이클이 함께해요.',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
+                                      fontFamily: AppFonts.body,
                                       color: AppColors.primaryPurple,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,

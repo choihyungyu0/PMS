@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_assets.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 
 class RecordCompleteScreen extends StatefulWidget {
   const RecordCompleteScreen({super.key, required this.onGoHome});
@@ -148,6 +149,7 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
                             '기록이 완료되었습니다!',
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: AppFonts.title,
                               color: AppColors.textPrimary,
                               fontSize: titleFontSize,
                               fontWeight: FontWeight.w900,
@@ -159,6 +161,7 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
                             'AI 분석을 통해 더 정확한\n건강 케어를 제공할게요.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: AppFonts.body,
                               color: Color(0xFF2E2E32),
                               fontSize: descriptionFontSize,
                               fontWeight: FontWeight.w500,
@@ -277,6 +280,7 @@ class _GradientHomeButton extends StatelessWidget {
               child: Text(
                 '홈으로 이동',
                 style: TextStyle(
+                  fontFamily: AppFonts.action,
                   color: Colors.white,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w800,

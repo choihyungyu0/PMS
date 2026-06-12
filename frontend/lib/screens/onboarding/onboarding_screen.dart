@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_fonts.dart';
 import '../../core/constants/app_text.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/primary_button.dart';
@@ -43,6 +44,7 @@ class OnboardingScreen extends StatelessWidget {
             const Text(
               AppText.appKoreanName,
               style: TextStyle(
+                fontFamily: AppFonts.brand,
                 color: AppColors.primaryPurple,
                 fontWeight: FontWeight.w800,
               ),
@@ -104,7 +106,10 @@ class _OnboardingPoint extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              fontFamily: AppFonts.body,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ],

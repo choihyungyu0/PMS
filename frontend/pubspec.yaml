@@ -73,6 +73,7 @@ flutter:
     - assets/images/calendar/
     - assets/images/community/
     - assets/images/mypage/
+    - assets/fonts/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -101,3 +102,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: IncheonEduCitizen
+      fonts:
+        - asset: assets/fonts/IncheonEduCitizen.ttf
+    - family: IncheonEduSotong
+      fonts:
+        - asset: assets/fonts/IncheonEduSotong.ttf
+    - family: IncheonEduHimchan
+      fonts:
+        - asset: assets/fonts/IncheonEduHimchan.ttf
+    - family: IncheonEduJaram
+      fonts:
+        - asset: assets/fonts/IncheonEduJaram.ttf

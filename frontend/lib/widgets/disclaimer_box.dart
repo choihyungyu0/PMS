@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/constants/app_colors.dart';
+import '../core/constants/app_fonts.dart';
 import 'app_card.dart';
 
 class DisclaimerBox extends StatelessWidget {
@@ -27,6 +28,7 @@ class DisclaimerBox extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
+                fontFamily: AppFonts.body,
                 fontSize: 13,
                 color: AppColors.textSecondary,
                 height: 1.4,
