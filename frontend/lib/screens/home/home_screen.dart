@@ -680,6 +680,7 @@ class _MiniHealthCard extends StatelessWidget {
       _MiniDecoration.pms => AppAssets.homePmsCardBg,
       _MiniDecoration.sleep => AppAssets.homeSleepCardBg,
     };
+    final arrowBackgroundScale = isSleepCard ? 1.85 : 1.35;
 
     return Material(
       color: Colors.transparent,
@@ -773,13 +774,17 @@ class _MiniHealthCard extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(decorationAssetPath),
-                                fit: BoxFit.cover,
-                                alignment: Alignment.bottomRight,
-                                filterQuality: FilterQuality.high,
+                          Transform.scale(
+                            scale: arrowBackgroundScale,
+                            alignment: Alignment.bottomRight,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(decorationAssetPath),
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.bottomRight,
+                                  filterQuality: FilterQuality.high,
+                                ),
                               ),
                             ),
                           ),
