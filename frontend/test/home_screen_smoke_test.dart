@@ -76,7 +76,8 @@ void main() {
     final pmsCardRect = tester.getRect(_asset(AppAssets.homePmsCardBg));
     final sleepCardRect = tester.getRect(_asset(AppAssets.homeSleepCardBg));
 
-    expect(cycleCardRect.width / cycleCardRect.height, greaterThan(2.25));
+    expect(cycleCardRect.width / cycleCardRect.height, greaterThan(1.95));
+    expect(cycleCardRect.width / cycleCardRect.height, lessThan(2.18));
     expect(pmsCardRect.width / pmsCardRect.height, greaterThan(1.22));
     expect(sleepCardRect.width / sleepCardRect.height, greaterThan(1.22));
   });

@@ -411,7 +411,7 @@ class _HealthSummaryCard extends StatelessWidget {
           0.0,
           double.infinity,
         );
-        final cycleCardHeight = (innerWidth / 2.34).clamp(138.0, 172.0);
+        final cycleCardHeight = (innerWidth / 2.06).clamp(154.0, 190.0);
         final miniCardWidth = (innerWidth - 12) / 2;
         final miniCardHeight = (miniCardWidth / 1.30).clamp(122.0, 148.0);
 
@@ -519,13 +519,12 @@ class _CycleStatusPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleFontSize = summary.isPlaceholder ? 31.0 : 34.0;
-    final ringSize = (height * 0.70).clamp(96.0, 116.0);
-    final textRightInset = ringSize + 18;
+    final ringSize = (height * 0.64).clamp(96.0, 116.0);
+    final textRightInset = ringSize + 38;
 
     return Container(
       width: double.infinity,
       height: height,
-      padding: const EdgeInsets.fromLTRB(24, 24, 20, 22),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
@@ -557,8 +556,8 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 20,
-            top: height * 0.18,
+            right: 24,
+            top: height * 0.16,
             child: SizedBox(
               width: ringSize,
               height: ringSize,
@@ -566,8 +565,8 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 0,
-            top: 6,
+            left: 24,
+            top: 22,
             right: textRightInset,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,7 +581,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     height: 1,
                   ),
                 ),
-                SizedBox(height: height * 0.10),
+                SizedBox(height: height * 0.04),
                 FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -605,7 +604,7 @@ class _CycleStatusPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.12),
+                SizedBox(height: height * 0.11),
                 FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -625,8 +624,8 @@ class _CycleStatusPanel extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 0,
-            top: 2,
+            right: 16,
+            top: 10,
             child: Icon(
               Icons.close_rounded,
               color: const Color(0xFF7E56DD).withValues(alpha: 0.9),
