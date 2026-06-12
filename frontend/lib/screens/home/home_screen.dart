@@ -676,6 +676,10 @@ class _MiniHealthCard extends StatelessWidget {
     final arrowTop = isSleepCard
         ? (height * 0.44).clamp(52.0, 58.0)
         : (height * 0.36).clamp(42.0, 48.0);
+    final decorationAssetPath = switch (decoration) {
+      _MiniDecoration.pms => AppAssets.homePmsCardBg,
+      _MiniDecoration.sleep => AppAssets.homeSleepCardBg,
+    };
 
     return Material(
       color: Colors.transparent,
@@ -771,8 +775,18 @@ class _MiniHealthCard extends StatelessWidget {
                         children: [
                           DecoratedBox(
                             decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(decorationAssetPath),
+                                fit: BoxFit.cover,
+                                alignment: Alignment.bottomRight,
+                                filterQuality: FilterQuality.high,
+                              ),
+                            ),
+                          ),
+                          DecoratedBox(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withValues(alpha: 0.70),
+                              color: Colors.white.withValues(alpha: 0.04),
                               border: Border.all(
                                 color: Colors.white.withValues(alpha: 0.86),
                               ),
