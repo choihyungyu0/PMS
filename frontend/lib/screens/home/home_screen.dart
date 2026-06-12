@@ -797,10 +797,7 @@ class _MiniHealthCard extends StatelessWidget {
   }
 }
 
-enum _MiniDecoration {
-  pms,
-  sleep;
-}
+enum _MiniDecoration { pms, sleep }
 
 class _TodayMissionCard extends StatelessWidget {
   const _TodayMissionCard({required this.mission, required this.onTap});
