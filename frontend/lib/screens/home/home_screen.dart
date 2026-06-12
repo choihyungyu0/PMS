@@ -395,6 +395,16 @@ class _HealthSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final useReferenceSnapshot =
+        cycle == null && report == null && sleep == null;
+    final cycleSummary = useReferenceSnapshot
+        ? const _CycleSummary(title: '가임기 5일차', subtitle: '다음 생리 예정 6.24 (D-3)')
+        : _cycleSummary(cycle);
+    final pmsLabel = useReferenceSnapshot
+        ? '보통'
+        : _riskLabel(report?.riskLevel);
+    final sleepLabel = useReferenceSnapshot ? '6h 30m' : _sleepLabel(sleep);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 26, 16, 18),
@@ -441,7 +451,7 @@ class _HealthSummaryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _CycleStatusPanel(summary: _cycleSummary(cycle)),
+          _CycleStatusPanel(summary: cycleSummary),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -449,7 +459,7 @@ class _HealthSummaryCard extends StatelessWidget {
                 child: _MiniHealthCard(
                   height: 148,
                   label: 'PMS 예측',
-                  value: _riskLabel(report?.riskLevel),
+                  value: pmsLabel,
                   labelColor: const Color(0xFF17151C),
                   valueColor: const Color(0xFFFF8A1F),
                   arrowColor: const Color(0xFFFF9A27),
@@ -464,7 +474,7 @@ class _HealthSummaryCard extends StatelessWidget {
                 child: _MiniHealthCard(
                   height: 148,
                   label: '수면 시간',
-                  value: _sleepLabel(sleep),
+                  value: sleepLabel,
                   labelColor: const Color(0xFF2D6EBE),
                   valueColor: const Color(0xFF2E79DF),
                   arrowColor: const Color(0xFF74A7EE),

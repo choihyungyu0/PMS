@@ -73,7 +73,7 @@ void main() {
     expect(_asset(AppAssets.bottomNavMy), findsOneWidget);
   });
 
-  testWidgets('home empty state keeps card text readable', (tester) async {
+  testWidgets('home initial state keeps reference card layout', (tester) async {
     SharedPreferences.setMockInitialValues({});
     await tester.binding.setSurfaceSize(const Size(393, 852));
     addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -98,8 +98,12 @@ void main() {
     }
 
     expect(find.text('안녕하세요, 지은님 👋'), findsOneWidget);
-    expect(find.text('기록 전'), findsNWidgets(2));
-    expect(find.text('분석 전'), findsOneWidget);
+    expect(find.text('가임기 5일차'), findsOneWidget);
+    expect(find.text('다음 생리 예정 6.24 (D-3)'), findsOneWidget);
+    expect(find.text('보통'), findsOneWidget);
+    expect(find.text('6h 30m'), findsOneWidget);
+    expect(find.text('기록 전'), findsNothing);
+    expect(find.text('분석 전'), findsNothing);
     expect(find.text('기록이 필요해요'), findsNothing);
     expect(find.text('기록 없음'), findsNothing);
   });
