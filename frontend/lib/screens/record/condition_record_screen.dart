@@ -831,11 +831,9 @@ class _ConditionOptionTile extends StatelessWidget {
                   ],
                 ),
                 child: Center(
-                  child: Image.asset(
-                    assetPath,
-                    width: circleSize * 0.96,
-                    height: circleSize * 0.96,
-                    fit: BoxFit.contain,
+                  child: _ConditionIconImage(
+                    assetPath: assetPath,
+                    circleSize: circleSize,
                   ),
                 ),
               ),
@@ -857,6 +855,41 @@ class _ConditionOptionTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ConditionIconImage extends StatelessWidget {
+  const _ConditionIconImage({
+    required this.assetPath,
+    required this.circleSize,
+  });
+
+  final String assetPath;
+  final double circleSize;
+
+  @override
+  Widget build(BuildContext context) {
+    final cropSize = circleSize * 0.86;
+    final imageSize = circleSize * 1.24;
+
+    return SizedBox(
+      width: cropSize,
+      height: cropSize,
+      child: ClipOval(
+        child: OverflowBox(
+          minWidth: imageSize,
+          maxWidth: imageSize,
+          minHeight: imageSize,
+          maxHeight: imageSize,
+          child: Image.asset(
+            assetPath,
+            width: imageSize,
+            height: imageSize,
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
   }
