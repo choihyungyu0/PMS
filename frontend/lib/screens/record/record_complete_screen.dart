@@ -36,72 +36,121 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.lavenderBackground,
+        backgroundColor: Colors.white,
         body: LayoutBuilder(
           builder: (context, constraints) {
-            final horizontalPadding = constraints.maxWidth < 390
-                ? 28.0
-                : (constraints.maxWidth * 0.072).clamp(44.0, 60.0).toDouble();
-            final topClosePadding = (constraints.maxWidth * 0.075)
-                .clamp(18.0, 62.0)
+            final cardRadius = (constraints.maxWidth * 0.071)
+                .clamp(28.0, 58.0)
                 .toDouble();
-            final checkSize = (constraints.maxWidth * 0.56)
-                .clamp(190.0, 455.0)
+            final horizontalPadding = (constraints.maxWidth * 0.071)
+                .clamp(28.0, 62.0)
                 .toDouble();
-            final titleFontSize = (constraints.maxWidth * 0.058)
-                .clamp(30.0, 48.0)
+            final contentScale =
+                (constraints.maxHeight / (constraints.maxWidth * 2.08))
+                    .clamp(0.76, 1.0)
+                    .toDouble();
+            final textScale =
+                (constraints.maxHeight / (constraints.maxWidth * 1.92))
+                    .clamp(0.84, 1.0)
+                    .toDouble();
+            final closeTopPadding = (constraints.maxHeight * 0.039)
+                .clamp(28.0, 76.0)
                 .toDouble();
-            final descriptionFontSize = (constraints.maxWidth * 0.056)
-                .clamp(29.0, 46.0)
+            final closeRightPadding = (constraints.maxWidth * 0.087)
+                .clamp(30.0, 76.0)
                 .toDouble();
-            final buttonHeight = (constraints.maxWidth * 0.19)
-                .clamp(62.0, 155.0)
+            final closeBoxSize =
+                ((constraints.maxWidth * 0.078).clamp(44.0, 64.0) *
+                        contentScale)
+                    .clamp(40.0, 64.0)
+                    .toDouble();
+            final closeIconSize = closeBoxSize * 0.78;
+            final checkSize =
+                ((constraints.maxWidth * 0.493).clamp(184.0, 405.0) *
+                        contentScale)
+                    .clamp(156.0, 405.0)
+                    .toDouble();
+            final maxCheckTop = constraints.maxHeight * 0.30;
+            final minCheckTop = maxCheckTop < 150.0 ? maxCheckTop : 150.0;
+            final checkTop = (constraints.maxHeight * 0.232)
+                .clamp(minCheckTop, maxCheckTop)
                 .toDouble();
-            final buttonBottomPadding = (constraints.maxWidth * 0.085)
-                .clamp(34.0, 70.0)
+            final minimumTextTop = checkTop + checkSize + 44;
+            final preferredTextTop = constraints.maxHeight * 0.531;
+            final textTop = preferredTextTop < minimumTextTop
+                ? minimumTextTop
+                : preferredTextTop;
+            final titleFontSize =
+                ((constraints.maxWidth * 0.062).clamp(27.0, 52.0) * textScale)
+                    .clamp(24.0, 52.0)
+                    .toDouble();
+            final descriptionFontSize =
+                ((constraints.maxWidth * 0.063).clamp(26.0, 52.0) * textScale)
+                    .clamp(22.0, 52.0)
+                    .toDouble();
+            final buttonHeight =
+                ((constraints.maxWidth * 0.19).clamp(62.0, 158.0) *
+                        contentScale)
+                    .clamp(58.0, 158.0)
+                    .toDouble();
+            final buttonBottomPadding = (constraints.maxHeight * 0.036)
+                .clamp(24.0, 70.0)
                 .toDouble();
-            final buttonTextSize = (constraints.maxWidth * 0.056)
-                .clamp(28.0, 46.0)
+            final buttonTextSize =
+                ((constraints.maxWidth * 0.069).clamp(28.0, 56.0) * textScale)
+                    .clamp(23.0, 56.0)
+                    .toDouble();
+            final buttonRadius = (buttonHeight * 0.30)
+                .clamp(22.0, 48.0)
                 .toDouble();
+            final titleDescriptionGap =
+                ((constraints.maxHeight * 0.041).clamp(30.0, 80.0) *
+                        contentScale)
+                    .clamp(22.0, 80.0)
+                    .toDouble();
 
             return ClipRRect(
-              borderRadius: BorderRadius.circular(34),
+              borderRadius: BorderRadius.circular(cardRadius),
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(34),
+                  borderRadius: BorderRadius.circular(cardRadius),
                   border: Border.all(
-                    color: const Color(0xFFE2D6F8),
-                    width: 1.8,
+                    color: const Color(0xFFD8C4FB),
+                    width: 1.4,
                   ),
                 ),
                 child: SafeArea(
-                  child: Column(
+                  child: Stack(
                     children: [
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            top: topClosePadding,
-                            right: horizontalPadding - 12,
+                      Positioned(
+                        top: closeTopPadding,
+                        right: closeRightPadding,
+                        child: _CloseButton(
+                          size: closeBoxSize,
+                          iconSize: closeIconSize,
+                          onTap: _goHome,
+                        ),
+                      ),
+                      Positioned(
+                        top: checkTop,
+                        left: 0,
+                        right: 0,
+                        child: Center(
+                          child: Image.asset(
+                            AppAssets.recordCompleteCheck,
+                            width: checkSize,
+                            height: checkSize,
+                            fit: BoxFit.contain,
                           ),
-                          child: _CloseButton(onTap: _goHome),
                         ),
                       ),
-                      const Spacer(flex: 6),
-                      Image.asset(
-                        AppAssets.recordCompleteCheck,
-                        width: checkSize,
-                        height: checkSize,
-                        fit: BoxFit.contain,
-                      ),
-                      const Spacer(flex: 3),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: horizontalPadding,
-                        ),
+                      Positioned(
+                        top: textTop,
+                        left: horizontalPadding,
+                        right: horizontalPadding,
                         child: Column(
                           children: [
                             Text(
@@ -111,10 +160,10 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
                                 color: AppColors.textPrimary,
                                 fontSize: titleFontSize,
                                 fontWeight: FontWeight.w900,
-                                height: 1.2,
+                                height: 1.18,
                               ),
                             ),
-                            SizedBox(height: 34),
+                            SizedBox(height: titleDescriptionGap),
                             Text(
                               'AI 분석을 통해 더 정확한\n건강 케어를 제공할게요.',
                               textAlign: TextAlign.center,
@@ -122,22 +171,19 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
                                 color: Color(0xFF2E2E32),
                                 fontSize: descriptionFontSize,
                                 fontWeight: FontWeight.w500,
-                                height: 1.48,
+                                height: 1.54,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const Spacer(flex: 7),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          horizontalPadding,
-                          0,
-                          horizontalPadding,
-                          buttonBottomPadding,
-                        ),
+                      Positioned(
+                        left: horizontalPadding,
+                        right: horizontalPadding,
+                        bottom: buttonBottomPadding,
                         child: _GradientHomeButton(
                           height: buttonHeight,
+                          borderRadius: buttonRadius,
                           fontSize: buttonTextSize,
                           onTap: _goHome,
                         ),
@@ -155,8 +201,14 @@ class _RecordCompleteScreenState extends State<RecordCompleteScreen> {
 }
 
 class _CloseButton extends StatelessWidget {
-  const _CloseButton({required this.onTap});
+  const _CloseButton({
+    required this.size,
+    required this.iconSize,
+    required this.onTap,
+  });
 
+  final double size;
+  final double iconSize;
   final VoidCallback onTap;
 
   @override
@@ -170,13 +222,13 @@ class _CloseButton extends StatelessWidget {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap,
-          child: const SizedBox(
-            width: 64,
-            height: 64,
+          child: SizedBox(
+            width: size,
+            height: size,
             child: Icon(
               Icons.close_rounded,
-              color: Color(0xFF242428),
-              size: 56,
+              color: const Color(0xFF242428),
+              size: iconSize,
             ),
           ),
         ),
@@ -188,11 +240,13 @@ class _CloseButton extends StatelessWidget {
 class _GradientHomeButton extends StatelessWidget {
   const _GradientHomeButton({
     required this.height,
+    required this.borderRadius,
     required this.fontSize,
     required this.onTap,
   });
 
   final double height;
+  final double borderRadius;
   final double fontSize;
   final VoidCallback onTap;
 
@@ -203,22 +257,22 @@ class _GradientHomeButton extends StatelessWidget {
       label: '홈으로 이동',
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(26),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: Ink(
             width: double.infinity,
             height: height,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
+              borderRadius: BorderRadius.circular(borderRadius),
               gradient: const LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [
-                  Color(0xFF7B35F4),
-                  AppColors.primaryPurple,
-                  AppColors.deepPurple,
+                  Color(0xFF7B2DFA),
+                  Color(0xFF7735FF),
+                  Color(0xFF6628EA),
                 ],
               ),
               boxShadow: [
