@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:more_cycle/app.dart';
+import 'package:more_cycle/core/constants/app_assets.dart';
 import 'package:more_cycle/core/constants/app_text.dart';
 import 'package:more_cycle/core/storage/health_goal_storage.dart';
 import 'package:more_cycle/models/health_report.dart';
@@ -384,13 +385,43 @@ void main() {
     await tester.tap(find.text('병원'));
     await tester.pumpAndSettle();
 
-    expect(find.text('인천 공공데이터 기반 의료기관 정보를 확인해요.'), findsOneWidget);
-    expect(find.text(AppText.hospitalDisclaimer), findsOneWidget);
-    expect(find.text(AppText.availabilityNotice), findsWidgets);
-    await tester.drag(find.byType(ListView), const Offset(0, -500));
+    expect(find.text('인천 의료·보건 안내'), findsOneWidget);
+    expect(find.text('의료기관 · 보건기관 · 약국 · 응급기관'), findsOneWidget);
+    expect(find.text('기관명 또는 지역 검색'), findsOneWidget);
+    expect(_asset(AppAssets.hospitalMedicalInstitution), findsOneWidget);
+    expect(
+      _asset(AppAssets.hospitalPublicInstitution, skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      _asset(AppAssets.hospitalPharmacy, skipOffstage: false),
+      findsOneWidget,
+    );
+    expect(
+      _asset(AppAssets.hospitalEmergency, skipOffstage: false),
+      findsOneWidget,
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -760));
     await tester.pumpAndSettle();
+    expect(find.text('내 주변 기관 찾기'), findsOneWidget);
+
+    await tester.drag(find.byType(ListView), const Offset(0, -520));
+    await tester.pumpAndSettle();
+    expect(find.text(AppText.medicalDisclaimer), findsOneWidget);
+    expect(find.text(AppText.availabilityNotice), findsWidgets);
+    expect(find.text('CSV 기반 검색 결과'), findsOneWidget);
     expect(find.text('인천여성의원'), findsOneWidget);
   });
+}
+
+Finder _asset(String assetPath, {bool skipOffstage = true}) {
+  return find.byWidgetPredicate((widget) {
+    if (widget is! Image || widget.image is! AssetImage) {
+      return false;
+    }
+    return (widget.image as AssetImage).assetName == assetPath;
+  }, skipOffstage: skipOffstage);
 }
 
 _ShellControllers _buildShellControllers() {

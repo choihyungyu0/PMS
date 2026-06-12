@@ -62,6 +62,25 @@ class AppAssets {
   static const calendarFertileCycle =
       'assets/images/calendar/calendar_fertile_cycle.png';
 
+  static const hospitalEmergency =
+      'assets/images/image-removebg-preview (9).png';
+  static const hospitalPharmacy =
+      'assets/images/image-removebg-preview (10).png';
+  static const hospitalPublicInstitution =
+      'assets/images/image-removebg-preview (11).png';
+  static const hospitalMedicalInstitution =
+      'assets/images/image-removebg-preview (12).png';
+  static const hospitalIncheonSkyline =
+      'assets/images/image-removebg-preview (13).png';
+  static const hospitalShieldPurple =
+      'assets/images/image-removebg-preview (14).png';
+  static const hospitalShieldMint =
+      'assets/images/image-removebg-preview (15).png';
+  static const hospitalShieldBlue =
+      'assets/images/image-removebg-preview (16).png';
+  static const hospitalShieldRed =
+      'assets/images/image-removebg-preview (17).png';
+
   static const communityAvatarPms =
       'assets/images/community/community_avatar_pms.png';
   static const communityStretch =
@@ -84,6 +103,8 @@ class AppAssets {
   static const bottomNavHome = 'assets/images/bottom_nav_home.png';
   static const bottomNavRecord = 'assets/images/bottom_nav_record.png';
   static const bottomNavAnalysis = 'assets/images/bottom_nav_analysis.png';
+  static const bottomNavHospital =
+      'assets/images/image-removebg-preview (18).png';
   static const bottomNavCommunity = 'assets/images/bottom_nav_community.png';
   static const bottomNavMy = 'assets/images/bottom_nav_my.png';
 }

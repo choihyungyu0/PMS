@@ -113,7 +113,11 @@ class _DashboardBottomNav extends StatelessWidget {
       assetPath: AppAssets.bottomNavAnalysis,
       label: '분석',
     ),
-    _BottomNavItemData(icon: Icons.local_hospital_outlined, label: '병원'),
+    _BottomNavItemData(
+      icon: Icons.local_hospital_outlined,
+      assetPath: AppAssets.bottomNavHospital,
+      label: '병원',
+    ),
     _BottomNavItemData(
       icon: Icons.person_outline_rounded,
       assetPath: AppAssets.bottomNavMy,

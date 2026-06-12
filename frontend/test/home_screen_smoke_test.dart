@@ -70,6 +70,7 @@ void main() {
     expect(_asset(AppAssets.bottomNavHome), findsOneWidget);
     expect(_asset(AppAssets.bottomNavRecord), findsOneWidget);
     expect(_asset(AppAssets.bottomNavAnalysis), findsOneWidget);
+    expect(_asset(AppAssets.bottomNavHospital), findsOneWidget);
     expect(_asset(AppAssets.bottomNavMy), findsOneWidget);
 
     final cycleCardRect = tester.getRect(_asset(AppAssets.homeCycleCardBg));
